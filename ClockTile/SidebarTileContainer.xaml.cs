@@ -36,10 +36,14 @@ namespace ClockTile
 		{
 			var control = d as SidebarTileContainer;
 			var newContent = e.NewValue as UIElement;
+			var fe = newContent as FrameworkElement;
+			(fe?.Parent as Panel)?.Children?.Remove (newContent);
 			control?.SetContainerContent (newContent);
 		}
 		private void SetContainerContent (UIElement content)
 		{
+			var fe = content as FrameworkElement;
+			(fe?.Parent as Panel)?.Children?.Remove (content);
 			TileContent.Children.Clear ();
 			if (content != null)
 				TileContent.Children.Add (content);

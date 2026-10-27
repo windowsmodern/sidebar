@@ -30,13 +30,13 @@ namespace Sidebar
 			var restrict = Locale.GetLocaleRestrictedCode (ln)?.Trim ()?.ToLowerInvariant () ?? "";
 			foreach (var kv in dict)
 			{
-				var kr = Locale.GetLocaleRestrictedCode (restrict)?.Trim ()?.ToLowerInvariant () ?? "";
+				var kr = Locale.GetLocaleRestrictedCode (kv.Key)?.Trim ()?.ToLowerInvariant () ?? "";
 				if (kr == restrict) return kv.Value;
 			}
 			var rid = Locale.ToLCID (restrict);
 			foreach (var kv in dict)
 			{
-				var kr = Locale.GetLocaleRestrictedCode (restrict)?.Trim ()?.ToLowerInvariant () ?? "";
+				var kr = Locale.GetLocaleRestrictedCode (kv.Key)?.Trim ()?.ToLowerInvariant () ?? "";
 				var krid = Locale.ToLCID (kr);
 				if (krid == rid) return kv.Value;
 			}

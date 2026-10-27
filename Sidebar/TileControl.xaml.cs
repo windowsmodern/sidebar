@@ -26,6 +26,7 @@ namespace Sidebar
 	public partial class TileControl: UserControl, ITileElement
 	{
 		private TileContext tileContext = null;
+		public TileContext TileContext => tileContext;
 		public TileInstance Instance { get; private set; }
 		public TileApplicationStorage AppStorage { get; private set; }
 		public string UserModelId => AppStorage?.UserModelId;
@@ -73,9 +74,9 @@ namespace Sidebar
 			}
 			TileSplitterThumb.IsEnabled = tas.Infomation.VisualElements.Tile.Overflow != TileOverflow.Auto;
 		}
-		public static TileControl CreateTileControl (TileApplicationStorage tas, ISidebarFeatures isf = null)
+		public static TileControl CreateTileControl (TileApplicationStorage tas, ISidebarFeatures isf = null, bool sidebarFirstLoad = false)
 		{
-			var ctrl = new TileControl ();
+			var ctrl = new TileControl (sidebarFirstLoad);
 			ctrl.SetAppStorage (tas);
 			var inst = new TileInstance (tas, ctrl.ContentContainer, isf);
 			ctrl.SetInstance (inst);
@@ -100,8 +101,9 @@ namespace Sidebar
 		}
 		public SidebarWindow SidebarHost => GetSidebarHost (this);
 		#endregion
-		public TileControl ()
+		public TileControl (bool sidebarFirstLoad = false)
 		{
+			isSidebarFirstLoad = sidebarFirstLoad;
 			InitializeComponent ();
 			tileContext = new TileContext (this, TileContentContainerControl);
 			VisualView = new TileVisualView (this);
@@ -191,9 +193,12 @@ namespace Sidebar
 			Height = double.NaN;
 			isfirstrunfinish = true;
 			TileContentContainerControl.MinHeight = AppStorage.Infomation.VisualElements.Tile.MinHeight;
+			isSidebarFirstLoad = false;
 		}
 		bool isfirstrun = false;
 		bool isfirstrunfinish = false;
+		public bool IsFirstLoad => isfirstrun;
+		public bool IsFirstLoaded => isfirstrunfinish;
 		private double InitContentHeight ()
 		{
 			var tc = Instance.Config;
@@ -208,7 +213,13 @@ namespace Sidebar
 		}
 		public bool IsOverflowAutoMode => AppStorage?.Infomation?.VisualElements?.Tile?.Overflow == TileOverflow.Auto;
 		public bool IsAutoMode => IsOverflowAutoMode || (Instance?.Config?.AutoSize ?? false);
-		private void InitHeight ()
+		private bool isSidebarFirstLoad = false;
+		public bool IsSidebarFirstLoad
+		{
+			get { return isSidebarFirstLoad; }
+			set { isSidebarFirstLoad = value; }
+		}
+		public void InitHeight ()
 		{
 			if (isfirstrun) return;
 			var ht = InitContentHeight ();
@@ -222,11 +233,20 @@ namespace Sidebar
 			isfirstrun = true;
 			UpdateLayout ();
 			TimeoutExtensions.SetTimeout (this, () => {
-				var sb = Resources ["TileFirstLoadAnimation"] as Storyboard;
-				var da = sb.Children.First () as DoubleAnimation;
-				da.To = ActualHeight;
-				sb.Begin ();
-				Visibility = Visibility.Visible;
+				if (isSidebarFirstLoad)
+				{
+					var sb = Resources ["TileFirstLoadAnimationWithSidebar"] as Storyboard;
+					sb.Begin ();
+					Visibility = Visibility.Visible;
+				}
+				else
+				{
+					var sb = Resources ["TileFirstLoadAnimation"] as Storyboard;
+					var da = sb.Children.First () as DoubleAnimation;
+					da.To = ActualHeight;
+					sb.Begin ();
+					Visibility = Visibility.Visible;
+				}
 			});
 		}
 		public void ResetFirstStatus ()

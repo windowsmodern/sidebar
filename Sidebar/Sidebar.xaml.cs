@@ -42,6 +42,7 @@ namespace Sidebar
 		}
 		#region Instance
 		public static SidebarWindow Current { get; private set; }
+		public SidebarContext sidebarContext = new SidebarContext ();
 		#endregion
 		#region Tile to Create/Remove/Move
 		private Dictionary<string, TileControl> tileCache = new Dictionary<string, TileControl> (NormalizedStringComparer.Instance);
@@ -53,7 +54,7 @@ namespace Sidebar
 		{
 			var cc = App.CurrentUserConfig;
 			tileOverflowVisualList = new ProjectedView<TileControl, ITileElement> (tileOverflowList, tc => tc.VisualView);
-			RebuildFromConfig ();
+			RebuildFromConfig (true);
 			cc.PinnedTiles.CollectionChanged += PinnedTiles_CollectionChanged;
 			cc.PinnedBottomTiles.CollectionChanged += PinnedBottomTiles_CollectionChanged;
 			App.TileMgr.Applications.CollectionChanged += Applications_CollectionChanged;
@@ -64,6 +65,16 @@ namespace Sidebar
 			cc.PinnedTiles.CollectionChanged -= PinnedTiles_CollectionChanged;
 			cc.PinnedBottomTiles.CollectionChanged -= PinnedBottomTiles_CollectionChanged;
 			App.TileMgr.Applications.CollectionChanged -= Applications_CollectionChanged;
+			foreach (var tc in tileCache)
+			{
+				try
+				{
+					(tc.Value?.Parent as Panel)?.Children?.Remove (tc.Value);
+					tc.Value?.Instance?.Instance?.OnDestroy ();
+					tc.Value?.TileContext?.Dispose ();
+				}
+				catch { }
+			}
 		}
 		private void PinnedTiles_CollectionChanged (object sender, NotifyCollectionChangedEventArgs e)
 		{
@@ -87,49 +98,54 @@ namespace Sidebar
 			_rebuildScheduled = true;
 			Dispatcher.BeginInvoke (DispatcherPriority.Background, new Action (() => {
 				_rebuildScheduled = false;
-				RebuildFromConfig ();
+				RebuildFromConfig (IsSidebarViewFirstLoad);
 			}));
 		}
-		private void RebuildFromConfig ()
+		private void RebuildFromConfig (bool ?sidebarFirstLoad = false)
 		{
 			var cc = App.CurrentUserConfig;
 			if (cc == null) return;
 			var topList = cc.PinnedTiles.ToList ();
 			var bottomList = cc.PinnedBottomTiles.ToList ();
-			ArrangePanel (TilesControl, topList, false);
-			ArrangePanel (PinnedTilesControl, bottomList, true);
+			ArrangePanel (TilesControl, topList, false, sidebarFirstLoad);
+			ArrangePanel (PinnedTilesControl, bottomList, true, sidebarFirstLoad);
 			RemoveOrphans (topList, bottomList);
 		}
-		private void ArrangePanel (StackPanel panel, List<string> orderedUids, bool pinnedBottom)
+		private void ArrangePanel (StackPanel panel, List<string> orderedUids, bool pinnedBottom, bool ?sidebarFirstLoad = false)
 		{
 			if (panel == null) return;
-			for (int i = panel.Children.Count - 1; i >= 0; i--)
-			{
-				var tile = panel.Children [i] as TileControl;
-				if (tile == null)
-				{
-					//panel.Children.RemoveAt (i);
-					continue;
-				}
-				string umid = tile.UserModelId;
-				if (string.IsNullOrEmpty (umid) || !ContainsNormalized (orderedUids, umid))
-				{
-					if (_pendingRemovals.Contains (umid)) continue;
-					//panel.Children.RemoveAt (i);
-				}
-			}
+			int insertIndex = 0;
 			for (int i = 0; i < orderedUids.Count; i++)
 			{
 				string umid = orderedUids [i];
 				if (_pendingRemovals.Contains (umid)) continue;
-				var tile = GetOrCreateTile (umid);
+				var tile = GetOrCreateTile (umid, sidebarFirstLoad);
 				if (tile == null) continue;
 				tile.IsPinned = pinnedBottom;
 				if (tile?.Instance?.Config != null)
 					(tile.Instance.Config as TileConfig)?.NotifyPinned ();
-				if (i < panel.Children.Count && ReferenceEquals (panel.Children [i], tile)) continue;
-				SafeInsert (panel, i, tile);
+				while (insertIndex < panel.Children.Count &&
+					   IsObsoleteChild (panel.Children [insertIndex], orderedUids))
+				{
+					insertIndex++;
+				}
+				if (insertIndex < panel.Children.Count &&
+					ReferenceEquals (panel.Children [insertIndex], tile))
+				{
+					insertIndex++;
+					continue;
+				}
+				SafeInsert (panel, insertIndex, tile);
+				insertIndex++;
 			}
+		}
+		private static bool IsObsoleteChild (UIElement child, List<string> orderedUids)
+		{
+			var tile = child as TileControl;
+			if (tile == null) return false;
+			string umid = tile.UserModelId;
+			if (string.IsNullOrEmpty (umid)) return false;
+			return !ContainsNormalized (orderedUids, umid);
 		}
 		private void RemoveOrphans (List<string> topList, List<string> bottomList)
 		{
@@ -192,13 +208,16 @@ namespace Sidebar
 				tileCache.Remove (umid);
 			}
 		}
-		private TileControl GetOrCreateTile (string userModelId)
+		private TileControl GetOrCreateTile (string userModelId, bool ?sidebarFirstLoad = false)
 		{
 			TileControl tc = null;
 			if (tileCache.TryGetValue (userModelId, out tc)) return tc;
 			var tas = App.TileMgr.GetApplicationByUserModelId (userModelId);
 			if (tas == null) return null;
-			tc = TileControl.CreateTileControl (tas, this);
+			if (sidebarFirstLoad != null)
+				tc = TileControl.CreateTileControl (tas, this, sidebarFirstLoad.Value);
+			else
+				tc = TileControl.CreateTileControl (tas, this);
 			if (tc == null) return null;
 			tc.SizeChanged -= TileControl_SizeChanged;
 			tc.SizeChanged += TileControl_SizeChanged;
@@ -211,10 +230,10 @@ namespace Sidebar
 			catch { }
 			return tc;
 		}
-		private TileControl GetOrCreateTile (TileApplicationStorage tas)
+		private TileControl GetOrCreateTile (TileApplicationStorage tas, bool ?sidebarFirstLoad = false)
 		{
 			if (tas == null) return null;
-			return GetOrCreateTile (tas.UserModelId);
+			return GetOrCreateTile (tas.UserModelId, sidebarFirstLoad);
 		}
 		private void PurgeDeadCache ()
 		{
@@ -1346,6 +1365,7 @@ namespace Sidebar
 			TaskbarTiles.ItemsSource = null;
 			if (cc.OccupyWorkingArea) appBar.Register ();
 			RefreshWndPos ();
+			ReshowSidebarView ();
 		}
 		private void RefreshTaskbarTileItems ()
 		{
@@ -1669,6 +1689,7 @@ namespace Sidebar
 		}
 		private void ScreenChangeNotifier_SizeChanged (object sender, EventArgs e)
 		{
+			UpdateMinMaxWidth ();
 			RefreshWndPos ();
 		}
 		private void ScreenChangeNotifier_ScaleChanged (object sender, EventArgs e)
@@ -2243,9 +2264,74 @@ namespace Sidebar
 			tmgr.Changed -= ThemeManager_Changed;
 		}
 		#endregion
+		#region First Run
+		private void InitWhenFirstRun ()
+		{
+			if (App.CurrentUserConfig.FirstRun)
+			{
+				PinTileToBottom ("WindowsModern.ClockTile_6jwq91e3ytb32!App");
+				PinTileToTop ("WindowsModern.SysTrayTile_6jwq91e3ytb32!App");
+				PinTileToTop ("WindowsModern.QuickLaunchTile_6jwq91e3ytb32!App");
+				PinTileToTop ("WindowsModern.NotificationHistoryTile_6jwq91e3ytb32!App");
+				PinTileToTop ("WindowsModern.SearchTile_6jwq91e3ytb32!App");
+				App.CurrentUserConfig.FirstRun = false;
+			}
+		}
+		#endregion
+		#region First Load
+		private bool isSidebarViewFirstLoad = false;
+		private TimeoutHandle stateSidebarViewTimer = null;
+		public bool IsSidebarViewFirstLoad
+		{
+			get
+			{
+				var elderValue = isSidebarViewFirstLoad;
+				if (stateSidebarViewTimer != null && elderValue)
+				{
+					TimeoutExtensions.ClearTimeout (this, stateSidebarViewTimer);
+					stateSidebarViewTimer = null;
+				}
+				stateSidebarViewTimer = TimeoutExtensions.SetTimeout (this, () => {
+					isSidebarViewFirstLoad = false;
+					stateSidebarViewTimer = null;
+				}, 300);
+				return elderValue;
+			}
+			set { isSidebarViewFirstLoad = value; }
+		}
+		private void ReshowSidebarView ()
+		{
+			if (IsSidebarViewFirstLoad) return;
+			SidebarView.Visibility = Visibility.Hidden;
+			IsSidebarViewFirstLoad = true;
+			foreach (var kv in tileCache)
+			{
+				if (kv.Value != null)
+				{
+					kv.Value.IsSidebarFirstLoad = true;
+					if (kv.Value.IsFirstLoad && kv.Value.IsFirstLoaded)
+					{
+						kv.Value.ResetFirstStatus ();
+						kv.Value.InitHeight ();
+					}
+				}
+			}
+			SidebarView.Visibility = Visibility.Visible;
+			if (stateSidebarViewTimer != null && isSidebarViewFirstLoad)
+			{
+				TimeoutExtensions.ClearTimeout (this, stateSidebarViewTimer);
+				stateSidebarViewTimer = null;
+			}
+			stateSidebarViewTimer = TimeoutExtensions.SetTimeout (this, () => {
+				isSidebarViewFirstLoad = false;
+				stateSidebarViewTimer = null;
+			}, 300);
+		}
+		#endregion
 		private void Window_Loaded (object sender, RoutedEventArgs e)
 		{
 			UpdateMinMaxWidth ();
+			InitWhenFirstRun ();
 			InitSettings ();
 			InitNotifyIcon ();
 			InitSystemEventHandlers ();
@@ -2298,6 +2384,10 @@ namespace Sidebar
 		{
 			var cc = App.CurrentUserConfig;
 			if (cc.IsMinimum & cc.OverlapTaskbar) RefreshWndPos ();
+		}
+		private void SidebarView_Loaded (object sender, RoutedEventArgs e)
+		{
+			ReshowSidebarView ();
 		}
 	}
 	public class SidebarRequestInternal: ITileRequest

@@ -6,13 +6,16 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Forms.VisualStyles;
 using System.Windows.Threading;
 using Microsoft.Win32;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace Sidebar
 {
@@ -33,12 +36,58 @@ namespace Sidebar
 		{
 			DispatcherUnhandledException += App_DispatcherUnhandledException;
 		}
+		#region Unhandled Exception
 		private void App_DispatcherUnhandledException (object sender, DispatcherUnhandledExceptionEventArgs e)
 		{
 			var sr = ProgramFolder.StringResources;
-			MessageWindow.ShowException (e.Exception, sr.SuitableResource ("SIDEBAR_MESSAGE_ERROR_TITLE"), sr.SuitableResource ("SIDEBAR_MESSAGE_ERROR_DESC"), true);
-			e.Handled = true;
+			try
+			{
+				MessageWindow.ShowException (e.Exception, sr.SuitableResource ("SIDEBAR_MESSAGE_ERROR_TITLE"), sr.SuitableResource ("SIDEBAR_MESSAGE_ERROR_DESC"), true);
+			}
+			catch
+			{
+				ShowFallbackException (e.Exception, sr);
+			}
+			finally
+			{
+				e.Handled = true;
+			}
 		}
+		private static void ShowFallbackException (Exception error, ILocaleResources sr)
+		{
+			var title = sr?.SuitableResource ("SIDEBAR_MESSAGE_ERROR_TITLE") ?? error?.GetType ().ToString () ?? "Error";
+			var description = sr?.SuitableResource ("SIDEBAR_MESSAGE_ERROR_DESC") ?? error?.Message ?? string.Empty;
+			var details = GetFallbackExceptionText (error, description);
+			try
+			{
+				var dialog = new TaskDialog ();
+				dialog.Caption = title;
+				dialog.InstructionText = description;
+				dialog.Text = description;
+				dialog.DetailsExpandedText = details;
+				dialog.DetailsExpanded = true;
+				dialog.StandardButtons = TaskDialogStandardButtons.Close;
+				dialog.Show ();
+			}
+			catch
+			{
+				try { MessageBox.Show (details, title, MessageBoxButton.OK, MessageBoxImage.Error); } catch { }
+			}
+		}
+		private static string GetFallbackExceptionText (Exception error, string description)
+		{
+			var sb = new StringBuilder ();
+			sb.AppendLine (description ?? string.Empty);
+			sb.AppendLine ();
+			if (error != null && error.InnerException != null)
+			{
+				sb.AppendLine ();
+				sb.AppendLine ("InnerException:");
+				sb.AppendLine ($"\t{error.InnerException.GetType ()}: {error.InnerException.Message}");
+			}
+			return sb.ToString ();
+		}
+		#endregion
 		private void Application_Startup (object sender, StartupEventArgs e)
 		{
 			Directory.SetCurrentDirectory (AppDomain.CurrentDomain.BaseDirectory);
@@ -105,19 +154,20 @@ namespace Sidebar
 		}
 		internal static void ReleaseLargeResourcesAsync () => Utilities.ReleaseLargeResourcesAsync ();
 		private static void ReleaseLargeResources () => Utilities.ReleaseLargeResources ();
-		private static void SetTheme (string themeName, string themeColor = "NormalColor")
-		{
-			const BindingFlags staticNonPublic = BindingFlags.Static | BindingFlags.NonPublic;
-			var presentationFrameworkAsm = Assembly.GetAssembly (typeof (Window));
-			var themeWrapper = presentationFrameworkAsm?.GetType ("MS.Win32.UxThemeWrapper");
-			if (themeWrapper == null) return;
-			var isActiveField = themeWrapper.GetField ("_isActive", staticNonPublic);
-			var themeColorField = themeWrapper.GetField ("_themeColor", staticNonPublic);
-			var themeNameField = themeWrapper.GetField ("_themeName", staticNonPublic);
-			isActiveField?.SetValue (null, true);
-			themeColorField?.SetValue (null, themeColor);
-			themeNameField?.SetValue (null, themeName);
-		}
+		#region Base Theme
+		//private static void SetTheme (string themeName, string themeColor = "NormalColor")
+		//{
+		//	const BindingFlags staticNonPublic = BindingFlags.Static | BindingFlags.NonPublic;
+		//	var presentationFrameworkAsm = Assembly.GetAssembly (typeof (Window));
+		//	var themeWrapper = presentationFrameworkAsm?.GetType ("MS.Win32.UxThemeWrapper");
+		//	if (themeWrapper == null) return;
+		//	var isActiveField = themeWrapper.GetField ("_isActive", staticNonPublic);
+		//	var themeColorField = themeWrapper.GetField ("_themeColor", staticNonPublic);
+		//	var themeNameField = themeWrapper.GetField ("_themeName", staticNonPublic);
+		//	isActiveField?.SetValue (null, true);
+		//	themeColorField?.SetValue (null, themeColor);
+		//	themeNameField?.SetValue (null, themeName);
+		//}
 		private static void SetCurrentBaseTheme (WpfTheme wpfTheme, string color = "normalcolor", string themeUri = null)
 		{
 			return;
@@ -135,6 +185,7 @@ namespace Sidebar
 					break;
 				case WpfTheme.Classic:
 					{
+						SetCurrentBaseTheme (WpfTheme.Default);
 						var rd = new ResourceDictionary ();
 						rd.Source = new Uri ("/PresentationFramework.Classic,Version=4.0.0.0,Culture=neutral,PublicKeyToken=31bf3856ad364e35;component/themes/classic.xaml", UriKind.RelativeOrAbsolute);
 						mergedDictionaries [1] = rd;
@@ -166,6 +217,16 @@ namespace Sidebar
 					catch
 					{
 						mergedDictionaries [1] = new ResourceDictionary ();
+					}
+					break;
+				case WpfTheme.XPTheme:
+					try
+					{
+						ApplyXpThemeToSystemBottom ();
+					}
+					catch
+					{
+						ApplyThemeAsAppDictionary ();
 					}
 					break;
 			}
@@ -219,7 +280,7 @@ namespace Sidebar
 				case WindowsXPVisualStyle.Plex:
 				case WindowsXPVisualStyle.Slate:
 				case WindowsXPVisualStyle.Watercolor:
-					SetCurrentBaseTheme (WpfTheme.Default);
+					SetCurrentBaseTheme (WpfTheme.XPTheme);
 					SetTheme ("Classic");
 					break;
 				case WindowsXPVisualStyle.Luna:
@@ -240,6 +301,74 @@ namespace Sidebar
 					SetTheme ("Aero");
 					break;
 			}
+		}
+		private static void SetTheme (string themeName, string themeColor = "NormalColor")
+		{
+			const BindingFlags staticNonPublic = BindingFlags.Static | BindingFlags.NonPublic;
+			var presentationFrameworkAsm = Assembly.GetAssembly (typeof (Window));
+			if (presentationFrameworkAsm == null) return;
+			var systemResources = presentationFrameworkAsm.GetType ("System.Windows.SystemResources");
+			systemResources?.GetMethod ("OnThemeChanged", staticNonPublic)?.Invoke (null, null);
+			var themeWrapper = presentationFrameworkAsm.GetType ("MS.Win32.UxThemeWrapper");
+			if (themeWrapper == null) return;
+			var isActiveField = themeWrapper.GetField ("_isActive", staticNonPublic);
+			var themeColorField = themeWrapper.GetField ("_themeColor", staticNonPublic);
+			var themeNameField = themeWrapper.GetField ("_themeName", staticNonPublic);
+			isActiveField?.SetValue (null, true);
+			themeColorField?.SetValue (null, themeColor);
+			themeNameField?.SetValue (null, themeName);
+		}
+		private static void ApplyXpThemeToSystemBottom ()
+		{
+			const BindingFlags staticNonPublic = BindingFlags.Static | BindingFlags.NonPublic;
+			var presentationFrameworkAsm = Assembly.GetAssembly (typeof (Window));
+			if (presentationFrameworkAsm == null) throw new InvalidOperationException ("PresentationFramework is not loaded.");
+			var systemResources = presentationFrameworkAsm.GetType ("System.Windows.SystemResources");
+			if (systemResources == null) throw new InvalidOperationException ("SystemResources was not found.");
+			systemResources.GetMethod ("OnThemeChanged", staticNonPublic)?.Invoke (null, null);
+			SetTheme ("Classic");
+			systemResources.GetMethod ("FindThemeStyle", staticNonPublic)?.Invoke (null, new object [] { DependencyObjectType.FromSystemType (typeof (Button)) });
+			var source = new ResourceDictionary { Source = new Uri ("pack://application:,,,/PresentationFramework.Theme;component/theme.withtransition.xaml", UriKind.RelativeOrAbsolute) };
+			var themedProperty = systemResources.GetProperty ("ThemedResourceDictionaries", staticNonPublic);
+			var themedDictionaries = themedProperty?.GetValue (null, null) as System.Collections.IEnumerable;
+			if (themedDictionaries == null) throw new InvalidOperationException ("Themed dictionaries were not available.");
+			foreach (var info in themedDictionaries)
+			{
+				if (info == null) continue;
+				var dictionaryProperty = info.GetType ().GetProperty ("ResourceDictionary");
+				var target = dictionaryProperty?.GetValue (info, null) as ResourceDictionary;
+				if (target != null) CopyResources (source, target);
+			}
+			ClearStaticDictionary (systemResources, "_themeStyleCache", staticNonPublic);
+			ClearStaticDictionary (systemResources, "_resourceCache", staticNonPublic);
+		}
+		private static void ApplyThemeAsAppDictionary ()
+		{
+			var mergedDictionaries = Application.Current.Resources.MergedDictionaries;
+			if (mergedDictionaries.Count == 0) mergedDictionaries.Add (new ResourceDictionary ());
+			while (mergedDictionaries.Count < 2) mergedDictionaries.Add (new ResourceDictionary ());
+			var rd = new ResourceDictionary ();
+			try
+			{
+				rd.Source = new Uri ("pack://application:,,,/PresentationFramework.Theme;component/theme.withtransition.xaml", UriKind.RelativeOrAbsolute);
+			}
+			catch
+			{
+				rd = new ResourceDictionary ();
+				rd.Source = new Uri ("pack://application:,,,/PresentationFramework.Theme;component/theme.xaml", UriKind.RelativeOrAbsolute);
+			}
+			mergedDictionaries [1] = rd;
+		}
+		private static void CopyResources (ResourceDictionary source, ResourceDictionary target)
+		{
+			foreach (var key in source.Keys) target [key] = source [key];
+			foreach (ResourceDictionary merged in source.MergedDictionaries) CopyResources (merged, target);
+		}
+		private static void ClearStaticDictionary (Type type, string fieldName, BindingFlags flags)
+		{
+			var field = type.GetField (fieldName, flags);
+			var dictionary = field?.GetValue (null) as System.Collections.IDictionary;
+			dictionary?.Clear ();
 		}
 		enum WindowsXPVisualStyle
 		{
@@ -262,7 +391,9 @@ namespace Sidebar
 			Royale,
 			Classic,
 			Aero,
+			XPTheme,
 			Others
 		}
+		#endregion
 	}
 }

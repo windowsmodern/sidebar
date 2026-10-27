@@ -31,7 +31,7 @@
 		</ContextMenu>
 	</Window.ContextMenu>
 	<Grid>
-		<Grid Name="SidebarView">
+		<Grid Name="SidebarView" Loaded="SidebarView_Loaded">
 			<Control Style="{DynamicResource SidebarBackground}" />
 			<Grid>
 				<Button Name="TopOptionsButton" Click="TopOptionsButton_Click" Style="{DynamicResource SidebarOptionsTop}" Focusable="False"/>

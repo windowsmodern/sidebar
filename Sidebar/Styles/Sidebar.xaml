@@ -443,6 +443,6 @@
 	</Style>
 	<Storyboard x:Key="SidebarWindowLoaded"></Storyboard>
 	<Storyboard x:Key="SidebarShowTaskbarTiles">
-		<DoubleAnimation Storyboard.TargetName="TaskbarTiles" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.5"></DoubleAnimation>
+		<DoubleAnimation Storyboard.TargetName="TaskbarTiles" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.8"></DoubleAnimation>
 	</Storyboard>
 </ResourceDictionary>
