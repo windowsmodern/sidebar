@@ -220,14 +220,15 @@ namespace Sidebar
 					}
 					break;
 				case WpfTheme.XPTheme:
-					try
-					{
-						ApplyXpThemeToSystemBottom ();
-					}
-					catch
-					{
-						ApplyThemeAsAppDictionary ();
-					}
+					mergedDictionaries [1] = new ResourceDictionary ();
+					//try
+					//{
+					//	ApplyXpThemeToSystemBottom ();
+					//}
+					//catch
+					//{
+					//	ApplyThemeAsAppDictionary ();
+					//}
 					break;
 			}
 		}

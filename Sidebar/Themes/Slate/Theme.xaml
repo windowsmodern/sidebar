@@ -5,7 +5,8 @@
 	xmlns:s="clr-namespace:System;assembly=mscorlib"
 	xmlns:po="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
 	xmlns:snt="clr-namespace:Sidebar;assembly=Native"
-	xmlns:pst="clr-namespace:Sidebar.Presentation">
+	xmlns:pst="clr-namespace:Sidebar.Presentation"
+	xmlns:ptswc="clr-namespace:System.Windows.Controls;assembly=PresentationFramework.Theme">
 	<!-- Infomation -->
 	<s:String x:Key="ThemeDisplayName">Slate</s:String>
 	<s:String x:Key="ThemePublisherDisplayName">Windows Modern</s:String>
@@ -33,7 +34,7 @@
 						<Grid.RenderTransform>
 							<ScaleTransform ScaleX="1" />
 						</Grid.RenderTransform>
-						<snt:Slice9Image Source="Images\SidebarBackground.png" SliceThickness="36,0,0,0"></snt:Slice9Image>
+						<ptswc:HackImage Source="Images\SidebarBackground.png" HackThickness="36,0,0,0"></ptswc:HackImage>
 					</Grid>
 					<ControlTemplate.Triggers>
 						<DataTrigger Binding="{StaticResource UtilSidebarIsReversedBinding}" Value="True">
@@ -93,7 +94,7 @@
 		<Setter Property="VerticalAlignment" Value="Top" />
 	</Style>
 	<ControlTemplate x:Key="SidebarOptionsSplliterTemplate" TargetType="Control">
-		<snt:Slice9Image x:Name="RootElement" Source="Images\SplliterNormal.png" FlowDirection="LeftToRight" RenderTransformOrigin="0.5,0.5" SliceThickness="36,0,0,0" Height="2"></snt:Slice9Image>
+		<ptswc:HackImage x:Name="RootElement" Source="Images\SplliterNormal.png" FlowDirection="LeftToRight" RenderTransformOrigin="0.5,0.5" HackThickness="36,0,0,0" Height="2"></ptswc:HackImage>
 		<ControlTemplate.Triggers>
 			<DataTrigger Binding="{StaticResource UtilSidebarIsReversedBinding}" Value="True">
 				<Setter TargetName="RootElement" Property="RenderTransform">
@@ -143,7 +144,7 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="Control">
-					<snt:Slice9Image x:Name="BackgroundImage" Source="Images\Taskbar.png" SliceThickness="0,5,0,0" RenderTransformOrigin="0.5,0.5"></snt:Slice9Image>
+					<ptswc:HackImage x:Name="BackgroundImage" Source="Images\Taskbar.png" HackThickness="0,5,0,0" RenderTransformOrigin="0.5,0.5"></ptswc:HackImage>
 					<ControlTemplate.Triggers>
 						<DataTrigger Binding="{StaticResource UtilSystemIsTaskbarTopBinding}" Value="True">
 							<Setter TargetName="BackgroundImage" Property="RenderTransform">
@@ -285,6 +286,8 @@
 		<Setter Property="VerticalAlignment" Value="Top" />
 		<Setter Property="Template" Value="{DynamicResource SidebarOptionsSplliterTemplate}"></Setter>
 	</Style>
+	<BitmapImage x:Key="ItemHoverImage" UriSource="Images\ItemHover.png" CacheOption="OnLoad" />
+	<BitmapImage x:Key="ItemActiveImage" UriSource="Images\ItemActive.png" CacheOption="OnLoad" />
 	<Style x:Key="SidebarOverflowTilesControl" TargetType="ItemsControl">
 		<Setter Property="FlowDirection" Value="RightToLeft"></Setter>
 		<Setter Property="DockPanel.Dock" Value="Bottom"></Setter>
@@ -312,8 +315,7 @@
 						<Button.Template>
 							<ControlTemplate TargetType="Button">
 								<Grid FlowDirection="LeftToRight">
-									<snt:Slice9Image x:Name="Hover" Source="Images\ItemHover.png" SliceThickness="3" Opacity="0"></snt:Slice9Image>
-									<snt:Slice9Image x:Name="Active" Source="Images\ItemActive.png" SliceThickness="3" Opacity="0"></snt:Slice9Image>
+									<ptswc:HackImage x:Name="State" Source="{StaticResource ItemHoverImage}" HackThickness="3" Opacity="0" ptswc:HackImageTransitions.Duration="0:0:0.15" />
 									<Image Source="{TemplateBinding Content}" Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center" />
 								</Grid>
 								<ControlTemplate.Triggers>
@@ -321,33 +323,23 @@
 										<Trigger.EnterActions>
 											<BeginStoryboard>
 												<Storyboard>
-													<DoubleAnimation Storyboard.TargetName="Hover" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.15" />
+													<DoubleAnimation Storyboard.TargetName="State" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.15" />
 												</Storyboard>
 											</BeginStoryboard>
 										</Trigger.EnterActions>
 										<Trigger.ExitActions>
 											<BeginStoryboard>
 												<Storyboard>
-													<DoubleAnimation Storyboard.TargetName="Hover" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.15" />
+													<DoubleAnimation Storyboard.TargetName="State" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.15" />
 												</Storyboard>
 											</BeginStoryboard>
 										</Trigger.ExitActions>
 									</Trigger>
 									<Trigger Property="IsPressed" Value="True">
-										<Trigger.EnterActions>
-											<BeginStoryboard>
-												<Storyboard>
-													<DoubleAnimation Storyboard.TargetName="Active" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.1" />
-												</Storyboard>
-											</BeginStoryboard>
-										</Trigger.EnterActions>
-										<Trigger.ExitActions>
-											<BeginStoryboard>
-												<Storyboard>
-													<DoubleAnimation Storyboard.TargetName="Active" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.1" />
-												</Storyboard>
-											</BeginStoryboard>
-										</Trigger.ExitActions>
+										<Setter TargetName="State" Property="ptswc:HackImageTransitions.To" Value="{StaticResource ItemActiveImage}" />
+									</Trigger>
+									<Trigger Property="IsPressed" Value="False">
+										<Setter TargetName="State" Property="ptswc:HackImageTransitions.To" Value="{StaticResource ItemHoverImage}" />
 									</Trigger>
 								</ControlTemplate.Triggers>
 							</ControlTemplate>
@@ -359,11 +351,12 @@
 	</Style>
 	
 	<!-- Tile -->
+	<BitmapImage x:Key="TileSplitterNormalImage" UriSource="Images/SplliterNormal.png"></BitmapImage>
+	<BitmapImage x:Key="TileSplitterHoverImage" UriSource="Images/SplliterHover.png"></BitmapImage>
 	<ControlTemplate x:Key="TileSplliterTemplate" TargetType="Control">
 		<Grid x:Name="RootElement" RenderTransformOrigin="0.5,0.5" Background="{TemplateBinding Background}">
 			<Grid VerticalAlignment="Bottom">
-				<snt:Slice9Image x:Name="Normal" Source="Images\SplliterNormal.png" FlowDirection="LeftToRight" RenderTransformOrigin="0.5,0.5" SliceThickness="36,0,0,0" Height="2"></snt:Slice9Image>
-				<snt:Slice9Image x:Name="Active" Source="Images\SplliterHover.png" FlowDirection="LeftToRight" RenderTransformOrigin="0.5,0.5" SliceThickness="36,0,0,0" Height="2" Opacity="0"></snt:Slice9Image>
+				<ptswc:HackImage x:Name="State" Source="{StaticResource TileSplitterNormalImage}" FlowDirection="LeftToRight" RenderTransformOrigin="0.5,0.5" HackThickness="36,0,0,0" Height="2" ptswc:HackImageTransitions.Duration="0:0:0.15" />
 			</Grid>
 		</Grid>
 		<ControlTemplate.Triggers>
@@ -375,20 +368,10 @@
 				</Setter>
 			</DataTrigger>
 			<Trigger Property="IsMouseOver" Value="True">
-				<Trigger.EnterActions>
-					<BeginStoryboard>
-						<Storyboard>
-							<DoubleAnimation Storyboard.TargetName="Active" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.15"/>
-						</Storyboard>
-					</BeginStoryboard>
-				</Trigger.EnterActions>
-				<Trigger.ExitActions>
-					<BeginStoryboard>
-						<Storyboard>
-							<DoubleAnimation Storyboard.TargetName="Active" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.15"/>
-						</Storyboard>
-					</BeginStoryboard>
-				</Trigger.ExitActions>
+				<Setter TargetName="State" Property="ptswc:HackImageTransitions.To" Value="{StaticResource TileSplitterHoverImage}" />
+			</Trigger>
+			<Trigger Property="IsMouseOver" Value="False">
+				<Setter TargetName="State" Property="ptswc:HackImageTransitions.To" Value="{StaticResource TileSplitterNormalImage}" />
 			</Trigger>
 		</ControlTemplate.Triggers>
 	</ControlTemplate>
@@ -580,9 +563,9 @@
 		<Setter Property="Background" Value="#070707" />
 		<Setter Property="CornerRadius" Value="5" />
 	</Style>
-	<Style x:Key="NotificationBackgroundImageSlice9" TargetType="snt:Slice9Image">
+	<Style x:Key="NotificationBackgroundImageSlice9" TargetType="ptswc:HackBorder">
 		<Setter Property="Source" Value="Images\NotificationHighlight.png" />
-		<Setter Property="SliceThickness" Value="7,6" />
+		<Setter Property="HackThickness" Value="7,6" />
 	</Style>
 	<Style x:Key="NotificationBackgroundHighlight" TargetType="Border">
 		<Setter Property="Visibility" Value="Collapsed" />
@@ -711,10 +694,10 @@
 		<Setter Property="Margin" Value="3" />
 		<Setter Property="Cursor" Value="Hand" />
 	</Style>
-	<Style x:Key="NotificationTextAreaBackgroundImageSlice9" TargetType="snt:Slice9Image">
+	<Style x:Key="NotificationTextAreaBackgroundImageSlice9" TargetType="ptswc:HackBorder">
 		<Setter Property="Margin" Value="16,15,5,0" />
 		<Setter Property="Source" Value="Images\TextBlock.png" />
-		<Setter Property="SliceThickness" Value="7" />
+		<Setter Property="HackThickness" Value="7" />
 	</Style>
 	<Style x:Key="NotificationTimeout" TargetType="Control">
 		<Setter Property="Width" Value="5" />
@@ -724,7 +707,7 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate>
-					<snt:Slice9Image SliceThickness="0,10,0,0" Source="Images\NotificationTimeout.png" />
+					<ptswc:HackBorder HackThickness="0,10,0,0" Source="Images\NotificationTimeout.png" />
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
@@ -1100,8 +1083,7 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="Button">
 					<Grid Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
-						<snt:Slice9Image x:Name="HoverImage" Opacity="0" SliceThickness="4" Source="{DynamicResource TileIconItemHoverImage}" />
-						<snt:Slice9Image x:Name="PressedImage" Opacity="0" SliceThickness="4" Source="{DynamicResource TileIconItemActiveImage}" />
+						<ptswc:HackImage x:Name="State" HackThickness="4" ptswc:HackImageTransitions.Duration="0:0:0.15" />
 						<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
 					</Grid>
 					<ControlTemplate.Triggers>
@@ -1110,10 +1092,17 @@
 								<Condition Property="IsMouseOver" Value="True" />
 								<Condition Property="IsPressed" Value="False" />
 							</MultiTrigger.Conditions>
-							<Setter TargetName="HoverImage" Property="Opacity" Value="1" />
+							<Setter TargetName="State" Property="ptswc:HackImageTransitions.To" Value="{DynamicResource TileIconItemHoverImage}" />
+						</MultiTrigger>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsMouseOver" Value="False" />
+								<Condition Property="IsPressed" Value="False" />
+							</MultiTrigger.Conditions>
+							<Setter TargetName="State" Property="ptswc:HackImageTransitions.To" Value="{x:Null}" />
 						</MultiTrigger>
 						<Trigger Property="IsPressed" Value="True">
-							<Setter TargetName="PressedImage" Property="Opacity" Value="1" />
+							<Setter TargetName="State" Property="ptswc:HackImageTransitions.To" Value="{DynamicResource TileIconItemActiveImage}" />
 						</Trigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>
@@ -1131,8 +1120,7 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="Button">
 					<Grid Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
-						<snt:Slice9Image x:Name="HoverImage" Opacity="0" SliceThickness="4" Source="{DynamicResource TileIconItemHoverImage}" />
-						<snt:Slice9Image x:Name="PressedImage" Opacity="0" SliceThickness="4" Source="{DynamicResource TileIconItemActiveImage}" />
+						<ptswc:HackImage x:Name="State" HackThickness="4" ptswc:HackImageTransitions.Duration="0:0:0.15" />
 						<ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center" Margin="{TemplateBinding Padding}" />
 					</Grid>
 					<ControlTemplate.Triggers>
@@ -1141,10 +1129,17 @@
 								<Condition Property="IsMouseOver" Value="True" />
 								<Condition Property="IsPressed" Value="False" />
 							</MultiTrigger.Conditions>
-							<Setter TargetName="HoverImage" Property="Opacity" Value="1" />
+							<Setter TargetName="State" Property="ptswc:HackImageTransitions.To" Value="{DynamicResource TileIconItemHoverImage}" />
+						</MultiTrigger>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsMouseOver" Value="False" />
+								<Condition Property="IsPressed" Value="False" />
+							</MultiTrigger.Conditions>
+							<Setter TargetName="State" Property="ptswc:HackImageTransitions.To" Value="{x:Null}" />
 						</MultiTrigger>
 						<Trigger Property="IsPressed" Value="True">
-							<Setter TargetName="PressedImage" Property="Opacity" Value="1" />
+							<Setter TargetName="State" Property="ptswc:HackImageTransitions.To" Value="{DynamicResource TileIconItemActiveImage}" />
 						</Trigger>
 					</ControlTemplate.Triggers>
 				</ControlTemplate>

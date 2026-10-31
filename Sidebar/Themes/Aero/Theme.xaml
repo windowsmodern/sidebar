@@ -3,7 +3,8 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:local="clr-namespace:Sidebar"
 	xmlns:s="clr-namespace:System;assembly=mscorlib"
-	xmlns:snt="clr-namespace:Sidebar;assembly=Native">
+	xmlns:snt="clr-namespace:Sidebar;assembly=Native"
+	xmlns:ptswc="clr-namespace:System.Windows.Controls;assembly=PresentationFramework.Theme">
 	<!-- Infomation -->
 	<s:String x:Key="ThemeDisplayName">Aero</s:String>
 	<s:String x:Key="ThemePublisherDisplayName">Windows Modern</s:String>
@@ -184,7 +185,7 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="Control">
-					<snt:Slice9Image x:Name="BackgroundImage" Source="Images\Taskbar.png" SliceThickness="0,1,0,0" RenderTransformOrigin="0.5,0.5"></snt:Slice9Image>
+					<ptswc:HackBorder x:Name="BackgroundImage" Source="Images\Taskbar.png" HackThickness="0,1,0,0" RenderTransformOrigin="0.5,0.5"></ptswc:HackBorder>
 					<ControlTemplate.Triggers>
 						<DataTrigger Binding="{StaticResource UtilSystemIsTaskbarTopBinding}" Value="True">
 							<Setter TargetName="BackgroundImage" Property="RenderTransform">
@@ -346,8 +347,8 @@
 						<Button.Template>
 							<ControlTemplate TargetType="Button">
 								<Grid FlowDirection="LeftToRight">
-									<snt:Slice9Image x:Name="Hover" Source="Images\ItemHover.png" SliceThickness="3" Opacity="0"></snt:Slice9Image>
-									<snt:Slice9Image x:Name="Active" Source="Images\ItemActive.png" SliceThickness="3" Opacity="0"></snt:Slice9Image>
+									<ptswc:HackImage x:Name="Hover" Source="Images\ItemHover.png" HackThickness="3" Opacity="0"></ptswc:HackImage>
+									<ptswc:HackImage x:Name="Active" Source="Images\ItemActive.png" HackThickness="3" Opacity="0"></ptswc:HackImage>
 									<Image Source="{TemplateBinding Content}" Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center" />
 								</Grid>
 								<ControlTemplate.Triggers>
@@ -580,9 +581,9 @@
 		<Setter Property="Background" Value="#070707" />
 		<Setter Property="CornerRadius" Value="5" />
 	</Style>
-	<Style x:Key="NotificationBackgroundImageSlice9" TargetType="snt:Slice9Image">
+	<Style x:Key="NotificationBackgroundImageSlice9" TargetType="ptswc:HackBorder">
 		<Setter Property="Source" Value="Images\NotificationHighlight.png" />
-		<Setter Property="SliceThickness" Value="7,6" />
+		<Setter Property="HackThickness" Value="7,6" />
 	</Style>
 	<Style x:Key="NotificationBackgroundHighlight" TargetType="Border">
 		<Setter Property="Visibility" Value="Collapsed" />
@@ -711,10 +712,10 @@
 		<Setter Property="Margin" Value="3" />
 		<Setter Property="Cursor" Value="Hand" />
 	</Style>
-	<Style x:Key="NotificationTextAreaBackgroundImageSlice9" TargetType="snt:Slice9Image">
+	<Style x:Key="NotificationTextAreaBackgroundImageSlice9" TargetType="ptswc:HackBorder">
 		<Setter Property="Margin" Value="16,15,5,0" />
 		<Setter Property="Source" Value="Images\TextBlock.png" />
-		<Setter Property="SliceThickness" Value="7" />
+		<Setter Property="HackThickness" Value="7" />
 	</Style>
 	<Style x:Key="NotificationTimeout" TargetType="Control">
 		<Setter Property="Width" Value="5" />
@@ -724,7 +725,7 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate>
-					<snt:Slice9Image SliceThickness="0,10,0,0" Source="Images\NotificationTimeout.png" />
+					<ptswc:HackBorder HackThickness="0,10,0,0" Source="Images\NotificationTimeout.png" />
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
@@ -808,8 +809,8 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="Button">
 					<Grid Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
-						<snt:Slice9Image x:Name="HoverImage" Opacity="0" SliceThickness="4" Source="{DynamicResource TileIconItemHoverImage}" />
-						<snt:Slice9Image x:Name="PressedImage" Opacity="0" SliceThickness="4" Source="{DynamicResource TileIconItemActiveImage}" />
+						<ptswc:HackImage x:Name="HoverImage" Opacity="0" HackThickness="4" Source="{DynamicResource TileIconItemHoverImage}" />
+						<ptswc:HackImage x:Name="PressedImage" Opacity="0" HackThickness="4" Source="{DynamicResource TileIconItemActiveImage}" />
 						<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
 					</Grid>
 					<ControlTemplate.Triggers>
@@ -839,8 +840,8 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="Button">
 					<Grid Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
-						<snt:Slice9Image x:Name="HoverImage" Opacity="0" SliceThickness="4" Source="{DynamicResource TileIconItemHoverImage}" />
-						<snt:Slice9Image x:Name="PressedImage" Opacity="0" SliceThickness="4" Source="{DynamicResource TileIconItemActiveImage}" />
+						<ptswc:HackImage x:Name="HoverImage" Opacity="0" HackThickness="4" Source="{DynamicResource TileIconItemHoverImage}" />
+						<ptswc:HackImage x:Name="PressedImage" Opacity="0" HackThickness="4" Source="{DynamicResource TileIconItemActiveImage}" />
 						<ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center" Margin="{TemplateBinding Padding}" />
 					</Grid>
 					<ControlTemplate.Triggers>

@@ -2,7 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					xmlns:pres="clr-namespace:Sidebar.Presentation"
 					xmlns:snt="clr-namespace:Sidebar;assembly=Native"
-                    xmlns:local="clr-namespace:Sidebar">
+                    xmlns:local="clr-namespace:Sidebar"
+					xmlns:ptswc="clr-namespace:System.Windows.Controls;assembly=PresentationFramework.Theme">
 	<!--  Notification  -->
 	<Style x:Key="NotificationWindow" TargetType="Window">
 		<Setter Property="MinWidth" Value="152" />
@@ -21,7 +22,7 @@
 		<!-- <Setter Property="Background" Value="{Binding ThemeBrush, Source={x:Static pres:DwmThemeProvider.Instance}}" /> -->
 		<Setter Property="CornerRadius" Value="5" />
 	</Style>
-	<Style x:Key="NotificationBackgroundImageSlice9" TargetType="snt:Slice9Image">
+	<Style x:Key="NotificationBackgroundImageSlice9" TargetType="ptswc:HackBorder">
 		<Setter Property="Visibility" Value="Collapsed" />
 	</Style>
 	<Style x:Key="NotificationBackgroundHighlight" TargetType="Border">
@@ -227,8 +228,14 @@
 		<Setter Property="Margin" Value="0" />
 		<Setter Property="Cursor" Value="Hand" />
 	</Style>
-	<Style x:Key="NotificationTextAreaBackgroundImageSlice9" TargetType="snt:Slice9Image">
+	<Style x:Key="NotificationTextAreaBackgroundImageSlice9" TargetType="ptswc:HackBorder">
 		<Setter Property="Visibility" Value="Collapsed" />
+	</Style>
+	<Style x:Key="NotificationBackgroundCustomControl" TargetType="Control">
+		<Setter Property="Visibility" Value="Collapsed"></Setter>
+	</Style>
+	<Style x:Key="NotificationTextAreaCustomControl" TargetType="Control">
+		<Setter Property="Visibility" Value="Collapsed"></Setter>
 	</Style>
 	<Style x:Key="NotificationTimeout" TargetType="Control">
 		<Setter Property="Background" Value="#B2FF8B25" />

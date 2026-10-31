@@ -1221,6 +1221,18 @@ namespace Sidebar
 		public static extern bool EnumWindows (EnumWindowsProc lpEnumFunc, IntPtr lParam);
 		[DllImport ("gdi32.dll", SetLastError = true)]
 		public static extern IntPtr CreateRoundRectRgn (int nLeftRect, int nTopRect, int nRightRect, int nBottomRect, int nWidthEllipse, int nHeightEllipse);
+		/// <summary>获取窗口所在显示器的 DPI（Win10 1607+）。旧系统调用会抛 EntryPointNotFoundException。</summary>
+		[DllImport ("user32.dll", SetLastError = true)]
+		public static extern uint GetDpiForWindow (IntPtr hwnd);
+		/// <summary>获取窗口设备上下文（旧系统回退方案）。[Windows XP: 兼容]</summary>
+		[DllImport ("user32.dll")]
+		public static extern IntPtr GetDC (IntPtr hWnd);
+		/// <summary>释放设备上下文。[Windows XP: 兼容]</summary>
+		[DllImport ("user32.dll")]
+		public static extern int ReleaseDC (IntPtr hWnd, IntPtr hDC);
+		/// <summary>获取设备能力（如 DPI）。LOGPIXELSX = 88。[Windows XP: 兼容]</summary>
+		[DllImport ("gdi32.dll")]
+		public static extern int GetDeviceCaps (IntPtr hdc, int nIndex);
 	}
 	public static class HWndExtraMethods
 	{

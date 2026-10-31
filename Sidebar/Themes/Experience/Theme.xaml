@@ -3,7 +3,8 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:local="clr-namespace:Sidebar"
 	xmlns:s="clr-namespace:System;assembly=mscorlib"
-	xmlns:snt="clr-namespace:Sidebar;assembly=Native">
+	xmlns:snt="clr-namespace:Sidebar;assembly=Native"
+	xmlns:mwt="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Theme">
 	<!-- Includes -->
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="pack://application:,,,/PresentationFramework.Theme;component/theme.withtransition.xaml"></ResourceDictionary>
@@ -17,10 +18,21 @@
 	<s:Boolean x:Key="EnableNotificationBlur">false</s:Boolean>
 	<s:Boolean x:Key="EnableNotificationClipRound">false</s:Boolean>
 	<!--  Styles  -->
-	<SolidColorBrush x:Key="GlobalForegroundBrush" Color="{Binding Color, Source={StaticResource ThemeTaskbarForegroundBrush}}"></SolidColorBrush>
+	<Border x:Key="TaskbarForegroundProxy" Tag="{DynamicResource ThemeTaskbarForegroundBrush}" />
+	<SolidColorBrush x:Key="GlobalForegroundBrush" Color="{Binding Tag.Color, Source={StaticResource TaskbarForegroundProxy}}" />
 	<s:Double x:Key="GlobalFontSize">10</s:Double>
 	<s:Double x:Key="GlobalNormalFontSize">10</s:Double>
 	<s:Double x:Key="GlobalNormalFontSizeSmall">9</s:Double>
+	<Style x:Key="GlobalControlTextDisplay" TargetType="Control">
+		<Setter Property="FontFamily" Value="{DynamicResource GlobalFontFamily}" />
+		<Setter Property="Foreground" Value="{DynamicResource ThemeTaskbarForegroundBrush}" />
+		<Setter Property="FontSize" Value="{DynamicResource GlobalFontSize}" />
+	</Style>
+	<Style x:Key="GlobalTextBlockTextDisplay" TargetType="TextBlock">
+		<Setter Property="FontFamily" Value="{DynamicResource GlobalFontFamily}" />
+		<Setter Property="Foreground" Value="{DynamicResource ThemeTaskbarForegroundBrush}" />
+		<Setter Property="FontSize" Value="{DynamicResource GlobalFontSize}" />
+	</Style>
 	<!-- Sidebar -->
 	<Style x:Key="SidebarBackground" TargetType="Control">
 		<Setter Property="Template">
@@ -45,11 +57,70 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
+	<Style x:Key="SidebarOptionsTop" TargetType="Control">
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Control">
+					<Grid Background="{TemplateBinding Background}">
+						<StackPanel Name="OptionsBar" Height="{TemplateBinding Height}" HorizontalAlignment="Right" VerticalAlignment="Center" ClipToBounds="True" Orientation="Horizontal">
+							<TextBlock x:Name="OptionsText" VerticalAlignment="Center" FontFamily="{DynamicResource GlobalFontFamily}" FontSize="10" Foreground="{DynamicResource GlobalForegroundBrush}" Opacity="0" Text="{DynamicResource UtilStringSidebarOptions}"></TextBlock>
+							<Polygon Name="TopOptionsIcon" VerticalAlignment="Center" Points="0,0 3.5,3.5 7,0" Opacity="0.45" Stroke="#FDFFFFFF" StrokeThickness="1" Fill="White" Margin="2,1,2,0" RenderTransformOrigin="0.556,0.9" SnapsToDevicePixels="True" UseLayoutRounding="True" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" />
+						</StackPanel>
+					</Grid>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Trigger.EnterActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation Storyboard.TargetName="OptionsText" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2" />
+										<DoubleAnimation Storyboard.TargetName="TopOptionsIcon" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2" />
+									</Storyboard>
+								</BeginStoryboard>
+							</Trigger.EnterActions>
+							<Trigger.ExitActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation Storyboard.TargetName="OptionsText" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2" />
+										<DoubleAnimation Storyboard.TargetName="TopOptionsIcon" Storyboard.TargetProperty="Opacity" To="0.45" Duration="0:0:0.2" />
+									</Storyboard>
+								</BeginStoryboard>
+							</Trigger.ExitActions>
+						</Trigger>
+						<DataTrigger Binding="{StaticResource UtilSidebarIsReversedBinding}" Value="True">
+							<Setter TargetName="OptionsBar" Property="HorizontalAlignment" Value="Left" />
+							<Setter TargetName="OptionsBar" Property="FlowDirection" Value="RightToLeft" />
+						</DataTrigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="Height" Value="20" />
+		<Setter Property="VerticalAlignment" Value="Top" />
+	</Style>
+	<Style x:Key="SidebarOptionsSplliter" TargetType="Control">
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="Height" Value="2" />
+		<Setter Property="VerticalAlignment" Value="Top" />
+		<Setter Property="Margin" Value="0,20,0,0" />
+		<Setter Property="Opacity" Value="0.3"></Setter>
+		<Setter Property="Template" Value="{DynamicResource ThemeTaskbarSizingBarBottomTemplate}"></Setter>
+	</Style>
+	<Style x:Key="SidebarOverflowPartSplliter" TargetType="Control">
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="Height" Value="2" />
+		<Setter Property="VerticalAlignment" Value="Top" />
+		<Setter Property="Opacity" Value="0.3"></Setter>
+		<Setter Property="Template" Value="{DynamicResource ThemeTaskbarSizingBarBottomTemplate}"></Setter>
+	</Style>
+	<Style x:Key="SidebarTilesRegion" TargetType="DockPanel">
+		<Setter Property="Margin" Value="0,22,0,0" />
+	</Style>
 	<Style x:Key="SidebarTaskbarTrayBackground" TargetType="Control">
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="Control">
-					<Control x:Name="BackgroundImage" Template="{DynamicResource ThemeTaskbarSizingBarBottomTemplate}"></Control>
+					<Control x:Name="BackgroundImage" Template="{DynamicResource ThemeTaskbarBackgroundBottomBorderTemplate}"></Control>
 					<ControlTemplate.Triggers>
 						<DataTrigger Binding="{StaticResource UtilSystemIsTaskbarTopBinding}" Value="True">
 							<Setter TargetName="BackgroundImage" Property="RenderTransform">
@@ -63,4 +134,128 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
+	<!-- Tile -->
+	<Style x:Key="TileSplliter" TargetType="Thumb">
+		<Setter Property="DockPanel.Dock" Value="Bottom"></Setter>
+		<Setter Property="Height" Value="4"></Setter>
+		<Setter Property="Cursor" Value="SizeNS" />
+		<Setter Property="Background" Value="Transparent"></Setter>
+		<Setter Property="Opacity" Value="0.3"></Setter>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Control">
+					<Grid>
+						<Control Template="{DynamicResource ThemeTaskbarSizingBarBottomTemplate}" VerticalAlignment="Center"></Control>
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+		<Style.Triggers>
+			<DataTrigger Binding="{Binding IsPinned, ElementName=RootTileElement}" Value="True">
+				<Setter Property="DockPanel.Dock" Value="Top"/>
+			</DataTrigger>
+			<Trigger Property="IsMouseOver" Value="True">
+				<Trigger.EnterActions>
+					<BeginStoryboard>
+						<Storyboard>
+							<DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2" />
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.EnterActions>
+				<Trigger.ExitActions>
+					<BeginStoryboard>
+						<Storyboard>
+							<DoubleAnimation Storyboard.TargetProperty="Opacity" To="0.5" Duration="0:0:0.2" />
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.ExitActions>
+			</Trigger>
+		</Style.Triggers>
+	</Style>
+	<!-- Flyout -->
+	<ControlTemplate x:Key="FlyoutBackgroundTemplate" TargetType="Control">
+		<Grid Background="Transparent" ClipToBounds="True">
+			<Control Template="{DynamicResource ThemeNormalWindowBorderTemplate}" />
+			<Control Template="{DynamicResource ThemeWindowContentBackgroundTemplate}" Margin="{DynamicResource ThemeNormalWindowContentMargin}" />
+		</Grid>
+	</ControlTemplate>
+	<Style x:Key="FlyoutBackground" TargetType="Control">
+		<Setter Property="Template" Value="{DynamicResource FlyoutBackgroundTemplate}"></Setter>
+	</Style>
+	<Style x:Key="FlyoutHeader" TargetType="Control">
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="Height" Value="{DynamicResource ThemeNormalWindowTitleHeight}" />
+		<Setter Property="Margin" Value="{DynamicResource ThemeNormalWindowTitleMargin}" />
+		<Setter Property="VerticalAlignment" Value="Top" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Control">
+					<Grid Background="{TemplateBinding Background}">
+						<StackPanel x:Name="OptionsBar" HorizontalAlignment="Right" VerticalAlignment="Center" ClipToBounds="True" Orientation="Horizontal" Margin="4,0">
+							<TextBlock x:Name="OptionsText" VerticalAlignment="Center" FontFamily="{DynamicResource GlobalFontFamily}" FontSize="{DynamicResource ThemeNormalWindowTitleFontSize}" Foreground="{DynamicResource ThemeNormalWindowForegroundBrush}" Text="{DynamicResource UtilStringSidebarOptions}" Margin="3,0"  Opacity="0"/>
+							<Polygon Name="TopOptionsIcon" VerticalAlignment="Center" Points="0,0 3.5,3.5 7,0" Opacity="0.45" Fill="White" StrokeThickness="1" Stroke="{DynamicResource ThemeNormalWindowForegroundBrush}" Margin="4,0" RenderTransformOrigin="0.556,0.9" SnapsToDevicePixels="True" UseLayoutRounding="True" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" />
+						</StackPanel>
+					</Grid>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Trigger.EnterActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation Storyboard.TargetName="OptionsText" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2" />
+										<DoubleAnimation Storyboard.TargetName="TopOptionsIcon" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2" />
+									</Storyboard>
+								</BeginStoryboard>
+							</Trigger.EnterActions>
+							<Trigger.ExitActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation Storyboard.TargetName="OptionsText" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2" />
+										<DoubleAnimation Storyboard.TargetName="TopOptionsIcon" Storyboard.TargetProperty="Opacity" To="0.45" Duration="0:0:0.2" />
+									</Storyboard>
+								</BeginStoryboard>
+							</Trigger.ExitActions>
+						</Trigger>
+						<DataTrigger Binding="{StaticResource UtilSidebarIsReversedBinding}" Value="True">
+							<Setter TargetName="OptionsBar" Property="HorizontalAlignment" Value="Left" />
+							<Setter TargetName="OptionsBar" Property="FlowDirection" Value="RightToLeft" />
+						</DataTrigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+	<Style x:Key="FlyoutContentContainer" TargetType="Grid">
+		<Setter Property="Margin" Value="{DynamicResource ThemeNormalWindowContentMargin}" />
+		<Style.Resources>
+			<Style TargetType="TextBlock">
+				<Setter Property="Foreground" Value="{DynamicResource ThemeWindowContentForegroundBrush}" />
+			</Style>
+		</Style.Resources>
+	</Style>
+	<s:Boolean x:Key="FlyoutForceClipRoundWindow">true</s:Boolean>
+	<x:Static x:Key="FlyoutClipRadiusLeftTop" Member="mwt:ThemeWindowMetrics.NormalWindowTopLeftCornerRadius" />
+	<x:Static x:Key="FlyoutClipRadiusLeftBottom" Member="mwt:ThemeWindowMetrics.NormalWindowBottomLeftCornerRadius" />
+	<x:Static x:Key="FlyoutClipRadiusRightTop" Member="mwt:ThemeWindowMetrics.NormalWindowTopRightCornerRadius" />
+	<x:Static x:Key="FlyoutClipRadiusRightBottom" Member="mwt:ThemeWindowMetrics.NormalWindowBottomRightCornerRadius" />
+	<!-- Tiles -->
+	<!--  Tray  -->
+	<Style x:Key="TileIconItemForTrayTile" BasedOn="{StaticResource TileIconItemButtonStyle}" TargetType="Button">
+		<Setter Property="Width" Value="24" />
+		<Setter Property="Height" Value="24" />
+	</Style>
+	<Style x:Key="TileIconItemWithTextForTrayTile" TargetType="Button" BasedOn="{StaticResource TileIconItemWithTextButtonStyle}">
+		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+		<Setter Property="Height" Value="Auto" />
+		<Setter Property="Cursor" Value="Hand" />
+		<Setter Property="FocusVisualStyle" Value="{x:Null}" />
+	</Style>
+	<ItemsPanelTemplate x:Key="TileIconItemWrapPanelForTrayTile">
+		<WrapPanel HorizontalAlignment="Left" VerticalAlignment="Top" Orientation="Horizontal" />
+	</ItemsPanelTemplate>
+	<!--  QuickLaunch  -->
+	<Style x:Key="TileIconItemForQuickLaunchTile" BasedOn="{StaticResource TileIconItemButtonStyle}" TargetType="Button">
+		<Setter Property="Width" Value="28" />
+		<Setter Property="Height" Value="28" />
+	</Style>
+	<Style x:Key="TileIconItemWithTextForQuickLaunchTile" BasedOn="{StaticResource TileIconItemWithTextButtonStyle}" TargetType="Button" />
 </ResourceDictionary>

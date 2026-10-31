@@ -3,7 +3,8 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:local="clr-namespace:Sidebar"
 	xmlns:s="clr-namespace:System;assembly=mscorlib"
-	xmlns:snt="clr-namespace:Sidebar;assembly=Native">
+	xmlns:snt="clr-namespace:Sidebar;assembly=Native"
+	xmlns:ptswc="clr-namespace:System.Windows.Controls;assembly=PresentationFramework.Theme">
 	<s:String x:Key="ThemeDisplayName">Plex</s:String>
 	<s:String x:Key="ThemePublisherDisplayName">Windows Modern</s:String>
 	<s:String x:Key="ThemeDescription">Plex style in Windows Longhorn.</s:String>
@@ -192,7 +193,7 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="Control">
-					<snt:Slice9Image x:Name="BackgroundImage" Source="Images\Taskbar.png" SliceThickness="0,6,0,0" RenderTransformOrigin="0.5,0.5"></snt:Slice9Image>
+					<ptswc:HackBorder x:Name="BackgroundImage" Source="Images\Taskbar.png" HackThickness="0,6,0,0" RenderTransformOrigin="0.5,0.5"></ptswc:HackBorder>
 					<ControlTemplate.Triggers>
 						<DataTrigger Binding="{StaticResource UtilSystemIsTaskbarTopBinding}" Value="True">
 							<Setter TargetName="BackgroundImage" Property="RenderTransform">
@@ -481,8 +482,8 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="Control">
 					<DockPanel SnapsToDevicePixels="True">
-						<snt:Slice9Image Grid.Row="0" Source="Images\FlyoutBarTop.png" SliceThickness="3" Height="27" DockPanel.Dock="Top"></snt:Slice9Image>
-						<snt:Slice9Image Grid.Row="2" Source="Images\FlyoutBarBottom.png" SliceThickness="3" Height="26" DockPanel.Dock="Bottom"></snt:Slice9Image>
+						<ptswc:HackBorder Grid.Row="0" Source="Images\FlyoutBarTop.png" HackThickness="3" Height="27" DockPanel.Dock="Top"></ptswc:HackBorder>
+						<ptswc:HackBorder Grid.Row="2" Source="Images\FlyoutBarBottom.png" HackThickness="3" Height="26" DockPanel.Dock="Bottom"></ptswc:HackBorder>
 						<Border Grid.Row="1" BorderBrush="#7C8591" BorderThickness="1" DockPanel.Dock="Top">
 							<Border.Background>
 								<ImageBrush ImageSource="Images\FlyoutBody.png"></ImageBrush>
@@ -620,9 +621,9 @@
 		<Setter Property="Background" Value="#5289D6" />
 		<Setter Property="CornerRadius" Value="5" />
 	</Style>
-	<Style x:Key="NotificationBackgroundImageSlice9" TargetType="snt:Slice9Image">
+	<Style x:Key="NotificationBackgroundImageSlice9" TargetType="ptswc:HackBorder">
 		<Setter Property="Source" Value="Images\NotificationHighlight.png" />
-		<Setter Property="SliceThickness" Value="7,6" />
+		<Setter Property="HackThickness" Value="7,6" />
 		<Setter Property="Margin" Value="0,16,0,1" />
 	</Style>
 	<Style x:Key="NotificationBackgroundHighlight" TargetType="Border">
@@ -744,10 +745,10 @@
 		<Setter Property="Margin" Value="3" />
 		<Setter Property="Cursor" Value="Hand" />
 	</Style>
-	<Style x:Key="NotificationTextAreaBackgroundImageSlice9" TargetType="snt:Slice9Image">
+	<Style x:Key="NotificationTextAreaBackgroundImageSlice9" TargetType="ptswc:HackBorder">
 		<Setter Property="Margin" Value="20,19,4,6" />
 		<Setter Property="Source" Value="Images\TextBlock.png" />
-		<Setter Property="SliceThickness" Value="7" />
+		<Setter Property="HackThickness" Value="7" />
 	</Style>
 	<Style x:Key="NotificationTimeout" TargetType="Control">
 		<Setter Property="Width" Value="4" />
@@ -759,7 +760,7 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="Control">
 					<Border Margin="{TemplateBinding Padding}" ClipToBounds="True">
-						<snt:Slice9Image SliceThickness="0,10,0,0" Source="Images\NotificationTimeout.png" />
+						<ptswc:HackBorder HackThickness="0,10,0,0" Source="Images\NotificationTimeout.png" />
 					</Border>
 				</ControlTemplate>
 			</Setter.Value>

@@ -3,9 +3,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:nt="clr-namespace:Sidebar;assembly=Native"
+        xmlns:snt="clr-namespace:Sidebar;assembly=Native"
         xmlns:local="clr-namespace:Sidebar"
         xmlns:pres="clr-namespace:Sidebar.Presentation"
+		xmlns:ptswc="clr-namespace:System.Windows.Controls;assembly=PresentationFramework.Theme"
         x:Name="Root"
         mc:Ignorable="d" ResizeMode="NoResize" WindowStyle="None" Background="{x:Null}" SnapsToDevicePixels="True"
         AllowsTransparency="True" UseLayoutRounding="True"
@@ -62,7 +63,8 @@
 					<Grid>
 						<Border Name="BackgroundBase" Style="{DynamicResource NotificationBaseBackground}"></Border>
 						<Border Name="BackgroundHighlight" Style="{DynamicResource NotificationBackgroundHighlight}"></Border>
-						<nt:Slice9Image Name="BackgroundHighlightImage" Style="{DynamicResource NotificationBackgroundImageSlice9}"></nt:Slice9Image>
+						<ptswc:HackBorder Name="BackgroundHighlightImage" Style="{DynamicResource NotificationBackgroundImageSlice9}"></ptswc:HackBorder>
+						<Control Name="BackgroundAdvanceCustom" Style="{DynamicResource NotificationBackgroundCustomControl}"></Control>
 						<Border Name="BackgroundBorder" Style="{DynamicResource NotificationBorder}"></Border>
 						<StackPanel Name="HeaderBar" Style="{DynamicResource NotificationHeader}" Opacity="0">
 							<Button Name="OptionsButton" Style="{DynamicResource NotificationOptionsButton}" Content="{pres:StringResource SIDEBAR_NOTIFY_OPTIONS}" Click="OptionsButton_Click" ContextMenu="{DynamicResource NotificationOptionsMenu}"></Button>
@@ -86,7 +88,8 @@
 						</Image>
 					</Grid>
 				</Grid>
-				<nt:Slice9Image Name="TextAreaBackgroundImage" Style="{DynamicResource NotificationTextAreaBackgroundImageSlice9}"></nt:Slice9Image>
+				<ptswc:HackBorder Name="TextAreaBackgroundImage" Style="{DynamicResource NotificationTextAreaBackgroundImageSlice9}"></ptswc:HackBorder>
+				<Control Name="TextAreaBackgroundAdvanceCustom" Style="{DynamicResource NotificationTextAreaCustomControl}"></Control>
 				<Border Name="TextAreaBorderOuter" Style="{DynamicResource NotificationTextAreaOuterBorder}">
 					<Border Name="TextAreaBorderInner" Style="{DynamicResource NotificationTextAreaInnerBorder}">
 						<Border Name="TextAreaTextArea" Style="{DynamicResource NotificationTextAreaTextPart}">

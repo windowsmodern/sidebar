@@ -2360,6 +2360,7 @@ namespace Sidebar
 			appBar?.Dispose ();
 			taskbarHelper?.Unregister ();
 			taskbarHelper?.Dispose ();
+			try { sidebarConfWnd?.Close (); } catch { } finally { sidebarConfWnd = null; }
 			DestroySidebarTheme ();
 			DestroyPipeServerSubscribe ();
 			DestroyAeroPeek ();
