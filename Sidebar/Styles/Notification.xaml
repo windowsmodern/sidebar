@@ -276,7 +276,7 @@
 	</Style>
 	<Style x:Key="NotificationTitle" TargetType="TextBlock">
 		<Setter Property="FontFamily" Value="{DynamicResource GlobalFontFamily}" />
-		<Setter Property="FontSize" Value="13" />
+		<Setter Property="FontSize" Value="15" />
 		<Setter Property="Margin" Value="5,5,5,0" />
 		<Setter Property="Effect">
 			<Setter.Value>
@@ -286,7 +286,7 @@
 	</Style>
 	<Style x:Key="NotificationContent" TargetType="TextBlock">
 		<Setter Property="FontFamily" Value="{DynamicResource GlobalFontFamily}" />
-		<Setter Property="FontSize" Value="10" />
+		<Setter Property="FontSize" Value="12" />
 		<Setter Property="FontWeight" Value="Normal" />
 		<Setter Property="Margin" Value="5,3,5,5" />
 		<Setter Property="Effect">

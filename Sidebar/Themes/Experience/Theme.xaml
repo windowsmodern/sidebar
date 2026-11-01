@@ -4,7 +4,8 @@
 	xmlns:local="clr-namespace:Sidebar"
 	xmlns:s="clr-namespace:System;assembly=mscorlib"
 	xmlns:snt="clr-namespace:Sidebar;assembly=Native"
-	xmlns:mwt="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Theme">
+	xmlns:mwt="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Theme"
+	xmlns:ptswc="clr-namespace:System.Windows.Controls;assembly=PresentationFramework.Theme">
 	<!-- Includes -->
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="pack://application:,,,/PresentationFramework.Theme;component/theme.withtransition.xaml"></ResourceDictionary>
@@ -18,8 +19,6 @@
 	<s:Boolean x:Key="EnableNotificationBlur">false</s:Boolean>
 	<s:Boolean x:Key="EnableNotificationClipRound">false</s:Boolean>
 	<!--  Styles  -->
-	<Border x:Key="TaskbarForegroundProxy" Tag="{DynamicResource ThemeTaskbarForegroundBrush}" />
-	<SolidColorBrush x:Key="GlobalForegroundBrush" Color="{Binding Tag.Color, Source={StaticResource TaskbarForegroundProxy}}" />
 	<s:Double x:Key="GlobalFontSize">10</s:Double>
 	<s:Double x:Key="GlobalNormalFontSize">10</s:Double>
 	<s:Double x:Key="GlobalNormalFontSizeSmall">9</s:Double>
@@ -34,6 +33,14 @@
 		<Setter Property="FontSize" Value="{DynamicResource GlobalFontSize}" />
 	</Style>
 	<!-- Sidebar -->
+	<Color x:Key="TileSplliterLineTopFill">#24000000</Color>
+	<Color x:Key="TileSplliterLineBottomFill">#24FFFFFF</Color>
+	<Color x:Key="TileSplliterLineTopFillLighting">#336E6E6E</Color>
+	<Color x:Key="TileSplliterLineBottomFillLighting">#66AFAFAF</Color>
+	<SolidColorBrush x:Key="TileSplliterLineTopFillBrush" Color="{StaticResource TileSplliterLineTopFill}" />
+	<SolidColorBrush x:Key="TileSplliterLineBottomFillBrush" Color="{StaticResource TileSplliterLineBottomFill}" />
+	<SolidColorBrush x:Key="TileSplliterLineTopFillLightingBrush" Color="{StaticResource TileSplliterLineTopFillLighting}" />
+	<SolidColorBrush x:Key="TileSplliterLineBottomFillLightingBrush" Color="{StaticResource TileSplliterLineBottomFillLighting}" />
 	<Style x:Key="SidebarBackground" TargetType="Control">
 		<Setter Property="Template">
 			<Setter.Value>
@@ -43,6 +50,7 @@
 							<ScaleTransform ScaleX="1" />
 						</Grid.RenderTransform>
 						<Control Template="{DynamicResource ThemeTaskbarBackgroundRightTemplate}"></Control>
+						<ptswc:HackImage Source="SidebarHighlight.png" HackThickness="36,0,0,0"></ptswc:HackImage>
 					</Grid>
 					<ControlTemplate.Triggers>
 						<DataTrigger Binding="{StaticResource UtilSidebarIsReversedBinding}" Value="True">
@@ -98,20 +106,32 @@
 		<Setter Property="Height" Value="20" />
 		<Setter Property="VerticalAlignment" Value="Top" />
 	</Style>
+	<ControlTemplate x:Key="SidebarOptionsSplliterTemplate" TargetType="Control">
+		<StackPanel>
+			<Rectangle x:Name="LineTop" Height="1">
+				<Rectangle.Fill>
+					<SolidColorBrush Color="{DynamicResource TileSplliterLineTopFill}" />
+				</Rectangle.Fill>
+			</Rectangle>
+			<Rectangle x:Name="LineBottom" Height="1">
+				<Rectangle.Fill>
+					<SolidColorBrush Color="{DynamicResource TileSplliterLineBottomFill}" />
+				</Rectangle.Fill>
+			</Rectangle>
+		</StackPanel>
+	</ControlTemplate>
 	<Style x:Key="SidebarOptionsSplliter" TargetType="Control">
 		<Setter Property="Background" Value="Transparent" />
 		<Setter Property="Height" Value="2" />
 		<Setter Property="VerticalAlignment" Value="Top" />
-		<Setter Property="Margin" Value="0,20,0,0" />
-		<Setter Property="Opacity" Value="0.3"></Setter>
-		<Setter Property="Template" Value="{DynamicResource ThemeTaskbarSizingBarBottomTemplate}"></Setter>
+		<Setter Property="Margin" Value="0,17,0,0" />
+		<Setter Property="Template" Value="{DynamicResource SidebarOptionsSplliterTemplate}"></Setter>
 	</Style>
 	<Style x:Key="SidebarOverflowPartSplliter" TargetType="Control">
 		<Setter Property="Background" Value="Transparent" />
 		<Setter Property="Height" Value="2" />
 		<Setter Property="VerticalAlignment" Value="Top" />
-		<Setter Property="Opacity" Value="0.3"></Setter>
-		<Setter Property="Template" Value="{DynamicResource ThemeTaskbarSizingBarBottomTemplate}"></Setter>
+		<Setter Property="Template" Value="{DynamicResource SidebarOptionsSplliterTemplate}"></Setter>
 	</Style>
 	<Style x:Key="SidebarTilesRegion" TargetType="DockPanel">
 		<Setter Property="Margin" Value="0,22,0,0" />
@@ -135,44 +155,63 @@
 		</Setter>
 	</Style>
 	<!-- Tile -->
+	<ControlTemplate x:Key="TileSplliterTemplate" TargetType="Control">
+		<Grid x:Name="RootElement" RenderTransformOrigin="0.5,0.5" Background="{TemplateBinding Background}">
+			<Grid VerticalAlignment="Bottom">
+				<StackPanel>
+					<Rectangle x:Name="LineTop" Height="1">
+						<Rectangle.Fill>
+							<SolidColorBrush Color="{DynamicResource TileSplliterLineTopFill}" />
+						</Rectangle.Fill>
+					</Rectangle>
+					<Rectangle x:Name="LineBottom" Height="1">
+						<Rectangle.Fill>
+							<SolidColorBrush Color="{DynamicResource TileSplliterLineBottomFill}" />
+						</Rectangle.Fill>
+					</Rectangle>
+				</StackPanel>
+			</Grid>
+		</Grid>
+		<ControlTemplate.Triggers>
+			<Trigger Property="IsMouseOver" Value="True">
+				<Trigger.EnterActions>
+					<BeginStoryboard x:Name="HoverIn">
+						<Storyboard>
+							<ColorAnimation Storyboard.TargetName="LineTop" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource TileSplliterLineTopFillLighting}" Duration="0:0:0.15" />
+							<ColorAnimation Storyboard.TargetName="LineBottom" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource TileSplliterLineBottomFillLighting}" Duration="0:0:0.15" />
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.EnterActions>
+				<Trigger.ExitActions>
+					<BeginStoryboard x:Name="HoverOut">
+						<Storyboard>
+							<ColorAnimation Storyboard.TargetName="LineTop" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource TileSplliterLineTopFill}" Duration="0:0:0.15" />
+							<ColorAnimation Storyboard.TargetName="LineBottom" Storyboard.TargetProperty="(Rectangle.Fill).(SolidColorBrush.Color)" To="{StaticResource TileSplliterLineBottomFill}" Duration="0:0:0.15" />
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.ExitActions>
+			</Trigger>
+		</ControlTemplate.Triggers>
+	</ControlTemplate>
 	<Style x:Key="TileSplliter" TargetType="Thumb">
 		<Setter Property="DockPanel.Dock" Value="Bottom"></Setter>
 		<Setter Property="Height" Value="4"></Setter>
 		<Setter Property="Cursor" Value="SizeNS" />
 		<Setter Property="Background" Value="Transparent"></Setter>
-		<Setter Property="Opacity" Value="0.3"></Setter>
-		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="Control">
-					<Grid>
-						<Control Template="{DynamicResource ThemeTaskbarSizingBarBottomTemplate}" VerticalAlignment="Center"></Control>
-					</Grid>
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
+		<Setter Property="Template" Value="{DynamicResource TileSplliterTemplate}"></Setter>
 		<Style.Triggers>
 			<DataTrigger Binding="{Binding IsPinned, ElementName=RootTileElement}" Value="True">
 				<Setter Property="DockPanel.Dock" Value="Top"/>
 			</DataTrigger>
-			<Trigger Property="IsMouseOver" Value="True">
-				<Trigger.EnterActions>
-					<BeginStoryboard>
-						<Storyboard>
-							<DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2" />
-						</Storyboard>
-					</BeginStoryboard>
-				</Trigger.EnterActions>
-				<Trigger.ExitActions>
-					<BeginStoryboard>
-						<Storyboard>
-							<DoubleAnimation Storyboard.TargetProperty="Opacity" To="0.5" Duration="0:0:0.2" />
-						</Storyboard>
-					</BeginStoryboard>
-				</Trigger.ExitActions>
-			</Trigger>
 		</Style.Triggers>
 	</Style>
 	<!-- Flyout -->
+	<Style x:Key="FlyoutWindow" TargetType="Window">
+		<Setter Property="AllowsTransparency" Value="False"></Setter>
+		<Setter Property="WindowStyle" Value="SingleBorderWindow"></Setter>
+		<Setter Property="ResizeMode" Value="NoResize"></Setter>
+		<Setter Property="Icon" Value="Blank.ico"></Setter>
+	</Style>
 	<ControlTemplate x:Key="FlyoutBackgroundTemplate" TargetType="Control">
 		<Grid Background="Transparent" ClipToBounds="True">
 			<Control Template="{DynamicResource ThemeNormalWindowBorderTemplate}" />
@@ -180,7 +219,7 @@
 		</Grid>
 	</ControlTemplate>
 	<Style x:Key="FlyoutBackground" TargetType="Control">
-		<Setter Property="Template" Value="{DynamicResource FlyoutBackgroundTemplate}"></Setter>
+		<Setter Property="Template" Value="{DynamicResource ThemeWindowContentBackgroundTemplate}"></Setter>
 	</Style>
 	<Style x:Key="FlyoutHeader" TargetType="Control">
 		<Setter Property="Background" Value="Transparent" />
@@ -223,9 +262,11 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
+		<Setter Property="Visibility" Value="Collapsed"></Setter>
 	</Style>
 	<Style x:Key="FlyoutContentContainer" TargetType="Grid">
 		<Setter Property="Margin" Value="{DynamicResource ThemeNormalWindowContentMargin}" />
+		<Setter Property="Margin" Value="0"></Setter>
 		<Style.Resources>
 			<Style TargetType="TextBlock">
 				<Setter Property="Foreground" Value="{DynamicResource ThemeWindowContentForegroundBrush}" />
@@ -237,6 +278,133 @@
 	<x:Static x:Key="FlyoutClipRadiusLeftBottom" Member="mwt:ThemeWindowMetrics.NormalWindowBottomLeftCornerRadius" />
 	<x:Static x:Key="FlyoutClipRadiusRightTop" Member="mwt:ThemeWindowMetrics.NormalWindowTopRightCornerRadius" />
 	<x:Static x:Key="FlyoutClipRadiusRightBottom" Member="mwt:ThemeWindowMetrics.NormalWindowBottomRightCornerRadius" />
+	<!-- Drag/Drop -->
+	<Style x:Key="DragWindowBackground" TargetType="Control">
+		<Setter Property="Template" Value="{DynamicResource FlyoutBackgroundTemplate}"></Setter>
+	</Style>
+	<Style x:Key="DragWindowContentContainer" TargetType="Grid">
+		<Setter Property="Margin" Value="{DynamicResource ThemeNormalWindowContentMargin}" />
+	</Style>
+	<!-- Notification -->
+	<Style x:Key="NotificationBaseBackground" TargetType="Border">
+		<Setter Property="Background" Value="{DynamicResource ThemeToolTipEdgeFillBrush}" />
+		<Setter Property="CornerRadius" Value="5" />
+	</Style>
+	<Style x:Key="NotificationBorder" TargetType="Border">
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="CornerRadius" Value="5" />
+		<Setter Property="BorderBrush" Value="{DynamicResource ThemeToolTipEdgeLightBrush}" />
+		<Setter Property="Margin" Value="0,15,0,0" />
+	</Style>
+	<Style x:Key="NotificationTextAreaOuterBorder" TargetType="Border">
+		<Setter Property="BorderBrush">
+			<Setter.Value>
+				<LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+					<GradientStop Offset="0" Color="#55BABEC0" />
+					<GradientStop Offset="0.5" Color="#55FFFFFF" />
+					<GradientStop Offset="1" Color="#55BABEC0" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="Margin" Value="20,15,5,0" />
+		<Setter Property="CornerRadius" Value="4" />
+		<Setter Property="BorderThickness" Value="1" />
+	</Style>
+	<Style x:Key="NotificationTextAreaInnerBorder" TargetType="Border">
+		<Setter Property="BorderBrush">
+			<Setter.Value>
+				<LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+					<GradientStop Offset="0" Color="#5554585A" />
+					<GradientStop Offset="0.25" Color="#55D0D8DA" />
+					<GradientStop Offset="0.5" Color="#00FFFFFF" />
+					<GradientStop Offset="0.75" Color="#55D0D8DA" />
+					<GradientStop Offset="1" Color="#5554585A" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="CornerRadius" Value="3" />
+		<Setter Property="BorderThickness" Value="1" />
+	</Style>
+	<Style x:Key="NotificationTextAreaTextPart" TargetType="Border">
+		<Setter Property="BorderBrush" Value="#05FFFFFF" />
+		<Setter Property="CornerRadius" Value="2" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="Background" Value="White" />
+		<Setter Property="Margin" Value="0" />
+		<Setter Property="Cursor" Value="Hand" />
+	</Style>
+	<Style x:Key="NotificationCloseButton" TargetType="Button">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Grid>
+						<Image x:Name="Normal" Source="{DynamicResource ThemeToolTipCloseNormalImage}" />
+						<Image x:Name="Hover" Opacity="0" Source="{DynamicResource ThemeToolTipCloseHotImage}" />
+						<Image x:Name="Active" Opacity="0" Source="{DynamicResource ThemeToolTipClosePressedImage}" />
+					</Grid>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Trigger.EnterActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation Storyboard.TargetName="Hover" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.15" />
+									</Storyboard>
+								</BeginStoryboard>
+							</Trigger.EnterActions>
+							<Trigger.ExitActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation Storyboard.TargetName="Hover" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.15" />
+									</Storyboard>
+								</BeginStoryboard>
+							</Trigger.ExitActions>
+						</Trigger>
+						<Trigger Property="IsPressed" Value="True">
+							<Trigger.EnterActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation Storyboard.TargetName="Active" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.1" />
+									</Storyboard>
+								</BeginStoryboard>
+							</Trigger.EnterActions>
+							<Trigger.ExitActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation Storyboard.TargetName="Active" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.1" />
+									</Storyboard>
+								</BeginStoryboard>
+							</Trigger.ExitActions>
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="Margin" Value="5,0,0,0" />
+	</Style>
+	<Style x:Key="NotificationTitle" TargetType="TextBlock">
+		<Setter Property="FontFamily" Value="{DynamicResource GlobalFontFamily}" />
+		<Setter Property="FontSize" Value="12" />
+		<Setter Property="FontWeight" Value="Bold"></Setter>
+		<Setter Property="Margin" Value="5,5,5,0" />
+		<Setter Property="Effect">
+			<Setter.Value>
+				<DropShadowEffect BlurRadius="6" Opacity="1" ShadowDepth="0" Color="White" />
+			</Setter.Value>
+		</Setter>
+	</Style>
+	<Style x:Key="NotificationContent" TargetType="TextBlock">
+		<Setter Property="FontFamily" Value="{DynamicResource GlobalFontFamily}" />
+		<Setter Property="FontSize" Value="12" />
+		<Setter Property="FontWeight" Value="Normal" />
+		<Setter Property="Margin" Value="5,3,5,5" />
+		<Setter Property="Effect">
+			<Setter.Value>
+				<DropShadowEffect BlurRadius="6" Opacity="1" ShadowDepth="0" Color="White" />
+			</Setter.Value>
+		</Setter>
+	</Style>
+	<Storyboard x:Key="NotificationLoaded"></Storyboard>
 	<!-- Tiles -->
 	<!--  Tray  -->
 	<Style x:Key="TileIconItemForTrayTile" BasedOn="{StaticResource TileIconItemButtonStyle}" TargetType="Button">

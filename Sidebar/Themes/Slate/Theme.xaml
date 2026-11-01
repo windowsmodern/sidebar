@@ -20,6 +20,7 @@
 	
 	<!-- Styles -->
 	<SolidColorBrush x:Key="GlobalForegroundBrush" Color="White" />
+	<SolidColorBrush x:Key="GlobalFlyoutForegroundBrush" Color="White" />
 	<s:Double x:Key="GlobalFontSize">10</s:Double>
 	<s:Double x:Key="GlobalNormalFontSize">10</s:Double>
 	<s:Double x:Key="GlobalNormalFontSizeSmall">9</s:Double>
@@ -144,7 +145,7 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="Control">
-					<ptswc:HackImage x:Name="BackgroundImage" Source="Images\Taskbar.png" HackThickness="0,5,0,0" RenderTransformOrigin="0.5,0.5"></ptswc:HackImage>
+					<ptswc:HackBorder x:Name="BackgroundImage" Source="Images\Taskbar.png" HackThickness="0,5,0,0" RenderTransformOrigin="0.5,0.5"></ptswc:HackBorder>
 					<ControlTemplate.Triggers>
 						<DataTrigger Binding="{StaticResource UtilSystemIsTaskbarTopBinding}" Value="True">
 							<Setter TargetName="BackgroundImage" Property="RenderTransform">
@@ -719,13 +720,13 @@
 	</Style>
 	<Style x:Key="NotificationTitle" TargetType="TextBlock">
 		<Setter Property="FontFamily" Value="{DynamicResource GlobalFontFamily}" />
-		<Setter Property="FontSize" Value="13" />
+		<Setter Property="FontSize" Value="15" />
 		<Setter Property="Margin" Value="3,3,3,0" />
 		<Setter Property="Foreground" Value="Black" />
 	</Style>
 	<Style x:Key="NotificationContent" TargetType="TextBlock">
 		<Setter Property="FontFamily" Value="{DynamicResource GlobalFontFamily}" />
-		<Setter Property="FontSize" Value="10" />
+		<Setter Property="FontSize" Value="12" />
 		<Setter Property="FontWeight" Value="Normal" />
 		<Setter Property="Margin" Value="3" />
 		<Setter Property="Foreground" Value="Black" />

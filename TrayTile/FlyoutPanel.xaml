@@ -25,7 +25,7 @@
 		</DataTemplate>
 	</UserControl.Resources>
 	<Grid Width="Auto" Height="Auto" MaxHeight="400" MaxWidth="500">
-		<ScrollViewer VerticalScrollBarVisibility="Auto" Style="{DynamicResource AutoHideScrollViewer}">
+		<ScrollViewer VerticalScrollBarVisibility="Auto">
 			<ItemsControl
                       Name="ItemContainer"
                       ItemsSource="{Binding TrayIcons}"

@@ -5,13 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Sidebar"
         mc:Ignorable="d"
-		ResizeMode="NoResize" ShowInTaskbar="False" 
+		ShowInTaskbar="False" 
 		Background="Transparent" MinWidth="54" 
-		MinHeight="21" WindowStyle="None" 
-		AllowsTransparency="True" Topmost="True"
-        Title="FlyoutWindow" Height="300" Width="300"
+		MinHeight="21"
+		Topmost="True"
+        Title=" " Height="300" Width="300"
 		Deactivated="Window_Deactivated" SourceInitialized="Window_SourceInitialized"
 		SizeChanged="Window_SizeChanged" Focusable="True"
+		Style="{DynamicResource FlyoutWindow}"
 		>
 	<Grid>
 		<Control Style="{DynamicResource FlyoutBackground}"></Control>

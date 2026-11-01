@@ -17,6 +17,7 @@
 	<s:Boolean x:Key="EnableNotificationClipRound">false</s:Boolean>
 	<!--  Styles  -->
 	<SolidColorBrush x:Key="GlobalForegroundBrush" Color="White" />
+	<SolidColorBrush x:Key="GlobalFlyoutForegroundBrush" Color="White" />
 	<s:Double x:Key="GlobalFontSize">10</s:Double>
 	<s:Double x:Key="GlobalNormalFontSize">10</s:Double>
 	<s:Double x:Key="GlobalNormalFontSizeSmall">9</s:Double>
@@ -737,13 +738,13 @@
 	</Style>
 	<Style x:Key="NotificationTitle" TargetType="TextBlock">
 		<Setter Property="FontFamily" Value="{DynamicResource GlobalFontFamily}" />
-		<Setter Property="FontSize" Value="13" />
+		<Setter Property="FontSize" Value="15" />
 		<Setter Property="Margin" Value="3,3,3,0" />
 		<Setter Property="Foreground" Value="Black" />
 	</Style>
 	<Style x:Key="NotificationContent" TargetType="TextBlock">
 		<Setter Property="FontFamily" Value="{DynamicResource GlobalFontFamily}" />
-		<Setter Property="FontSize" Value="10" />
+		<Setter Property="FontSize" Value="12" />
 		<Setter Property="FontWeight" Value="Normal" />
 		<Setter Property="Margin" Value="3" />
 		<Setter Property="Foreground" Value="Black" />

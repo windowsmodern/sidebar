@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Manifest Version="2">
-  <Identity Name="WindowsModern.SysTrayTile" Publisher="CN=Windows Modern" Version="1.0.0.2" ProcessorArchitecture="Neutral" />
+  <Identity Name="WindowsModern.SysTrayTile" Publisher="CN=Windows Modern" Version="1.0.0.3" ProcessorArchitecture="Neutral" />
   <Properties>
     <DisplayName>TILE_PROP_DISPNAME</DisplayName>
     <PublisherDisplayName>Windows Modern</PublisherDisplayName>

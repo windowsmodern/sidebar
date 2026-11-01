@@ -575,7 +575,7 @@
 		<Setter Property="HorizontalAlignment" Value="Center" />
 	</Style>
 	<Style x:Key="TileClockPanelCommonTextFlyout" TargetType="TextBlock">
-		<Setter Property="Foreground" Value="{DynamicResource GlobalForegroundBrush}" />
+		<Setter Property="Foreground" Value="{DynamicResource GlobalFlyoutForegroundBrush}" />
 		<Setter Property="FontSize" Value="{DynamicResource GlobalNormalFontSize}" />
 		<Setter Property="TextAlignment" Value="Center" />
 		<Setter Property="Margin" Value="0,0,0,2" />

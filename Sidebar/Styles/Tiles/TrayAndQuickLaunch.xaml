@@ -21,7 +21,7 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="Button">
 					<Border x:Name="border" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Background="Transparent" BorderBrush="Transparent" BorderThickness="1" CornerRadius="1" Opacity="1">
-						<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+						<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
 						<VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="CommonStates">
 								<VisualState x:Name="Normal">
@@ -77,7 +77,7 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="Button">
 					<Border x:Name="border" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Background="Transparent" BorderBrush="Transparent" BorderThickness="1" CornerRadius="1" Opacity="1">
-						<ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Top" />
+						<ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Top" Margin="{TemplateBinding Padding}"/>
 						<VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="CommonStates">
 								<VisualState x:Name="Normal">
@@ -117,7 +117,7 @@
 		<Setter Property="Margin" Value="4,0,0,0" />
 		<Setter Property="TextTrimming" Value="CharacterEllipsis" />
 		<Setter Property="FontFamily" Value="{DynamicResource GlobalFontFamily}" />
-		<Setter Property="Foreground" Value="{DynamicResource GlobalForegroundBrush}" />
+		<Setter Property="Foreground" Value="{DynamicResource GlobalFlyoutForegroundBrush}" />
 		<Setter Property="FontSize" Value="{DynamicResource GlobalFontSize}" />
 		<Setter Property="VerticalAlignment" Value="Center"></Setter>
 	</Style>

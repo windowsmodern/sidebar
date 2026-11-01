@@ -19,6 +19,7 @@
 	
 	<!--  Global  -->
 	<SolidColorBrush x:Key="GlobalForegroundBrush" Color="{Binding ForegroundColor, Source={x:Static pst:DwmThemeProvider.Instance}}" />
+	<SolidColorBrush x:Key="GlobalFlyoutForegroundBrush" Color="{Binding ForegroundColor, Source={x:Static pst:DwmThemeProvider.Instance}}" />
 	<s:Double x:Key="GlobalFontSize">10</s:Double>
 	<s:Double x:Key="GlobalNormalFontSize">10</s:Double>
 	<s:Double x:Key="GlobalNormalFontSizeSmall">9</s:Double>
@@ -30,6 +31,16 @@
 	<Style x:Key="GlobalTextBlockTextDisplay" TargetType="TextBlock">
 		<Setter Property="FontFamily" Value="{DynamicResource GlobalFontFamily}" />
 		<Setter Property="Foreground" Value="{DynamicResource GlobalForegroundBrush}" />
+		<Setter Property="FontSize" Value="{DynamicResource GlobalFontSize}" />
+	</Style>
+	<Style x:Key="GlobalFlyoutControlTextDisplay" TargetType="Control">
+		<Setter Property="FontFamily" Value="{DynamicResource GlobalFontFamily}" />
+		<Setter Property="Foreground" Value="{DynamicResource GlobalFlyoutForegroundBrush}" />
+		<Setter Property="FontSize" Value="{DynamicResource GlobalFontSize}" />
+	</Style>
+	<Style x:Key="GlobalFlyoutTextBlockTextDisplay" TargetType="TextBlock">
+		<Setter Property="FontFamily" Value="{DynamicResource GlobalFontFamily}" />
+		<Setter Property="Foreground" Value="{DynamicResource GlobalFlyoutForegroundBrush}" />
 		<Setter Property="FontSize" Value="{DynamicResource GlobalFontSize}" />
 	</Style>
 	<Style x:Key="AutoHideScrollViewer" TargetType="ScrollViewer">

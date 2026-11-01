@@ -81,8 +81,20 @@ namespace Sidebar
 		public SidebarWindow SidebarHost => tileComp?.SidebarHost;
 		private void FlyoutContentContainer_SizeChanged (object sender, System.Windows.SizeChangedEventArgs e)
 		{
-			Width = FlyoutContentContainer.Margin.Left + FlyoutContentContainer.Margin.Right + FlyoutContentContainer.ActualWidth;
-			Height = FlyoutContentContainer.Margin.Top + FlyoutContentContainer.Margin.Bottom + FlyoutContentContainer.ActualHeight;
+			if (WindowStyle == WindowStyle.None)
+			{
+				Width = FlyoutContentContainer.Margin.Left + FlyoutContentContainer.Margin.Right + FlyoutContentContainer.ActualWidth;
+				Height = FlyoutContentContainer.Margin.Top + FlyoutContentContainer.Margin.Bottom + FlyoutContentContainer.ActualHeight;
+			}
+			else
+			{
+				var clientWidth = FlyoutContentContainer.Margin.Left + FlyoutContentContainer.Margin.Right + FlyoutContentContainer.ActualWidth;
+				var clientHeight = FlyoutContentContainer.Margin.Top + FlyoutContentContainer.Margin.Bottom + FlyoutContentContainer.ActualHeight;
+				double borderWidth = SystemParameters.ResizeFrameVerticalBorderWidth + SystemParameters.FixedFrameVerticalBorderWidth;
+				double borderHeight = SystemParameters.ResizeFrameHorizontalBorderHeight + SystemParameters.FixedFrameHorizontalBorderHeight + SystemParameters.CaptionHeight;
+				Width = clientWidth + borderWidth;
+				Height = clientHeight + borderHeight;
+			}
 		}
 		bool isclosing = false;
 		private void Window_Deactivated (object sender, EventArgs e)
