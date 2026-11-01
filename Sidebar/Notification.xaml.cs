@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Media;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,6 +17,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Microsoft.Win32;
 
 namespace Sidebar
 {
@@ -138,6 +142,7 @@ namespace Sidebar
 			UpdateLayout ();
 		}
 		private TimeSpan timeSpan = TimeSpan.FromSeconds (30);
+		private TimeSpan ringTimeSpan = new TimeSpan (0);
 		private void Root_Loaded (object sender, RoutedEventArgs e)
 		{
 			widthRefreshTimer.Tick -= WidthRefreshTimer_Tick;
@@ -146,6 +151,9 @@ namespace Sidebar
 			UpdateLocation ();
 			AnimateTimeoutBar ();
 			App.CurrentUserConfig.PropertyChanged += CurrentUserConfig_PropertyChanged;
+			var ringtimeout = SoundHelper.PlayNotificationAndGetDuration ();
+			ringTimeSpan = TimeSpan.FromMilliseconds (ringtimeout);
+			UpdateTimeout (TimeSpan.FromMilliseconds (Math.Max (ringTimeSpan.Milliseconds, timeSpan.Milliseconds)));
 		}
 		private void CurrentUserConfig_PropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
 		{
@@ -172,7 +180,7 @@ namespace Sidebar
 		}
 		public void UpdateTimeout (TimeSpan ts)
 		{
-			timeSpan = ts;
+			timeSpan = TimeSpan.FromMilliseconds (Math.Max (ringTimeSpan.Milliseconds, ts.Milliseconds));
 			if (IsLoaded) AnimateTimeoutBar ();
 		}
 		private AnimationClock ac = null;
@@ -428,6 +436,85 @@ namespace Sidebar
 					Process.Start ("rundll32.exe", "shell32.dll,Options_RunDLL 1");
 				}
 				catch { }
+			}
+		}
+
+	}
+	internal static class SoundHelper
+	{
+		[DllImport ("winmm.dll", SetLastError = true)]
+		private static extern bool PlaySound (string pszSound, IntPtr hmod, uint fdwSound);
+		private const uint SND_ASYNC = 0x0001;
+		private const uint SND_FILENAME = 0x00020000;
+		public static int PlayNotificationAndGetDuration ()
+		{
+			string path = GetRegistrySoundPath (@"AppEvents\Schemes\Apps\.Default\Notification.Default\.Current");
+			if (string.IsNullOrEmpty (path))
+			{
+				path = GetRegistrySoundPath (@"AppEvents\Schemes\Apps\.Default\SystemNotification\.Current");
+			}
+			if (!string.IsNullOrEmpty (path))
+			{
+				path = Environment.ExpandEnvironmentVariables (path);
+				int ms = GetWavDuration (path);
+				PlaySound (path, IntPtr.Zero, SND_FILENAME | SND_ASYNC);
+				return ms;
+			}
+			SystemSounds.Asterisk.Play ();
+			return 0;
+		}
+		private static string GetRegistrySoundPath (string keyPath)
+		{
+			try
+			{
+				using (RegistryKey key = Registry.CurrentUser.OpenSubKey (keyPath))
+				{
+					return key?.GetValue (null) as string;
+				}
+			}
+			catch
+			{
+				return null;
+			}
+		}
+		private static int GetWavDuration (string filePath)
+		{
+			try
+			{
+				using (var stream = new FileStream (filePath, FileMode.Open, FileAccess.Read))
+				using (var reader = new BinaryReader (stream))
+				{
+					if (new string (reader.ReadChars (4)) != "RIFF") return 0;
+					reader.ReadInt32 ();
+					if (new string (reader.ReadChars (4)) != "WAVE") return 0;
+					int byteRate = 0;
+					int dataSize = 0;
+					while (stream.Position < stream.Length - 8)
+					{
+						string chunkId = new string (reader.ReadChars (4));
+						int chunkSize = reader.ReadInt32 ();
+						if (chunkId == "fmt ")
+						{
+							reader.ReadBytes (8);
+							byteRate = reader.ReadInt32 ();
+							if (chunkSize > 12) reader.ReadBytes (chunkSize - 12);
+						}
+						else if (chunkId == "data")
+						{
+							dataSize = chunkSize;
+							break;
+						}
+						else
+						{
+							reader.ReadBytes (chunkSize);
+						}
+					}
+					return (byteRate > 0 && dataSize > 0) ? (int)(dataSize * 1000.0 / byteRate) : 0;
+				}
+			}
+			catch
+			{
+				return 0;
 			}
 		}
 	}

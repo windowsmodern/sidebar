@@ -95,16 +95,16 @@
 						<TextBlock Margin="5,0,0,0" TextWrapping="Wrap" Name="LabelCurrentThemeText">Test Theme</TextBlock>
 					</DockPanel>
 					<TextBlock Name="LabelInstalledThemes" DockPanel.Dock="Top" Margin="0,0,0,5">Installed Themes: </TextBlock>
-					<ListBox Name="ListTheme" SelectionChanged="ListTheme_SelectionChanged">
+					<ListBox Name="ListTheme" SelectionChanged="ListTheme_SelectionChanged" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 						<ListBox.ItemTemplate>
 							<DataTemplate>
 								<DockPanel Margin="10">
 									<Image MaxWidth="50" Height="50" DockPanel.Dock="Left" Source="{Binding LogoImage}" Stretch="Uniform"></Image>
-									<StackPanel Margin="10,0,0,0" DockPanel.Dock="Right" Orientation="Vertical" ToolTip="{Binding FolderPath}">
+									<WrapPanel Margin="10,0,0,0" DockPanel.Dock="Right" Orientation="Vertical" ToolTip="{Binding FolderPath}">
 										<TextBlock Text="{Binding DisplayName}" ToolTip="{Binding DisplayName}" FontSize="13" TextTrimming="CharacterEllipsis"/>
 										<TextBlock Text="{Binding PublisherDisplayName}" ToolTip="{Binding PublisherDisplayName}" FontSize="11" Opacity="0.75" TextTrimming="CharacterEllipsis" Margin="0,2,0,0"/>
 										<TextBlock Text="{Binding Description}" ToolTip="{Binding Description}" FontSize="11" Opacity="0.6" TextWrapping="Wrap" MaxHeight="34" TextTrimming="CharacterEllipsis" Margin="0,2,0,0"/>
-									</StackPanel>
+									</WrapPanel>
 								</DockPanel>
 							</DataTemplate>
 						</ListBox.ItemTemplate>

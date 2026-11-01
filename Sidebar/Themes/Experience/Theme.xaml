@@ -13,7 +13,7 @@
 	<s:String x:Key="ThemeDisplayName">Experience</s:String>
 	<s:String x:Key="ThemePublisherDisplayName">Windows Modern</s:String>
 	<s:String x:Key="ThemeDescription">Use Win32 theme style for sidebar. Only for Windows XP.</s:String>
-	<s:String x:Key="ThemeLogo">Logo.jpg</s:String>
+	<s:String x:Key="ThemeLogo">Logo.ico</s:String>
 	<!--  Options  -->
 	<s:Boolean x:Key="EnableBlur">false</s:Boolean>
 	<s:Boolean x:Key="EnableNotificationBlur">false</s:Boolean>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Media;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -33,6 +34,7 @@ namespace Sidebar
 			msgwnd.MessageDetail.Text = GetDetailException (e);
 			if (showdialog) msgwnd.ShowDialog ();
 			else msgwnd.Show ();
+			SystemSounds.Hand.Play ();
 			return msgwnd;
 		}
 		private static string GetDetailException (Exception e, int depth = 0)

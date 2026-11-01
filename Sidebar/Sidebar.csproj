@@ -162,11 +162,11 @@
     <Content Include="Themes\Experience\Blank.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Themes\Experience\Logo.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Themes\Experience\SidebarHighlight.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Themes\Experience\Logo.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="WPFToolkit.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
