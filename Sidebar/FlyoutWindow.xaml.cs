@@ -270,6 +270,10 @@ namespace Sidebar
 				(int)Math.Round (rightTopR * scale, MidpointRounding.AwayFromZero),
 				(int)Math.Round (rightBottomR * scale, MidpointRounding.AwayFromZero));
 		}
+		private void Window_Closed (object sender, EventArgs e)
+		{
+			Utilities.ReleaseLargeResourcesAsync ();
+		}
 	}
 	internal sealed class FlyoutDoubleClickHelper: IDisposable
 	{

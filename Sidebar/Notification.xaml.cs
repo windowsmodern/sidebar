@@ -154,6 +154,11 @@ namespace Sidebar
 			var ringtimeout = SoundHelper.PlayNotificationAndGetDuration ();
 			ringTimeSpan = TimeSpan.FromMilliseconds (ringtimeout);
 			UpdateTimeout (TimeSpan.FromMilliseconds (Math.Max (ringTimeSpan.Milliseconds, timeSpan.Milliseconds)));
+			ScreenChangeNotifier.WorkingAreaChanged += ScreenChangeNotifier_WorkingAreaChanged;
+		}
+		private void ScreenChangeNotifier_WorkingAreaChanged (object sender, EventArgs e)
+		{
+			UpdateLocation ();
 		}
 		private void CurrentUserConfig_PropertyChanged (object sender, System.ComponentModel.PropertyChangedEventArgs e)
 		{
@@ -251,11 +256,19 @@ namespace Sidebar
 		}
 		private void Root_Closed (object sender, EventArgs e)
 		{
+			ScreenChangeNotifier.WorkingAreaChanged -= ScreenChangeNotifier_WorkingAreaChanged;
 			Utilities.ReleaseLargeResourcesAsync ();
 			lock (popuplock)
 			{
-				noticeQueue.Dequeue ();
-				PopupNotificationQueue ();
+				try
+				{
+					if ((noticeQueue?.Count ?? 0) > 0)
+					{
+						noticeQueue.Dequeue ();
+						PopupNotificationQueue ();
+					}
+				}
+				catch { }
 			}
 			try
 			{
@@ -412,6 +425,15 @@ namespace Sidebar
 				Content = content,
 				Icon = System.Windows.Forms.ToolTipIcon.None
 			}, icon);
+		public static void ClearAllNotificationWnd ()
+		{
+			var newlist = noticeQueue.ToList ();
+			noticeQueue.Clear ();
+			foreach (var wnd in newlist)
+			{
+				try { wnd?.Close (); } catch { }
+			}
+		}
 		private void OptionsButton_Click (object sender, RoutedEventArgs e)
 		{
 			try

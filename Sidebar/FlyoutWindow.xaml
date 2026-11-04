@@ -11,7 +11,7 @@
 		Topmost="True"
         Title=" " Height="300" Width="300"
 		Deactivated="Window_Deactivated" SourceInitialized="Window_SourceInitialized"
-		SizeChanged="Window_SizeChanged" Focusable="True"
+		SizeChanged="Window_SizeChanged" Closed="Window_Closed" Focusable="True"
 		Style="{DynamicResource FlyoutWindow}"
 		>
 	<Grid>

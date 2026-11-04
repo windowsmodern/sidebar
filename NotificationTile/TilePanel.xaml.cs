@@ -16,13 +16,80 @@ namespace WindowsModern.NotificationHistoryTile
 
 	public partial class TilePanel: UserControl
 	{
-		private const int MaxVisible = 8;
-		private const int MaxStackSize = 4;
-		private const double StackOffset = 4.0;
-		private const double StackMergeDistance = 20.0;
+		private int MaxVisible
+		{
+			get
+			{
+				try
+				{
+					var element = NotificationPanelProp;
+					if (element == null) return 8;
+					if (double.IsNaN (element.Width)) return 8;
+					if (element.Width < 1) return 8;
+					return (int)element.Width;
+				}
+				catch
+				{
+					return 8;
+				}
+			}
+		}
+		private int MaxStackSize
+		{
+			get
+			{
+				try
+				{
+					var element = NotificationPanelProp;
+					if (element == null) return 4;
+					if (double.IsNaN (element.Height)) return 4;
+					if (element.Height < 1) return 4;
+					return (int)element.Height;
+				}
+				catch
+				{
+					return 4;
+				}
+			}
+		}
+		private double StackOffset
+		{
+			get
+			{
+				try
+				{
+					var element = NotificationButtonProp;
+					if (element == null) return 4;
+					if (double.IsNaN (element.Width)) return 4;
+					return element.Width;
+				}
+				catch
+				{
+					return 4;
+				}
+			}
+		}
+		private double StackMergeDistance
+		{
+			get
+			{
+				try
+				{
+					var element = NotificationButtonProp;
+					if (element == null) return 20;
+					if (double.IsNaN (element.Height)) return 20;
+					return element.Height;
+				}
+				catch
+				{
+					return 20;
+				}
+			}
+		}
 		private const double MinimumTimeSpanMinutes = 30.0;
 
 		private readonly DispatcherTimer _timer;
+		private readonly DispatcherTimer _sizeChangedTimer;
 		private readonly List<Entry> _entries = new List<Entry> ();
 		private readonly List<NotificationStack> _stacks = new List<NotificationStack> ();
 
@@ -74,6 +141,8 @@ namespace WindowsModern.NotificationHistoryTile
 
 			_timer = new DispatcherTimer ();
 			_timer.Interval = TimeSpan.FromMinutes (1.0);
+			_sizeChangedTimer = new DispatcherTimer ();
+			_sizeChangedTimer.Interval = TimeSpan.FromMilliseconds (300);
 		}
 
 		// ============================================================
@@ -148,8 +217,17 @@ namespace WindowsModern.NotificationHistoryTile
 			}
 			_timer.Tick -= Timer_Tick;
 			_timer.Tick += Timer_Tick;
+			_sizeChangedTimer.Tick -= SizeChangedTimer_Tick;
+			_sizeChangedTimer.Tick += SizeChangedTimer_Tick;
 			_timer.Start ();
 			RebuildChildren ();
+		}
+
+		private void SizeChangedTimer_Tick (object sender, EventArgs e)
+		{
+			_sizeChangedTimer.Stop ();
+			RecomputeOffsets ();
+			ApplyLayout ();
 		}
 
 		private void UserControl_Unloaded (object sender, RoutedEventArgs e)
@@ -157,7 +235,8 @@ namespace WindowsModern.NotificationHistoryTile
 			_isLoaded = false;
 			_timer.Tick -= Timer_Tick;
 			_timer.Stop ();
-
+			_sizeChangedTimer.Tick -= SizeChangedTimer_Tick;
+			_sizeChangedTimer.Stop ();
 			if (History != null)
 				History.CollectionChanged -= OnHistoryCollectionChanged;
 
@@ -330,11 +409,7 @@ namespace WindowsModern.NotificationHistoryTile
 			if (data == null)
 				return;
 
-			NotificationClickedHandler handler =
-				NotificationClicked;
-
-			if (handler != null)
-				handler (this, data);
+			NotificationClicked?.Invoke (this, data);
 		}
 
 		// ============================================================
@@ -555,6 +630,24 @@ namespace WindowsModern.NotificationHistoryTile
 			ApplyLayout ();
 
 			QueueLayoutUpdate ();
+		}
+
+		private void NotificationPanelProp_SizeChanged (object sender, SizeChangedEventArgs e)
+		{
+			OnSizeChanged ();
+		}
+		private void NotificationButtonProp_SizeChanged (object sender, SizeChangedEventArgs e)
+		{
+			OnSizeChanged ();
+		}
+		private void OnSizeChanged ()
+		{
+			_sizeChangedTimer.Stop ();
+			_sizeChangedTimer.Start ();
+		}
+		private void NotificationStyleButton_SizeChanged (object sender, SizeChangedEventArgs e)
+		{
+			OnSizeChanged ();
 		}
 	}
 }

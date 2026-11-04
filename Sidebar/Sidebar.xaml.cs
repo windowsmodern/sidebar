@@ -2379,6 +2379,7 @@ namespace Sidebar
 			notifyIcon = null;
 			DestoryHwndSource ();
 			Current = null;
+			Notification.ClearAllNotificationWnd ();
 			base.OnClosing (e);
 		}
 		private void Window_SizeChanged (object sender, System.Windows.SizeChangedEventArgs e)

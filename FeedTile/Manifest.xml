@@ -12,7 +12,7 @@
   </Prerequisites>
   <Applications>
     <Application Id="App" Executable="WindowsModern.NewsFeedTile.dll" EntryPoint="WindowsModern.FeedTile.Tile" HasFlyout="true" HasProperties="true">
-      <VisualElements DisplayName="TILE_PROP_DISPNAME" Logo="Icon.ico">
+      <VisualElements DisplayName="TILE_PROP_DISPNAME" Logo="Icon-20.png">
         <Tile MinHeight="28" MaxHeight="300" DefaultHeight="97" CanPinBottom="true" Overflow="Hidden" />
         <Flyout FlyoutWidth="370" FlyoutHeight="700" FlyoutCanResize="false" />
       </VisualElements>
