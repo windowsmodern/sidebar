@@ -29,6 +29,16 @@ integration with the current Sidebar code.
   Sidebar/Themes/Aero/Theme.xaml
       Portions derived from LongBar/Themes/Aero.theme.xaml.
 
+  Sidebar/Themes/Halloween/Theme.xaml
+      Halloween theme adapted from the LongBar Halloween theme package
+      (LongBar/Themes/2.0/Halloween.zip). Theme.xaml has been updated for
+      the current Sidebar theme keys and control structure. The theme
+      metadata identifies the original publisher as "LongBar Project
+      Group".
+
+  Sidebar/Themes/Halloween/Images/
+      Pumpkin artwork included with the LongBar Halloween theme package.
+
   SGStore/MainWindow.xaml
   SGStore/MainWindow.xaml.cs
       Portions derived from LongBar/Library.xaml and Library.xaml.cs.
@@ -54,6 +64,29 @@ Third-party components
 
 Cauldron / Capgemini.Cauldron.Win32.UserInformation (UserTile):
     MIT License. See UserTile/LICENSE - Cauldron and UserTile/NOTICE.
+
+Gcds-Halloween-Jack-o-lantern.ico (Sidebar/Themes/Halloween):
+    "Jack o lantern" icon by GoldCoastDesignStudio, from the
+    "Halloween Flat Icons" pack on IconArchive. Downloaded separately
+    from IconArchive; it is not part of the LongBar theme package.
+    Source:
+    https://iconarchive.com/show/halloween-icons-by-gcds/jack-o-lantern-icon.html
+    License: CC0 1.0 Universal (public domain dedication); freeware,
+    commercial use allowed.
+    https://creativecommons.org/publicdomain/zero/1.0/
+
+Mkho-Christmas-Snow-flake.ico (Sidebar/Themes/WindowsModern.SnowFall):
+    "Snow-flake" icon by MKho, from the "Christmas Icons" pack on
+    IconArchive. Used as the Snowfall theme logo.
+    Source:
+    https://iconarchive.com/show/christmas-icons-by-mkho/Snow-flake-icon.html
+    License: "Free for personal desktop use only. Commercial usage:
+    Not allowed." (IconArchive pack readme:
+    https://iconarchive.com/icons/mkho/christmas/Readme.txt)
+    This icon is NOT covered by the MS-PL. It may not be redistributed
+    as part of a public or commercial distribution of this project, and
+    it must be replaced with an original or license-compatible icon
+    before such distribution. The rest of the Snowfall theme is MS-PL.
 
 NuGet packages used by the solution (including AvalonEdit, Newtonsoft.Json,
 HtmlAgilityPack, SharpZipLib, and others):
