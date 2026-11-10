@@ -337,6 +337,7 @@ namespace Sidebar
 					{
 						var str = item as string;
 						if (string.IsNullOrWhiteSpace (str)) isfind = true;
+						if (isfind) break;
 						isfind = str.Trim ().ToLowerInvariant () == lloc;
 						if (isfind) break;
 					}

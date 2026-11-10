@@ -21,7 +21,7 @@
 				</StackPanel>
 			</Grid>
 			<Expander Name="DetailExpander" Style="{DynamicResource MessageWindowDetailExpander}" Header="{pst:StringResource SIDEBAR_MESSAGE_ERROR_DETAIL}">
-				<TextBox Name="MessageDetail" Style="{DynamicResource MessageWindowDetailMessage}"></TextBox>
+				<TextBox Name="MessageDetail" Style="{DynamicResource MessageWindowDetailMessage}" IsReadOnly="True"></TextBox>
 			</Expander>
 		</DockPanel>
 	</Grid>

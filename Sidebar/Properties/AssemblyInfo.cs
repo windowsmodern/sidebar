@@ -10,9 +10,9 @@ using System.Windows;
 [assembly: AssemblyTitle ("Sidebar")]
 [assembly: AssemblyDescription ("Sidebar")]
 [assembly: AssemblyConfiguration ("")]
-[assembly: AssemblyCompany ("Windows Modern")]
+[assembly: AssemblyCompany ("Whistler (Windows Modern)")]
 [assembly: AssemblyProduct ("Sidebar")]
-[assembly: AssemblyCopyright ("Copyright © 2026 Windows Modern. All rights reserved.")]
+[assembly: AssemblyCopyright ("Copyright © 2026 Whistler (Windows Modern). All rights reserved.")]
 [assembly: AssemblyTrademark ("")]
 [assembly: AssemblyCulture ("")]
 
@@ -52,4 +52,4 @@ using System.Windows;
 // 方法是按如下所示使用“*”: :
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion ("1.0.0.0")]
-[assembly: AssemblyFileVersion ("0.8.5.0")]
+[assembly: AssemblyFileVersion ("0.8.6.0")]

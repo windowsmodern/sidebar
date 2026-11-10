@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Manifest Version="2">
-  <Identity Name="WindowsModern.PowerTile" Publisher="CN=Windows Modern" Version="1.0.0.3" ProcessorArchitecture="Neutral" />
+  <Identity Name="WindowsModern.PowerTile" Publisher="CN=Windows Modern" Version="1.0.0.4" ProcessorArchitecture="Neutral" />
   <Properties>
     <DisplayName>TILE_PROP_DISPNAME</DisplayName>
     <PublisherDisplayName>Windows Modern</PublisherDisplayName>

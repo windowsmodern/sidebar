@@ -26,9 +26,6 @@ namespace Sidebar
 	/// </summary>
 	public partial class Notification: Window, IWindowInterop
 	{
-		private DispatcherTimer widthRefreshTimer = new DispatcherTimer () {
-			Interval = TimeSpan.FromSeconds (0.1)
-		};
 		private Thickness timeoutInitMargin;
 		private WindowInteropHelper wih = null;
 		public WindowInteropHelper InteropHelper => wih;
@@ -37,7 +34,7 @@ namespace Sidebar
 		public Notification ()
 		{
 			InitializeComponent ();
-			if (DWMAPI.IsElderWindows () && true)
+			if (DWMAPI.IsElderWindows () && !App.CurrentUserConfig.ForceTransparency)
 			{
 				AllowsTransparency = false;
 			}
@@ -129,25 +126,47 @@ namespace Sidebar
 		}
 		private void UpdateWidth ()
 		{
-			ClearValue (WidthProperty);
+			if (!IsLoaded) return;
 			UpdateLayout ();
-			var width = MessageTitle.ActualWidth +
-				(MessageTitle.Margin.Left + MessageTitle.Margin.Right) +
-				TextAreaBorderOuter.BorderThickness.Left + TextAreaBorderOuter.BorderThickness.Right + TextAreaBorderOuter.Margin.Left + TextAreaBorderOuter.Margin.Right + TextAreaBorderOuter.Padding.Left + TextAreaBorderOuter.Padding.Right +
-				TextAreaBorderInner.BorderThickness.Left + TextAreaBorderInner.BorderThickness.Right + TextAreaBorderInner.Margin.Left + TextAreaBorderInner.Margin.Right + TextAreaBorderInner.Padding.Left + TextAreaBorderInner.Padding.Right +
-				TextAreaTextArea.BorderThickness.Left + TextAreaTextArea.BorderThickness.Right + TextAreaTextArea.Margin.Left + TextAreaTextArea.Margin.Right + TextAreaTextArea.Padding.Left + TextAreaTextArea.Padding.Right +
-				NotificationUI.Margin.Left + NotificationUI.Margin.Right + NotificationUI.BorderThickness.Left + NotificationUI.BorderThickness.Right + NotificationUI.Padding.Left + NotificationUI.Padding.Right;
-			if (double.IsNaN (width) || width < MinWidth) ClearValue (WidthProperty);
-			Width = width;
+			var tierWidths = new double [] { 110, 154, 220 };
+			var tierLines = new int [] { 1, 2, 4 };
+			var lineHeight = MessageContent.FontSize * 1.2;
+			var margin = MessageTitle.Margin;
+			var marginWidth = margin.Left + margin.Right;
+			var width = tierWidths [tierWidths.Length - 1];
+			var content = MessagePart.Content as FrameworkElement;
+			if (content != null)
+			{
+				for (var i = 0; i < tierWidths.Length; i++)
+				{
+					content.Measure (new Size (tierWidths [i], double.PositiveInfinity));
+					width = tierWidths [i];
+					if (content.DesiredSize.Height <= lineHeight * tierLines [i] + 0.5) break;
+				}
+			}
+			if (MinWidth >= 200)
+			{
+				var chrome = ActualWidth > MessagePart.ActualWidth
+					? ActualWidth - MessagePart.ActualWidth
+					: marginWidth;
+				MessagePart.Width = Math.Max (width + marginWidth, MinWidth - chrome);
+			}
+			else
+			{
+				var contentWidth = (MessageTitle.ActualWidth + MessageContent.ActualWidth) * 0.5;
+				if (contentWidth > 250) MessagePart.ClearValue (WidthProperty);
+				else if (contentWidth >= 220) MessagePart.Width = 220 + marginWidth;
+				else if (contentWidth >= 154) MessagePart.Width = 154 + marginWidth;
+				else if (contentWidth >= 110) MessagePart.Width = 110 + marginWidth;
+				else MessagePart.ClearValue (WidthProperty);
+			}
 			UpdateLayout ();
 		}
 		private TimeSpan timeSpan = TimeSpan.FromSeconds (30);
 		private TimeSpan ringTimeSpan = new TimeSpan (0);
 		private void Root_Loaded (object sender, RoutedEventArgs e)
 		{
-			widthRefreshTimer.Tick -= WidthRefreshTimer_Tick;
-			widthRefreshTimer.Tick += WidthRefreshTimer_Tick;
-			widthRefreshTimer.Start ();
+			UpdateWidth ();
 			UpdateLocation ();
 			AnimateTimeoutBar ();
 			App.CurrentUserConfig.PropertyChanged += CurrentUserConfig_PropertyChanged;
@@ -231,13 +250,12 @@ namespace Sidebar
 		}
 		private void WidthRefreshTimer_Tick (object sender, EventArgs e)
 		{
-			widthRefreshTimer?.Stop ();
 			UpdateWidth ();
 			UpdateLocation ();
 		}
 		private void Root_Unloaded (object sender, RoutedEventArgs e)
 		{
-			widthRefreshTimer.Tick -= WidthRefreshTimer_Tick;
+			
 		}
 		private void Root_SizeChanged (object sender, System.Windows.SizeChangedEventArgs e)
 		{

@@ -7,9 +7,9 @@
 		xmlns:pst="clr-namespace:Sidebar.Presentation"
         mc:Ignorable="d" WindowStyle="None" AllowsTransparency="True" Style="{DynamicResource DragWindowWindow}" ShowInTaskbar="False"
         Title="DragWindow" Height="300" Width="300" MinWidth="50" SourceInitialized="Window_SourceInitialized">
-	<Grid Style="{DynamicResource DragWindowClientArea}">
-		<Control Style="{DynamicResource DragWindowBackground}"></Control>
+	<Grid Name="DragClientArea" Style="{DynamicResource DragWindowClientArea}">
+		<Control Name="DragBackground" Style="{DynamicResource DragWindowBackground}"></Control>
 		<Grid Name="TileTemplateContainer" Style="{DynamicResource DragWindowContentContainer}"></Grid>
-		<Control Style="{DynamicResource DragWindowHighlight}"></Control>
+		<Control Name="DragHighlight" Style="{DynamicResource DragWindowHighlight}"></Control>
 	</Grid>
 </Window>

@@ -46,6 +46,15 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
+	<Style x:Key="TileNotificationTilePanelDetail" TargetType="Border">
+		<Setter Property="Width" Value="8"></Setter>
+		<Setter Property="Height" Value="4"></Setter>
+	</Style>
+	<Style x:Key="TileNotificationTileButtonDetail" TargetType="Border">
+		<Setter Property="Width" Value="4"></Setter>
+		<Setter Property="Height" Value="20"></Setter>
+	</Style>
+	
 	<Style x:Key="TileNotificationFlyoutScrollViewer" TargetType="ScrollViewer">
 		<Setter Property="Background" Value="White" />
 		<Setter Property="Foreground" Value="Black" />
@@ -128,6 +137,7 @@
 		<Setter Property="Margin" Value="0,0,2,0" />
 		<Setter Property="TextWrapping" Value="Wrap" />
 		<Setter Property="TextTrimming" Value="CharacterEllipsis" />
+		<Setter Property="MinWidth" Value="5"></Setter>
 	</Style>
 	<Style x:Key="TileNotificationFlyoutItemButton" TargetType="Button">
 		<Setter Property="Background" Value="Transparent" />

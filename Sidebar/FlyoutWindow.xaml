@@ -15,9 +15,9 @@
 		Style="{DynamicResource FlyoutWindow}"
 		>
 	<Grid>
-		<Control Style="{DynamicResource FlyoutBackground}"></Control>
+		<Control Name="FlyoutBackground" Style="{DynamicResource FlyoutBackground}"></Control>
 		<Button Name="FlyoutHeader" Style="{DynamicResource FlyoutHeader}"></Button>
 		<Grid Name="FlyoutContentContainer" Style="{DynamicResource FlyoutContentContainer}" SizeChanged="FlyoutContentContainer_SizeChanged"></Grid>
-		<Control Style="{DynamicResource FlyoutHighlight}" IsHitTestVisible="False"></Control>
+		<Control Name="FlyoutHighlight" Style="{DynamicResource FlyoutHighlight}" IsHitTestVisible="False"></Control>
     </Grid>
 </Window>

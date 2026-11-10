@@ -1,0 +1,892 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Sidebar"
+    xmlns:s="clr-namespace:System;assembly=mscorlib"
+    xmlns:snt="clr-namespace:Sidebar;assembly=Native"
+    xmlns:ptswc="clr-namespace:System.Windows.Controls;assembly=PresentationFramework.Theme"
+    xmlns:snow="clr-namespace:WindowsModern.SnowFall;assembly=WindowsModern.SnowFall">
+
+	<!-- ===== Information ===== -->
+	<s:String x:Key="ThemeDisplayName">Snowfall</s:String>
+	<s:String x:Key="ThemePublisherDisplayName">Windows Modern</s:String>
+	<s:String x:Key="ThemeDescription">Winter Snowfall Theme.&#10;An experimental, demonstrative theme.</s:String>
+	<s:String x:Key="ThemeLogo">Mkho-Christmas-Snow-flake.ico</s:String>
+
+	<!-- ===== Options ===== -->
+	<s:Boolean x:Key="EnableBlur">true</s:Boolean>
+	<s:Boolean x:Key="EnableBlurForFlyout">false</s:Boolean>
+	<s:Boolean x:Key="EnableBlurForDrag">false</s:Boolean>
+	<s:Boolean x:Key="EnableNotificationBlur">false</s:Boolean>
+	<s:Boolean x:Key="EnableNotificationClipRound">true</s:Boolean>
+
+	<!-- ===== Global ===== -->
+	<SolidColorBrush x:Key="GlobalForegroundBrush" Color="{Binding ForegroundColor, Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+	<SolidColorBrush x:Key="GlobalFlyoutForegroundBrush" Color="{Binding ForegroundColor, Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+	<s:Double x:Key="GlobalFontSize">10</s:Double>
+	<s:Double x:Key="GlobalNormalFontSize">10</s:Double>
+	<s:Double x:Key="GlobalNormalFontSizeSmall">9</s:Double>
+
+	<!-- ===== 交互画刷 (静态资源，固定颜色) ===== -->
+	<SolidColorBrush x:Key="SnowTileHoverBackground"   Color="#404A6A90" />
+	<SolidColorBrush x:Key="SnowTileHoverBorderBrush"  Color="#802A4268" />
+	<SolidColorBrush x:Key="SnowTilePressedBackground" Color="#603A5A82" />
+
+	<!-- ===== Sidebar Background ===== -->
+	<Style x:Key="SidebarBackground" TargetType="Control">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Control">
+					<Grid x:Name="RootGrid" Background="Transparent" RenderTransformOrigin="0.5,0.5" ClipToBounds="True">
+						<Grid.RenderTransform>
+							<ScaleTransform ScaleX="1" />
+						</Grid.RenderTransform>
+
+						<Border>
+							<Border.Background>
+								<LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+									<GradientStop Offset="0" Color="{Binding SidebarBgStartColor, Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+									<GradientStop Offset="1" Color="{Binding SidebarBgEndColor,   Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+								</LinearGradientBrush>
+							</Border.Background>
+						</Border>
+
+						<snow:SnowfallOverlay
+                            SnowflakeCount="75"
+                            SnowflakeSize="2.4"
+                            SpeedFactor="1.0"
+                            Wind="0.15"
+                            SwayFactor="1.2"
+                            BaseOpacity="0.9"
+                            SnowColor="#FFFFFFFF" />
+					</Grid>
+					<ControlTemplate.Triggers>
+						<DataTrigger Binding="{StaticResource UtilSidebarIsReversedBinding}" Value="True">
+							<Setter TargetName="RootGrid" Property="RenderTransform">
+								<Setter.Value>
+									<ScaleTransform ScaleX="-1" />
+								</Setter.Value>
+							</Setter>
+						</DataTrigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<!-- SidebarHighlightSide -->
+	<Style x:Key="SidebarHighlightSide" TargetType="Control">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Control">
+					<Grid x:Name="RootGrid" Background="Transparent" RenderTransformOrigin="0.5,0.5">
+						<Grid.RenderTransform>
+							<ScaleTransform ScaleX="1" />
+						</Grid.RenderTransform>
+						<Border HorizontalAlignment="Left" Width="2">
+							<Border.Background>
+								<LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+									<GradientStop Offset="0.0" Color="{Binding EdgeColor, Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+									<GradientStop Offset="0.5" Color="{Binding EdgeColor, Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+									<GradientStop Offset="0.5" Color="#00000000" />
+									<GradientStop Offset="1.0" Color="#00000000" />
+								</LinearGradientBrush>
+							</Border.Background>
+						</Border>
+					</Grid>
+					<ControlTemplate.Triggers>
+						<DataTrigger Binding="{StaticResource UtilSidebarIsReversedBinding}" Value="True">
+							<Setter TargetName="RootGrid" Property="RenderTransform">
+								<Setter.Value>
+									<ScaleTransform ScaleX="-1" />
+								</Setter.Value>
+							</Setter>
+						</DataTrigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<!-- SidebarOptionsTop -->
+	<Style x:Key="SidebarOptionsTop" TargetType="Control">
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="Height" Value="17" />
+		<Setter Property="VerticalAlignment" Value="Top" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Control">
+					<Grid Background="{TemplateBinding Background}">
+						<StackPanel Name="OptionsBar" Height="{TemplateBinding Height}" HorizontalAlignment="Right" VerticalAlignment="Center" ClipToBounds="True" Orientation="Horizontal">
+							<TextBlock x:Name="OptionsText" VerticalAlignment="Center" FontFamily="{DynamicResource GlobalFontFamily}" FontSize="10" Foreground="{DynamicResource GlobalForegroundBrush}" Opacity="0" Text="{DynamicResource UtilStringSidebarOptions}" />
+							<Polygon Name="TopOptionsIcon" VerticalAlignment="Center" Points="0,0 3.5,3.5 7,0" Opacity="0.85" Stroke="#FD1A2842" StrokeThickness="1" Fill="#FFFFFFFF" Margin="2,1,2,0" RenderTransformOrigin="0.556,0.9" SnapsToDevicePixels="True" UseLayoutRounding="True" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" />
+						</StackPanel>
+					</Grid>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Trigger.EnterActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation Storyboard.TargetName="OptionsText" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2" />
+										<DoubleAnimation Storyboard.TargetName="TopOptionsIcon" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2" />
+									</Storyboard>
+								</BeginStoryboard>
+							</Trigger.EnterActions>
+							<Trigger.ExitActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation Storyboard.TargetName="OptionsText" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2" />
+										<DoubleAnimation Storyboard.TargetName="TopOptionsIcon" Storyboard.TargetProperty="Opacity" To="0.85" Duration="0:0:0.2" />
+									</Storyboard>
+								</BeginStoryboard>
+							</Trigger.ExitActions>
+						</Trigger>
+						<DataTrigger Binding="{StaticResource UtilSidebarIsReversedBinding}" Value="True">
+							<Setter TargetName="OptionsBar" Property="HorizontalAlignment" Value="Left" />
+							<Setter TargetName="OptionsBar" Property="FlowDirection" Value="RightToLeft" />
+						</DataTrigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<!-- ===== 分隔条 ===== -->
+	<ControlTemplate x:Key="SidebarOptionsSplliterTemplate" TargetType="Control">
+		<Grid x:Name="RootElement" Background="Transparent" RenderTransformOrigin="0.5,0.5">
+			<Rectangle x:Name="TopLine" Height="1" VerticalAlignment="Bottom" Margin="0,0,0,1">
+				<Rectangle.Fill>
+					<SolidColorBrush Color="{Binding SplitTopColor, Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+				</Rectangle.Fill>
+			</Rectangle>
+			<Rectangle x:Name="BottomLine" Height="1" VerticalAlignment="Bottom">
+				<Rectangle.Fill>
+					<SolidColorBrush Color="{Binding SplitBottomColor, Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+				</Rectangle.Fill>
+			</Rectangle>
+		</Grid>
+		<ControlTemplate.Triggers>
+			<DataTrigger Binding="{StaticResource UtilSidebarIsReversedBinding}" Value="True">
+				<Setter TargetName="RootElement" Property="RenderTransform">
+					<Setter.Value>
+						<ScaleTransform ScaleX="-1" />
+					</Setter.Value>
+				</Setter>
+			</DataTrigger>
+		</ControlTemplate.Triggers>
+	</ControlTemplate>
+
+	<Style x:Key="SidebarOptionsSplliter" TargetType="Control">
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="Height" Value="2" />
+		<Setter Property="VerticalAlignment" Value="Top" />
+		<Setter Property="Margin" Value="0,17,0,0" />
+		<Setter Property="Template" Value="{DynamicResource SidebarOptionsSplliterTemplate}" />
+	</Style>
+	<Style x:Key="SidebarOverflowPartSplliter" TargetType="Control">
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="Height" Value="2" />
+		<Setter Property="VerticalAlignment" Value="Top" />
+		<Setter Property="Template" Value="{DynamicResource SidebarOptionsSplliterTemplate}" />
+	</Style>
+	<Style x:Key="SidebarOverflowPanelSplliter" TargetType="Control">
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="Height" Value="2" />
+		<Setter Property="VerticalAlignment" Value="Top" />
+		<Setter Property="Template" Value="{DynamicResource SidebarOptionsSplliterTemplate}" />
+	</Style>
+
+	<!-- Tiles Region -->
+	<Style x:Key="SidebarTilesRegion" TargetType="DockPanel">
+		<Setter Property="Margin" Value="0,19,0,0" />
+	</Style>
+
+	<!-- Taskbar Tray -->
+	<Style x:Key="SidebarTaskbarTrayBackground" TargetType="Control">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Control">
+					<Grid x:Name="RootGrid" Background="Transparent" RenderTransformOrigin="0.5,0.5">
+						<Grid.RenderTransform>
+							<ScaleTransform ScaleX="1" />
+						</Grid.RenderTransform>
+						<Border>
+							<Border.Background>
+								<LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+									<GradientStop Offset="0" Color="{Binding TaskbarBgStartColor, Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+									<GradientStop Offset="1" Color="{Binding TaskbarBgEndColor,   Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+								</LinearGradientBrush>
+							</Border.Background>
+						</Border>
+						<Border VerticalAlignment="Top" Height="1">
+							<Border.Background>
+								<SolidColorBrush Color="{Binding EdgeColor, Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+							</Border.Background>
+						</Border>
+					</Grid>
+					<ControlTemplate.Triggers>
+						<DataTrigger Binding="{StaticResource UtilSystemIsTaskbarTopBinding}" Value="True">
+							<Setter TargetName="RootGrid" Property="RenderTransform">
+								<Setter.Value>
+									<ScaleTransform ScaleY="-1" />
+								</Setter.Value>
+							</Setter>
+						</DataTrigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<!-- Min Restore Button (修复了看不见的问题，放大了箭头并显式使用 SolidColorBrush) -->
+	<Style x:Key="SidebarMinRestoreButton" TargetType="Button">
+		<Setter Property="Width" Value="17" />
+		<Setter Property="Height" Value="27" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+		<Setter Property="Margin" Value="6,0,6,0" />
+		<Setter Property="DockPanel.Dock" Value="Left" />
+		<Setter Property="FocusVisualStyle" Value="{x:Null}" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Grid Background="Transparent">
+						<Path x:Name="Arrow" Data="M 3 9 L 8 4 L 13 9"
+                              StrokeThickness="2" StrokeStartLineCap="Round" StrokeEndLineCap="Round" 
+                              HorizontalAlignment="Center" VerticalAlignment="Center">
+							<Path.Stroke>
+								<SolidColorBrush Color="{Binding ArrowColor, Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+							</Path.Stroke>
+						</Path>
+					</Grid>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter TargetName="Arrow" Property="Stroke">
+								<Setter.Value>
+									<SolidColorBrush Color="{Binding ArrowHoverColor, Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+								</Setter.Value>
+							</Setter>
+						</Trigger>
+						<Trigger Property="IsPressed" Value="True">
+							<Setter TargetName="Arrow" Property="Stroke">
+								<Setter.Value>
+									<SolidColorBrush Color="{Binding ArrowPressedColor, Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+								</Setter.Value>
+							</Setter>
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<!-- Min AeroPeek Button -->
+	<Style x:Key="SidebarMinAeroPeekButton" TargetType="Button">
+		<Setter Property="Width" Value="8" />
+		<Setter Property="DockPanel.Dock" Value="Right" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Border x:Name="PART_Btn" Background="Transparent">
+						<ContentPresenter Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter TargetName="PART_Btn" Property="Background">
+								<Setter.Value>
+									<SolidColorBrush Color="{Binding HoverColor, Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+								</Setter.Value>
+							</Setter>
+						</Trigger>
+						<Trigger Property="IsPressed" Value="True">
+							<Setter TargetName="PART_Btn" Property="Background">
+								<Setter.Value>
+									<SolidColorBrush Color="{Binding HoverStrongColor, Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+								</Setter.Value>
+							</Setter>
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<!-- Min Taskbar Tiles -->
+	<Style x:Key="SidebarMinTaskbarTilesControl" TargetType="ItemsControl">
+		<Setter Property="ItemsPanel">
+			<Setter.Value>
+				<ItemsPanelTemplate>
+					<StackPanel Orientation="Horizontal" />
+				</ItemsPanelTemplate>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="ItemTemplate">
+			<Setter.Value>
+				<DataTemplate>
+					<Button Tag="{Binding}" ToolTip="{Binding DisplayName}" Content="{Binding Icon}" Width="24" FocusVisualStyle="{x:Null}">
+						<Button.Template>
+							<ControlTemplate TargetType="Button">
+								<Grid Background="Transparent">
+									<Border x:Name="Hover" CornerRadius="2" Opacity="0">
+										<Border.Background>
+											<SolidColorBrush Color="{Binding HoverColor, Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+										</Border.Background>
+									</Border>
+									<Image Source="{TemplateBinding Content}" Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center" />
+								</Grid>
+								<ControlTemplate.Triggers>
+									<Trigger Property="IsMouseOver" Value="True">
+										<Setter TargetName="Hover" Property="Opacity" Value="1" />
+									</Trigger>
+								</ControlTemplate.Triggers>
+							</ControlTemplate>
+						</Button.Template>
+					</Button>
+				</DataTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<!-- Overflow Tiles -->
+	<Style x:Key="SidebarOverflowTilesControl" TargetType="ItemsControl">
+		<Setter Property="FlowDirection" Value="RightToLeft" />
+		<Setter Property="DockPanel.Dock" Value="Bottom" />
+		<Setter Property="ItemsPanel">
+			<Setter.Value>
+				<ItemsPanelTemplate>
+					<WrapPanel FlowDirection="RightToLeft" />
+				</ItemsPanelTemplate>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="ItemsControl">
+					<StackPanel Orientation="Vertical" Background="{TemplateBinding Background}">
+						<Control FlowDirection="LeftToRight" Style="{DynamicResource SidebarOverflowPartSplliter}" />
+						<ItemsPresenter Margin="0,3,0,0" FlowDirection="{TemplateBinding FlowDirection}" />
+					</StackPanel>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="ItemTemplate">
+			<Setter.Value>
+				<DataTemplate>
+					<Button Tag="{Binding}" ToolTip="{Binding DisplayName}" Content="{Binding Icon}" Width="24" Height="24" FocusVisualStyle="{x:Null}">
+						<Button.Template>
+							<ControlTemplate TargetType="Button">
+								<Grid FlowDirection="LeftToRight">
+									<Border x:Name="Hover" CornerRadius="2" Opacity="0">
+										<Border.Background>
+											<SolidColorBrush Color="{Binding HoverColor, Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+										</Border.Background>
+									</Border>
+									<Border x:Name="Pressed" CornerRadius="2" Opacity="0">
+										<Border.Background>
+											<SolidColorBrush Color="{Binding HoverStrongColor, Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+										</Border.Background>
+									</Border>
+									<Image Source="{TemplateBinding Content}" Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center" />
+								</Grid>
+								<ControlTemplate.Triggers>
+									<Trigger Property="IsMouseOver" Value="True">
+										<Setter TargetName="Hover" Property="Opacity" Value="1" />
+									</Trigger>
+									<Trigger Property="IsPressed" Value="True">
+										<Setter TargetName="Pressed" Property="Opacity" Value="1" />
+									</Trigger>
+								</ControlTemplate.Triggers>
+							</ControlTemplate>
+						</Button.Template>
+					</Button>
+				</DataTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<!-- ===== Storyboards ===== -->
+	<Storyboard x:Key="SidebarWindowLoaded" />
+	<Storyboard x:Key="SidebarShowTaskbarTiles">
+		<DoubleAnimation Storyboard.TargetName="TaskbarTiles" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.8" />
+	</Storyboard>
+
+	<!-- ===== Tile ===== -->
+	<ControlTemplate x:Key="TileSplliterTemplate" TargetType="Control">
+		<Grid x:Name="RootElement" Background="{TemplateBinding Background}" RenderTransformOrigin="0.5,0.5">
+			<Rectangle x:Name="TopLine" Height="1" VerticalAlignment="Bottom" Margin="0,0,0,1">
+				<Rectangle.Fill>
+					<SolidColorBrush Color="{Binding SplitTopColor, Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+				</Rectangle.Fill>
+			</Rectangle>
+			<Rectangle x:Name="BottomLine" Height="1" VerticalAlignment="Bottom">
+				<Rectangle.Fill>
+					<SolidColorBrush Color="{Binding SplitBottomColor, Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+				</Rectangle.Fill>
+			</Rectangle>
+		</Grid>
+		<ControlTemplate.Triggers>
+			<Trigger Property="IsMouseOver" Value="True">
+				<Setter TargetName="TopLine" Property="Fill">
+					<Setter.Value>
+						<SolidColorBrush Color="{Binding SplitTopHoverColor, Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+					</Setter.Value>
+				</Setter>
+				<Setter TargetName="BottomLine" Property="Fill">
+					<Setter.Value>
+						<SolidColorBrush Color="{Binding SplitBottomHoverColor, Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+					</Setter.Value>
+				</Setter>
+			</Trigger>
+			<DataTrigger Binding="{StaticResource UtilSidebarIsReversedBinding}" Value="True">
+				<Setter TargetName="RootElement" Property="RenderTransform">
+					<Setter.Value>
+						<ScaleTransform ScaleX="-1" />
+					</Setter.Value>
+				</Setter>
+			</DataTrigger>
+		</ControlTemplate.Triggers>
+	</ControlTemplate>
+	<Style x:Key="TileSplliter" TargetType="Thumb">
+		<Setter Property="DockPanel.Dock" Value="Bottom" />
+		<Setter Property="Height" Value="4" />
+		<Setter Property="Cursor" Value="SizeNS" />
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="Template" Value="{DynamicResource TileSplliterTemplate}" />
+		<Style.Triggers>
+			<DataTrigger Binding="{Binding IsPinned, ElementName=RootTileElement}" Value="True">
+				<Setter Property="DockPanel.Dock" Value="Top" />
+			</DataTrigger>
+		</Style.Triggers>
+	</Style>
+
+	<Style x:Key="TileHeaderContainer" TargetType="Grid">
+		<Setter Property="Visibility" Value="Collapsed" />
+	</Style>
+	<Style x:Key="TileContentContainer" TargetType="Grid">
+		<Setter Property="Margin" Value="1,0,0,0" />
+		<Style.Triggers>
+			<DataTrigger Binding="{StaticResource UtilSidebarIsReversedBinding}" Value="True">
+				<Setter Property="Margin" Value="0,0,1,0" />
+			</DataTrigger>
+		</Style.Triggers>
+	</Style>
+
+	<Style x:Key="TileFlyoutIcon" TargetType="Control">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Control">
+					<Polygon x:Name="FlyoutIcon" Points="0,0 7,0 7,7" VerticalAlignment="Top" IsHitTestVisible="True" RenderTransformOrigin="0.5,0.5" Cursor="Hand" Stroke="#FF1A2842" StrokeThickness="1" Fill="#FFFFFFFF" Margin="1,2,1,0" SnapsToDevicePixels="True" UseLayoutRounding="True" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" HorizontalAlignment="Right" />
+					<ControlTemplate.Triggers>
+						<DataTrigger Binding="{StaticResource UtilSidebarIsReversedBinding}" Value="True">
+							<Setter TargetName="FlyoutIcon" Property="HorizontalAlignment" Value="Left" />
+							<Setter TargetName="FlyoutIcon" Property="RenderTransform">
+								<Setter.Value>
+									<ScaleTransform ScaleX="-1" ScaleY="1" />
+								</Setter.Value>
+							</Setter>
+						</DataTrigger>
+						<DataTrigger Binding="{Binding IsPinned, ElementName=RootTileElement}" Value="True">
+							<Setter Property="Margin" Value="1,4" />
+						</DataTrigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="Opacity" Value="0" />
+		<Setter Property="IsHitTestVisible" Value="False" />
+	</Style>
+
+	<!-- ===== Flyout ===== -->
+	<Style x:Key="FlyoutWindow" TargetType="Window">
+		<Setter Property="AllowsTransparency" Value="True" />
+		<Setter Property="WindowStyle" Value="None" />
+		<Setter Property="ResizeMode" Value="NoResize" />
+		<Setter Property="Background" Value="Transparent" />
+	</Style>
+	<Style x:Key="FlyoutBackground" TargetType="Control">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Control">
+					<Grid x:Name="RootGrid" Background="Transparent" RenderTransformOrigin="0.5,0.5" ClipToBounds="True">
+						<Grid.RenderTransform>
+							<ScaleTransform ScaleX="1" />
+						</Grid.RenderTransform>
+
+						<Border BorderThickness="1" CornerRadius="0">
+							<Border.BorderBrush>
+								<SolidColorBrush Color="{Binding BorderColor, Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+							</Border.BorderBrush>
+							<Border.Background>
+								<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+									<GradientStop Offset="0" Color="{Binding FlyoutBgStartColor, Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+									<GradientStop Offset="1" Color="{Binding FlyoutBgEndColor,   Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+								</LinearGradientBrush>
+							</Border.Background>
+						</Border>
+
+						<Border Background="Transparent" Margin="1" CornerRadius="0">
+							<Border.Background>
+								<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+									<GradientStop Offset="0" Color="#30FFFFFF" />
+									<GradientStop Offset="1" Color="#00FFFFFF" />
+								</LinearGradientBrush>
+							</Border.Background>
+						</Border>
+
+						<snow:SnowfallOverlay
+                            SnowflakeCount="30"
+                            SnowflakeSize="2.0"
+                            SpeedFactor="0.9"
+                            Wind="0.12"
+                            SwayFactor="1.0"
+                            BaseOpacity="0.9"
+                            SnowColor="#FFFFFFFF" />
+					</Grid>
+					<ControlTemplate.Triggers>
+						<DataTrigger Binding="{StaticResource UtilSidebarIsReversedBinding}" Value="True">
+							<Setter TargetName="RootGrid" Property="RenderTransform">
+								<Setter.Value>
+									<ScaleTransform ScaleX="-1" />
+								</Setter.Value>
+							</Setter>
+						</DataTrigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+	<Style x:Key="FlyoutHeader" TargetType="Control">
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Control">
+					<Grid Background="{TemplateBinding Background}">
+						<StackPanel Name="OptionsBar" Height="{TemplateBinding Height}" HorizontalAlignment="Right" VerticalAlignment="Center" ClipToBounds="True" Orientation="Horizontal" Margin="2,0">
+							<TextBlock x:Name="OptionsText" VerticalAlignment="Center" FontFamily="{DynamicResource GlobalFontFamily}" FontSize="10" Foreground="{DynamicResource GlobalFlyoutForegroundBrush}" Opacity="0" Text="{DynamicResource UtilStringSidebarOptions}" />
+							<Polygon Name="TopOptionsIcon" VerticalAlignment="Center" Points="0,0 3.5,3.5 7,0" Opacity="0.85" Stroke="#FD1A2842" StrokeThickness="1" Fill="#FFFFFFFF" Margin="2,1,2,0" RenderTransformOrigin="0.556,0.9" SnapsToDevicePixels="True" UseLayoutRounding="True" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round" />
+						</StackPanel>
+					</Grid>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Trigger.EnterActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation Storyboard.TargetName="OptionsText" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2" />
+										<DoubleAnimation Storyboard.TargetName="TopOptionsIcon" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.2" />
+									</Storyboard>
+								</BeginStoryboard>
+							</Trigger.EnterActions>
+							<Trigger.ExitActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation Storyboard.TargetName="OptionsText" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2" />
+										<DoubleAnimation Storyboard.TargetName="TopOptionsIcon" Storyboard.TargetProperty="Opacity" To="0.85" Duration="0:0:0.2" />
+									</Storyboard>
+								</BeginStoryboard>
+							</Trigger.ExitActions>
+						</Trigger>
+						<DataTrigger Binding="{StaticResource UtilSidebarIsReversedBinding}" Value="True">
+							<Setter TargetName="OptionsBar" Property="HorizontalAlignment" Value="Left" />
+							<Setter TargetName="OptionsBar" Property="FlowDirection" Value="RightToLeft" />
+						</DataTrigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="Height" Value="17" />
+		<Setter Property="VerticalAlignment" Value="Top" />
+	</Style>
+	<Style x:Key="FlyoutContentContainer" TargetType="Grid">
+		<Setter Property="Margin" Value="4,17,4,4" />
+	</Style>
+	<Style x:Key="FlyoutHighlight" TargetType="Control">
+		<Setter Property="Visibility" Value="Collapsed" />
+	</Style>
+
+	<!-- ===== Drag ===== -->
+	<Style x:Key="DragWindowWindow" TargetType="Window">
+		<Setter Property="Background" Value="Transparent" />
+	</Style>
+	<Style x:Key="DragWindowClientArea" TargetType="Grid">
+		<Setter Property="Opacity" Value="0.9" />
+	</Style>
+	<Style x:Key="DragWindowBackground" TargetType="Control">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Control">
+					<Grid Background="Transparent">
+						<Border BorderThickness="1" CornerRadius="0">
+							<Border.BorderBrush>
+								<SolidColorBrush Color="{Binding BorderColor, Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+							</Border.BorderBrush>
+							<Border.Background>
+								<SolidColorBrush Color="{Binding DragBgColor, Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+							</Border.Background>
+						</Border>
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+	<Style x:Key="DragWindowContentContainer" TargetType="Grid">
+		<Setter Property="Margin" Value="10" />
+	</Style>
+	<Style x:Key="DragWindowHighlight" TargetType="Control">
+		<Setter Property="Visibility" Value="Collapsed" />
+	</Style>
+
+	<!-- ===== Notification (修复了异常问题) ===== -->
+	<Style x:Key="NotificationBaseBackground" TargetType="Border">
+		<Setter Property="Background">
+			<Setter.Value>
+				<SolidColorBrush Color="{Binding NotifBgColor, Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+			</Setter.Value>
+		</Setter>
+		<Setter Property="CornerRadius" Value="5" />
+	</Style>
+	<Style x:Key="NotificationBorder" TargetType="Border">
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="CornerRadius" Value="5" />
+		<Setter Property="BorderBrush">
+			<Setter.Value>
+				<SolidColorBrush Color="{Binding BorderColor, Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+			</Setter.Value>
+		</Setter>
+		<Setter Property="Margin" Value="0,15,0,0" />
+	</Style>
+
+	<Style x:Key="NotificationTextAreaOuterBorder" TargetType="Border">
+		<Setter Property="BorderBrush">
+			<Setter.Value>
+				<LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+					<GradientStop Offset="0" Color="{Binding BorderColor, Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+					<GradientStop Offset="0.5" Color="#30FFFFFF" />
+					<GradientStop Offset="1" Color="{Binding BorderColor, Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="Margin" Value="20,15,5,0" />
+		<Setter Property="CornerRadius" Value="4" />
+		<Setter Property="BorderThickness" Value="1" />
+	</Style>
+
+	<Style x:Key="NotificationTextAreaInnerBorder" TargetType="Border">
+		<Setter Property="BorderBrush">
+			<Setter.Value>
+				<LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+					<GradientStop Offset="0" Color="#802A4268" />
+					<GradientStop Offset="0.25" Color="#803A5A82" />
+					<GradientStop Offset="0.5" Color="#00FFFFFF" />
+					<GradientStop Offset="0.75" Color="#803A5A82" />
+					<GradientStop Offset="1" Color="#802A4268" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="CornerRadius" Value="3" />
+		<Setter Property="BorderThickness" Value="1" />
+	</Style>
+
+	<Style x:Key="NotificationTextAreaTextPart" TargetType="Border">
+		<Setter Property="BorderBrush" Value="#103A5A82" />
+		<Setter Property="CornerRadius" Value="2" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="Background">
+			<Setter.Value>
+				<SolidColorBrush Color="{Binding NotifTextBgColor, Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+			</Setter.Value>
+		</Setter>
+		<Setter Property="Margin" Value="0" />
+		<Setter Property="Cursor" Value="Hand" />
+	</Style>
+
+	<Style x:Key="NotificationTitle" TargetType="TextBlock">
+		<Setter Property="FontFamily" Value="{DynamicResource GlobalFontFamily}" />
+		<Setter Property="FontSize" Value="15" />
+		<Setter Property="Margin" Value="5,5,5,0" />
+		<Setter Property="Foreground">
+			<Setter.Value>
+				<SolidColorBrush Color="{Binding ForegroundColor, Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+			</Setter.Value>
+		</Setter>
+	</Style>
+	<Style x:Key="NotificationContent" TargetType="TextBlock">
+		<Setter Property="FontFamily" Value="{DynamicResource GlobalFontFamily}" />
+		<Setter Property="FontSize" Value="12" />
+		<Setter Property="FontWeight" Value="Normal" />
+		<Setter Property="Margin" Value="5,3,5,5" />
+		<Setter Property="Foreground">
+			<Setter.Value>
+				<SolidColorBrush Color="{Binding ForegroundSoftColor, Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<!-- ===== Notification 动画 ===== -->
+	<Storyboard x:Key="NotificationEnter">
+		<DoubleAnimation Storyboard.TargetName="BackgroundHeightChange" Storyboard.TargetProperty="Height" From="15" To="0" Duration="0:0:0.4" />
+		<DoubleAnimation Storyboard.TargetName="HeaderBar" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.4" />
+		<ThicknessAnimation Storyboard.TargetName="BackgroundBorder" Storyboard.TargetProperty="Margin" From="0,15,0,0" To="0" Duration="0:0:0.4" />
+	</Storyboard>
+	<Storyboard x:Key="NotificationLeave">
+		<DoubleAnimation Storyboard.TargetName="BackgroundHeightChange" Storyboard.TargetProperty="Height" From="0" To="15" Duration="0:0:0.4" />
+		<DoubleAnimation Storyboard.TargetName="HeaderBar" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.4" />
+		<ThicknessAnimation Storyboard.TargetName="BackgroundBorder" Storyboard.TargetProperty="Margin" From="0" To="0,15,0,0" Duration="0:0:0.4" />
+	</Storyboard>
+	<Storyboard x:Key="NotificationLoaded" />
+	<Storyboard x:Key="NotificationUnloaded" />
+	<Storyboard x:Key="NotificationContentLoaded" />
+	<Storyboard x:Key="NotificationContentEnter" />
+	<Storyboard x:Key="NotificationContentLeave" />
+
+	<!-- ===== Icon Item ===== -->
+	<Style x:Key="TileIconItemButtonStyle" TargetType="Button">
+		<Setter Property="Width" Value="24" />
+		<Setter Property="Height" Value="24" />
+		<Setter Property="Cursor" Value="Hand" />
+		<Setter Property="FocusVisualStyle" Value="{x:Null}" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Border x:Name="border" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Background="Transparent" BorderBrush="Transparent" BorderThickness="1" CornerRadius="2">
+						<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}" />
+						<VisualStateManager.VisualStateGroups>
+							<VisualStateGroup x:Name="CommonStates">
+								<VisualState x:Name="Normal" />
+								<VisualState x:Name="MouseOver">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="border" Storyboard.TargetProperty="Background">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource SnowTileHoverBackground}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="border" Storyboard.TargetProperty="BorderBrush">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource SnowTileHoverBorderBrush}" />
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
+								<VisualState x:Name="Pressed">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="border" Storyboard.TargetProperty="Background">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource SnowTilePressedBackground}" />
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
+							</VisualStateGroup>
+						</VisualStateManager.VisualStateGroups>
+					</Border>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+	<Style x:Key="TileIconItemWithTextButtonStyle" TargetType="Button">
+		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+		<Setter Property="Height" Value="24" />
+		<Setter Property="Cursor" Value="Hand" />
+		<Setter Property="FocusVisualStyle" Value="{x:Null}" />
+		<Setter Property="Padding" Value="4,4,4,4" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Border x:Name="border" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Background="Transparent" BorderBrush="Transparent" BorderThickness="1" CornerRadius="2">
+						<ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Top" Margin="{TemplateBinding Padding}" />
+						<VisualStateManager.VisualStateGroups>
+							<VisualStateGroup x:Name="CommonStates">
+								<VisualState x:Name="Normal" />
+								<VisualState x:Name="MouseOver">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="border" Storyboard.TargetProperty="Background">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource SnowTileHoverBackground}" />
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
+								<VisualState x:Name="Pressed">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="border" Storyboard.TargetProperty="Background">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource SnowTilePressedBackground}" />
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
+							</VisualStateGroup>
+						</VisualStateManager.VisualStateGroups>
+					</Border>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+	<Style x:Key="TileIconItemForTrayTile" BasedOn="{StaticResource TileIconItemButtonStyle}" TargetType="Button" />
+	<Style x:Key="TileIconItemWithTextForTrayTile" BasedOn="{StaticResource TileIconItemWithTextButtonStyle}" TargetType="Button">
+		<Setter Property="Height" Value="Auto" />
+	</Style>
+	<Style x:Key="TileIconItemForQuickLaunchTile" BasedOn="{StaticResource TileIconItemButtonStyle}" TargetType="Button">
+		<Setter Property="Width" Value="28" />
+		<Setter Property="Height" Value="28" />
+	</Style>
+	<Style x:Key="TileIconItemWithTextForQuickLaunchTile" BasedOn="{StaticResource TileIconItemWithTextButtonStyle}" TargetType="Button" />
+
+	<!-- ===================================================================== -->
+	<!-- ===== ClockTile 适配 ===== -->
+	<!-- ===================================================================== -->
+
+	<Style x:Key="TileClockFace" TargetType="Image">
+		<Setter Property="Width" Value="260" />
+		<Setter Property="Height" Value="260" />
+		<Setter Property="Source" Value="..\..\Images\Clock\ClockFace.png" />
+		<Setter Property="Effect">
+			<Setter.Value>
+				<DropShadowEffect BlurRadius="18" ShadowDepth="4" Direction="270" Opacity="0.55"
+                                  Color="{Binding ClockShadowColor, Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="TileClockHourHand" TargetType="Image">
+		<Setter Property="Height" Value="95" />
+		<Setter Property="Margin" Value="0,0,0,50" />
+		<Setter Property="RenderTransformOrigin" Value="0.5,0.78" />
+		<Setter Property="Source" Value="..\..\Images\Clock\Hour.png" />
+	</Style>
+
+	<Style x:Key="TileClockMinuteHand" TargetType="Image">
+		<Setter Property="Height" Value="125" />
+		<Setter Property="Margin" Value="0,0,0,85" />
+		<Setter Property="RenderTransformOrigin" Value="0.5,0.845" />
+		<Setter Property="Source" Value="..\..\Images\Clock\Minute.png" />
+	</Style>
+
+	<Style x:Key="TileClockSecondHand" TargetType="Image">
+		<Setter Property="Height" Value="128" />
+		<Setter Property="Margin" Value="0,0,0,72" />
+		<Setter Property="RenderTransformOrigin" Value="0.5,0.778" />
+		<Setter Property="Source" Value="..\..\Images\Clock\Second.png" />
+	</Style>
+
+	<Style x:Key="TileClockHub" TargetType="Image">
+		<Setter Property="Width" Value="12" />
+		<Setter Property="Height" Value="12" />
+		<Setter Property="Source" Value="..\..\Images\Clock\Dot.png" />
+	</Style>
+
+	<Style x:Key="TileClockCrystal" TargetType="Image">
+		<Setter Property="Width" Value="260" />
+		<Setter Property="Height" Value="260" />
+		<Setter Property="Source" Value="..\..\Images\Clock\Crystal.png" />
+		<Setter Property="Opacity" Value="0.35" />
+	</Style>
+
+	<Style x:Key="TileClockCalendarBorder" TargetType="Border">
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="Width" Value="219" />
+		<Setter Property="Height" Value="294" />
+		<Setter Property="BorderBrush">
+			<Setter.Value>
+				<SolidColorBrush Color="{Binding BorderColor, Source={x:Static snow:SnowfallThemeProvider.Instance}}" />
+			</Setter.Value>
+		</Setter>
+		<Setter Property="CornerRadius" Value="3" />
+		<Setter Property="Background" Value="#F0FFFFFF" />
+		<Setter Property="ClipToBounds" Value="True" />
+		<Setter Property="Clip">
+			<Setter.Value>
+				<RectangleGeometry RadiusX="4" RadiusY="4" Rect="0,0,219,294" />
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+</ResourceDictionary>

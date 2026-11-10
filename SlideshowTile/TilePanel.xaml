@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:WindowsModern.SlideshowTile"
              mc:Ignorable="d" Loaded="UserControl_Loaded" Unloaded="UserControl_Unloaded"
              d:DesignHeight="300" d:DesignWidth="300">
-	<Grid Background="Black" Height="Auto">
+	<Grid Background="Transparent" Height="Auto">
 		<Image Name="Image1" 
                VerticalAlignment="Center" 
                HorizontalAlignment="Stretch"

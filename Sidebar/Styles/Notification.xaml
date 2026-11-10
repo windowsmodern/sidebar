@@ -310,12 +310,8 @@
 		<DoubleAnimation Storyboard.TargetName="HeaderBar" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.4" />
 		<ThicknessAnimation Storyboard.TargetName="BackgroundBorder" Storyboard.TargetProperty="Margin" From="0" To="0,15,0,0" Duration="0:0:0.4" />
 	</Storyboard>
-	<Storyboard x:Key="NotificationLoaded">
-		<DoubleAnimation Storyboard.TargetName="NotificationUI" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.5" />
-	</Storyboard>
-	<Storyboard x:Key="NotificationUnloaded">
-		<DoubleAnimation Storyboard.TargetName="NotificationUI" Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.5" />
-	</Storyboard>
+	<Storyboard x:Key="NotificationLoaded"></Storyboard>
+	<Storyboard x:Key="NotificationUnloaded"></Storyboard>
 	<Storyboard x:Key="NotificationContentLoaded" />
 	<Storyboard x:Key="NotificationContentEnter" />
 	<Storyboard x:Key="NotificationContentLeave" />

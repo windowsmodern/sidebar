@@ -93,7 +93,7 @@
 				<Border Name="TextAreaBorderOuter" Style="{DynamicResource NotificationTextAreaOuterBorder}">
 					<Border Name="TextAreaBorderInner" Style="{DynamicResource NotificationTextAreaInnerBorder}">
 						<Border Name="TextAreaTextArea" Style="{DynamicResource NotificationTextAreaTextPart}">
-							<ScrollViewer HorizontalContentAlignment="Stretch" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Style="{DynamicResource AutoHideScrollViewer}">
+							<ScrollViewer Name="MessagePart" HorizontalContentAlignment="Stretch" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto" Style="{DynamicResource AutoHideScrollViewer}">
 								<StackPanel MouseDown="ScrollViewer_MouseDown" MouseUp="ScrollViewer_MouseUp" TouchDown="ScrollViewer_TouchDown" TouchUp="ScrollViewer_TouchUp" Background="Transparent">
 									<TextBlock Name="MessageTitle" TextWrapping="Wrap" Style="{DynamicResource NotificationTitle}" HorizontalAlignment="Left">Stay current with automatic updates</TextBlock>
 									<TextBlock Name="MessageContent" TextWrapping="Wrap" Style="{DynamicResource NotificationContent}">Click here to learn how to keep your computer up to date automatically with important downloads from Windows Update.</TextBlock>

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -35,6 +37,7 @@ namespace Sidebar
 		public App ()
 		{
 			DispatcherUnhandledException += App_DispatcherUnhandledException;
+			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
 		}
 		#region Unhandled Exception
 		private void App_DispatcherUnhandledException (object sender, DispatcherUnhandledExceptionEventArgs e)
@@ -86,6 +89,88 @@ namespace Sidebar
 				sb.AppendLine ($"\t{error.InnerException.GetType ()}: {error.InnerException.Message}");
 			}
 			return sb.ToString ();
+		}
+		#endregion
+		#region Assembly Load
+		private class AssemblyCacheItem
+		{
+			public string DllPath { get; set; }
+			public DateTime CachedTime { get; set; }
+		}
+		private static readonly ConcurrentDictionary<string, AssemblyCacheItem> AssemblyPathCache = new ConcurrentDictionary<string, AssemblyCacheItem> (StringComparer.OrdinalIgnoreCase);
+		private static readonly TimeSpan CacheTTL = TimeSpan.FromMinutes (10);
+		private static int _isIndexing = 0;
+		private static Timer _cacheRefreshTimer;
+		private static void EnsureCacheTimerStarted ()
+		{
+			if (_cacheRefreshTimer != null) return;
+			var timer = new Timer (_ => RebuildAssemblyIndex (), null, (int)CacheTTL.TotalMilliseconds, (int)CacheTTL.TotalMilliseconds);
+			if (Interlocked.CompareExchange (ref _cacheRefreshTimer, timer, null) != null) timer.Dispose ();
+		}
+		private static void RebuildAssemblyIndex ()
+		{
+			if (Interlocked.Exchange (ref _isIndexing, 1) == 1) return;
+			try
+			{
+				string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+				string [] searchRoots = { Path.Combine (baseDir, "Themes"), Path.Combine (baseDir, "Gadgets") };
+				var newCache = new ConcurrentDictionary<string, AssemblyCacheItem> (StringComparer.OrdinalIgnoreCase);
+				DateTime now = DateTime.Now;
+				foreach (var root in searchRoots)
+				{
+					if (!Directory.Exists (root)) continue;
+					try
+					{
+						foreach (var dllPath in Directory.EnumerateFiles (root, "*.dll", SearchOption.AllDirectories))
+						{
+							if (dllPath.IndexOf (@"\Deleted\", StringComparison.OrdinalIgnoreCase) >= 0) continue;
+							string simpleName = Path.GetFileNameWithoutExtension (dllPath);
+							newCache.TryAdd (simpleName, new AssemblyCacheItem { DllPath = dllPath, CachedTime = now });
+						}
+					}
+					catch { }
+				}
+				AssemblyPathCache.Clear ();
+				foreach (var kv in newCache) AssemblyPathCache.TryAdd (kv.Key, kv.Value);
+			}
+			catch { }
+			finally
+			{
+				Interlocked.Exchange (ref _isIndexing, 0);
+			}
+		}
+		private Assembly CurrentDomain_AssemblyResolve (object sender, ResolveEventArgs args)
+		{
+			EnsureCacheTimerStarted ();
+			var assemblyName = new AssemblyName (args.Name).Name;
+			if (assemblyName.EndsWith (".resources", StringComparison.OrdinalIgnoreCase)) return null;
+			AssemblyCacheItem cacheItem;
+			AssemblyCacheItem removedItem;
+			if (AssemblyPathCache.TryGetValue (assemblyName, out cacheItem))
+			{
+				try
+				{
+					if (!File.Exists (cacheItem.DllPath))
+					{
+						AssemblyPathCache.TryRemove (assemblyName, out removedItem);
+						return null;
+					}
+					var asm = Assembly.LoadFrom (cacheItem.DllPath);
+					cacheItem.CachedTime = DateTime.Now;
+					return asm;
+				}
+				catch
+				{
+					AssemblyPathCache.TryRemove (assemblyName, out removedItem);
+				}
+			}
+			string fallbackPath = Path.Combine (AppDomain.CurrentDomain.BaseDirectory, assemblyName + ".dll");
+			if (File.Exists (fallbackPath))
+			{
+				try { return Assembly.LoadFrom (fallbackPath); } catch { }
+			}
+			if (Thread.VolatileRead (ref _isIndexing) == 0) ThreadPool.QueueUserWorkItem (state => RebuildAssemblyIndex ());
+			return null;
 		}
 		#endregion
 		private void Application_Startup (object sender, StartupEventArgs e)

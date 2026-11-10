@@ -10,14 +10,6 @@
 			 MinHeight="35" 
              d:DesignHeight="300" d:DesignWidth="300">
 	<UserControl.Resources>
-		<Style x:Key="TileNotificationTilePanelDetail" TargetType="Border">
-			<Setter Property="Width" Value="8"></Setter>
-			<Setter Property="Height" Value="4"></Setter>
-		</Style>
-		<Style x:Key="TileNotificationTileButtonDetail" TargetType="Border">
-			<Setter Property="Width" Value="4"></Setter>
-			<Setter Property="Height" Value="20"></Setter>
-		</Style>
 	</UserControl.Resources>
 	<Grid>
 		<Border Visibility="Hidden" Name="NotificationPanelProp" Style="{DynamicResource TileNotificationTilePanelDetail}" SizeChanged="NotificationPanelProp_SizeChanged"></Border>

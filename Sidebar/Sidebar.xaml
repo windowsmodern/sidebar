@@ -9,8 +9,9 @@
 	Title="{pst:StringResource SIDEBAR_TITLE}" Width="150" Height="0" AllowsTransparency="True"
 	Background="Transparent" Opacity="1" ResizeMode="NoResize"
 	ShowInTaskbar="False" WindowStyle="None" Focusable="False"
+	SizeToContent="Manual"
 	Closed="Window_Closed" Loaded="Window_Loaded" SourceInitialized="Window_SourceInitialized" SizeChanged="Window_SizeChanged" MouseDoubleClick="Window_MouseDoubleClick" MouseMove="Window_MouseMove"
-	mc:Ignorable="d">
+	mc:Ignorable="d" Style="{DynamicResource SidebarWindow}">
 	<Window.Triggers>
 		<EventTrigger RoutedEvent="FrameworkElement.Loaded">
 			<BeginStoryboard Storyboard="{DynamicResource SidebarWindowLoaded}"/>
@@ -31,11 +32,11 @@
 		</ContextMenu>
 	</Window.ContextMenu>
 	<Grid>
-		<Grid Name="SidebarView" Loaded="SidebarView_Loaded">
-			<Control Style="{DynamicResource SidebarBackground}" />
+		<Grid Name="SidebarView" Visibility="Visible" Loaded="SidebarView_Loaded" Style="{DynamicResource SidebarSidebarView}">
+			<Control Name="SidebarBackground" Style="{DynamicResource SidebarBackground}" />
 			<Grid>
 				<Button Name="TopOptionsButton" Click="TopOptionsButton_Click" Style="{DynamicResource SidebarOptionsTop}" Focusable="False"/>
-				<Control Style="{DynamicResource SidebarOptionsSplliter}" />
+				<Control Name="TopOptionsSplitter" Style="{DynamicResource SidebarOptionsSplliter}" />
 				<DockPanel Name="TilesContainer" Style="{DynamicResource SidebarTilesRegion}">
 					<ScrollViewer Name="ScrollPinnedTilesControl" Style="{DynamicResource SidebarPinnedTilesScrollControl}" />
 					<StackPanel Name="PinnedTilesControl" Style="{DynamicResource SidebarPinnedTilesControl}" />
@@ -44,16 +45,16 @@
 					<StackPanel Name="TilesControl" Style="{DynamicResource SidebarTilesControl}" />
 				</DockPanel>
 			</Grid>
-			<Control IsHitTestVisible="False" Style="{DynamicResource SidebarHighlightSide}" />
+			<Control Name="SidebarHighlight" IsHitTestVisible="False" Style="{DynamicResource SidebarHighlightSide}" />
 		</Grid>
-		<Grid Name="TaskbarView" Visibility="Collapsed">
-			<Control Style="{DynamicResource SidebarTaskbarTrayBackground}"></Control>
-			<DockPanel>
+		<Grid Name="TaskbarView" Visibility="Collapsed" Style="{DynamicResource SidebarTaskbarView}">
+			<Control Name="TaskbarBackground" Style="{DynamicResource SidebarTaskbarTrayBackground}"></Control>
+			<DockPanel Name="TaskbarContent">
 				<Button Name="RestoreButton" Style="{DynamicResource SidebarMinRestoreButton}" Click="RestoreButton_Click">↑</Button>
 				<Button Name="AeroPeekButton" Style="{DynamicResource SidebarMinAeroPeekButton}" Click="AeroPeekButton_Click"></Button>
 				<ItemsControl Name="TaskbarTiles" Style="{DynamicResource SidebarMinTaskbarTilesControl}"></ItemsControl>
 			</DockPanel>
-			<Control Style="{DynamicResource SidebarTaskbarTrayHighlight}" IsHitTestVisible="False"></Control>
+			<Control Name="TaskbarHighlight" Style="{DynamicResource SidebarTaskbarTrayHighlight}" IsHitTestVisible="False"></Control>
 		</Grid>
 	</Grid>
 </Window>

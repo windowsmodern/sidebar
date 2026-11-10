@@ -8,7 +8,8 @@
 			 x:Name="RootTileElement"
              mc:Ignorable="d" Background="Transparent" Visibility="Hidden"
 			 Loaded="RootTileElement_Loaded" Unloaded="RootTileElement_Unloaded" SizeChanged="RootTileElement_SizeChanged"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300"
+			 Style="{DynamicResource TileControlElement}">
 	<UserControl.Resources>
 		<Storyboard x:Key="TileFirstLoadAnimation" Completed="TileFirstLoadStoryboard_Completed">
 			<DoubleAnimation Storyboard.TargetName="RootTileElement" Storyboard.TargetProperty="Height" From="0" To="100" Duration="0:0:0.4" FillBehavior="Stop"/>

@@ -353,7 +353,7 @@ namespace WindowsModern.SlideshowTile
 							if (_preloadedBitmap != null)
 							{
 								_preloadedBitmap = null;
-								GC.Collect (GC.MaxGeneration, GCCollectionMode.Optimized);
+								Utilities.ReleaseLargeResourcesAsync ();
 							}
 							_preloadedBitmap = bitmap;
 							_preloadedImageIndex = nextIdx;
@@ -722,8 +722,7 @@ namespace WindowsModern.SlideshowTile
 				}
 
 				// ✅ 触发垃圾回收
-				GC.Collect (GC.MaxGeneration, GCCollectionMode.Optimized);
-				GC.WaitForPendingFinalizers ();
+				Utilities.ReleaseLargeResourcesAsync ();
 			}
 			catch { }
 		}

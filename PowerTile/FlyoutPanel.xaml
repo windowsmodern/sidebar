@@ -10,26 +10,8 @@
 		<Style TargetType="{x:Type TextBlock}">
 			<Setter Property="FontFamily" Value="{DynamicResource GlobalFontFamily}" />
 		</Style>
-		<Style x:Key="TilePowerFlyoutTitle1" TargetType="TextBlock">
-			<Setter Property="Foreground" Value="#989898"></Setter>
-			<Setter Property="FontWeight" Value="Bold"></Setter>
-			<Setter Property="FontSize" Value="12.5"></Setter>
-			<Setter Property="Margin" Value="0,3,0,3"></Setter>
-			<Setter Property="FontFamily" Value="{DynamicResource GlobalFontFamily}" />
-		</Style>
-		<Style x:Key="TilePowerFlyoutTitle2" TargetType="TextBlock">
-			<Setter Property="Foreground" Value="#989898"></Setter>
-			<Setter Property="FontWeight" Value="Bold"></Setter>
-			<Setter Property="FontSize" Value="11.25"></Setter>
-			<Setter Property="Margin" Value="0,5,0,5"></Setter>
-			<Setter Property="FontFamily" Value="{DynamicResource GlobalFontFamily}" />
-		</Style>
-		<Style x:Key="TilePowerFlyoutSpillter" TargetType="Line">
-			<Setter Property="Stroke" Value="#BFBFBF"></Setter>
-			<Setter Property="StrokeThickness" Value="1"></Setter>
-		</Style>
 	</UserControl.Resources>
-    <Grid Margin="8,8,8,8">
+	<Grid Margin="8,8,8,8">
 		<StackPanel>
 			<StackPanel>
 				<TextBlock Name="TitlePowerStatus" Style="{DynamicResource TilePowerFlyoutTitle1}">Power Status</TextBlock>

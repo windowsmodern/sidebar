@@ -270,7 +270,7 @@ namespace Sidebar
 		{
 			if (obj is ulong) return CompareTo ((ulong)obj);
 			else if (obj is Version) return CompareTo ((Version)obj);
-			else return -1;
+			else throw new ArgumentException ("Struct Version: invalid type to compare.");
 		}
 	}
 	public class VersionComparer: IComparer<Version>, IComparer

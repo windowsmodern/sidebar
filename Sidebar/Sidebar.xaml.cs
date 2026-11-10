@@ -1363,6 +1363,7 @@ namespace Sidebar
 			Visibility = Visibility.Visible;
 			Width = cc.Width;
 			TaskbarTiles.ItemsSource = null;
+			UpdateLayout ();
 			if (cc.OccupyWorkingArea) appBar.Register ();
 			RefreshWndPos ();
 			ReshowSidebarView ();
