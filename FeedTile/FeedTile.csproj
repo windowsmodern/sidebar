@@ -61,6 +61,7 @@
       <DependentUpon>FeedArticlePanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="FeedData.cs" />
+    <Compile Include="FeedUpdater.cs" />
     <Compile Include="FileSource.cs" />
     <Compile Include="FlyoutFeedItem.xaml.cs">
       <DependentUpon>FlyoutFeedItem.xaml</DependentUpon>

@@ -35,7 +35,7 @@ namespace WindowsModern.FeedTile
 		{
 			Title.Text = feedItem?.Title ?? "";
 			Desc.Text = HtmlToPlainText (feedItem?.Description ?? "");
-			FeedItemContainer.ToolTip = feedItem?.Title ?? "";
+			this.ToolTip = feedItem?.Title ?? "";
 			if (!string.IsNullOrWhiteSpace (feedItem?.Parent?.Title))
 			{
 				this.ToolTip += "\n" + feedItem.Parent.Title;

@@ -514,8 +514,6 @@ namespace Sidebar
 		/// <summary>把源插回目标索引，对每个非 0 Margin 的磁贴启动归零动画；动画结束后同步配置。</summary>
 		private void AnimateMarginsToZeroAndInsert (int insertIndex, string userModelId)
 		{
-			// 关键：在动画开始前用局部变量捕获 _panel / _source，
-			// 因为 FinishDragCleanup 会在 Storyboard 完成前把这两个字段置 null。
 			Panel panel = _panel;
 			TileControl source = _source;
 			if (panel == null || source == null) return;
@@ -526,13 +524,25 @@ namespace Sidebar
 				if (back > panel.Children.Count) back = panel.Children.Count;
 				panel.Children.Insert (back, source);
 			}
+			// 源下方的磁贴瞬间归零，避免与源之间出现 240ms 才收拢的空隙
+			TileControl below = null;
+			int belowIndex = insertIndex + 1;
+			if (belowIndex >= 0 && belowIndex < panel.Children.Count)
+			{
+				below = panel.Children [belowIndex] as TileControl;
+				if (below != null && below != source)
+				{
+					below.BeginAnimation (FrameworkElement.MarginProperty, null);
+					Thickness m = below.Margin;
+					below.Margin = new Thickness (m.Left, 0, m.Right, m.Bottom);
+				}
+			}
 			List<TileControl> affected = new List<TileControl> ();
 			foreach (UIElement child in panel.Children)
 			{
 				TileControl tc = child as TileControl;
-				if (tc == null || tc == source) continue;
-				Thickness m = tc.Margin;
-				if (m.Top != 0 || m.Left != 0 || m.Right != 0 || m.Bottom != 0) affected.Add (tc);
+				if (tc == null || tc == source || tc == below) continue;
+				if (tc.Margin.Top != 0) affected.Add (tc);
 			}
 			if (affected.Count == 0)
 			{
@@ -545,7 +555,7 @@ namespace Sidebar
 			{
 				TileControl tc = affected [i];
 				Thickness from = tc.Margin;
-				Thickness to = new Thickness (from.Left, 0, from.Right, 0);
+				Thickness to = new Thickness (from.Left, 0, from.Right, from.Bottom);
 				ThicknessAnimation anim = new ThicknessAnimation {
 					From = from,
 					To = to,

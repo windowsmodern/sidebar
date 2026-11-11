@@ -43,6 +43,7 @@ namespace WindowsModern.FeedTile
 			ListFeedSources.SelectionMode = SelectionMode.Extended;
 			RefreshButton.Content = sr.SuitableResource ("OPTIONS_REFRESH");
 			UpdateButton.Content = sr.SuitableResource ("OPTIONS_NETREFRESH");
+			InputUseOwnUpdater.Content = sr.SuitableResource ("OPTIONS_USEOWNUPDATER");
 		}
 		private void InitValues ()
 		{
@@ -52,6 +53,7 @@ namespace WindowsModern.FeedTile
 			SelectShowItemsCount.SelectedItem = opt.ShowCountLimit;
 			InputAutoSize.IsChecked = opt.AutoSizeTile;
 			SelectShowItemsWhenAutoSize.SelectedItem = opt.ShowItemsCountWhenAutoSize;
+			InputUseOwnUpdater.IsChecked = opt.UseOwnUpdater;
 		}
 		private void SetFeedSourceSelectedItems (IEnumerable <string> paths)
 		{
@@ -101,6 +103,8 @@ namespace WindowsModern.FeedTile
 			if (opt.AutoSizeTile != InputAutoSize.IsChecked) opt.AutoSizeTile = InputAutoSize.IsChecked ?? false;
 			if (opt.ShowItemsCountWhenAutoSize != (int)SelectShowItemsWhenAutoSize.SelectedItem)
 				opt.ShowItemsCountWhenAutoSize = (int)SelectShowItemsWhenAutoSize.SelectedItem;
+			if (opt.UseOwnUpdater != (InputUseOwnUpdater.IsChecked ?? false))
+				opt.UseOwnUpdater = InputUseOwnUpdater.IsChecked ?? false;
 		}
 		private void UserControl_Loaded (object sender, RoutedEventArgs e)
 		{

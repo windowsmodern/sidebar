@@ -21,6 +21,7 @@ namespace WindowsModern.FeedTile
 		private ObservableCollection<string> _feedFiles;
 		private bool _autoSizeTile = false;
 		private int _showItemsWhenAutoSize = 2;
+		private bool _useOwnUpdater = false;
 		public event PropertyChangedEventHandler PropertyChanged;
 		private void OnPropertyChanged (string propName)
 		{
@@ -83,6 +84,11 @@ namespace WindowsModern.FeedTile
 				OnPropertyChanged (nameof (ShowItemsCountWhenAutoSize));
 			}
 		}
+		public bool UseOwnUpdater
+		{
+			get { return _useOwnUpdater; }
+			set { TileConfig.Ini ["Settings"] ["UseOwnUpdater"] = _useOwnUpdater = value; OnPropertyChanged (nameof (UseOwnUpdater)); }
+		}
 		private static T EnsureRange <T> (T value, T min, T max) where T : IComparable<T>
 		{
 			if (min.CompareTo (max) > 0)
@@ -133,6 +139,7 @@ namespace WindowsModern.FeedTile
 			_autoSizeTile = TileConfig.Ini ["Settings"].GetKey ("AutoSizeTile").ReadBool ();
 			_showItemsWhenAutoSize =
 				EnsureRange (TileConfig.Ini ["Settings"].GetKey ("ShowItemsCountWhenAutoSize").ReadInt (2), 1, 8);
+			_useOwnUpdater = TileConfig.Ini ["Settings"].GetKey ("UseOwnUpdater").ReadBool ();
 		}
 		public void Dispose ()
 		{

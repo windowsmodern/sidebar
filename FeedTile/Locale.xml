@@ -714,4 +714,46 @@
 		<lang name="zh-TW">沒有可用的條目</lang>
 		<lang name="zh-Hant">沒有可用的條目</lang>
 	</resource>
+	<resource id="OPTIONS_USEOWNUPDATER">
+		<lang name="zh-CN">使用内置的更新器</lang>
+		<lang name="en-US">Use built-in updater</lang>
+		<lang name="ar-SA">استخدام برنامج التحديث المدمج</lang>
+		<lang name="bn-BD">অন্তর্নির্মিত আপডেটার ব্যবহার করুন</lang>
+		<lang name="cs-CZ">Použít vestavěný aktualizátor</lang>
+		<lang name="de-de">Integrierten Updater verwenden</lang>
+		<lang name="el-GR">Χρήση ενσωματωμένου προγράμματος ενημέρωσης</lang>
+		<lang name="en-au">Use built-in updater</lang>
+		<lang name="en-ca">Use built-in updater</lang>
+		<lang name="en-gb">Use built-in updater</lang>
+		<lang name="en-in">Use built-in updater</lang>
+		<lang name="es-es">Usar actualizador integrado</lang>
+		<lang name="es-MX">Usar actualizador integrado</lang>
+		<lang name="fa-IR">استفاده از به‌روزرسان داخلی</lang>
+		<lang name="fil-PH">Gamitin ang built-in na updater</lang>
+		<lang name="fr-ca">Utiliser le programme de mise à jour intégré</lang>
+		<lang name="fr-fr">Utiliser le programme de mise à jour intégré</lang>
+		<lang name="fr-mc">Utiliser le programme de mise à jour intégré</lang>
+		<lang name="he-IL">השתמש במעדכן המובנה</lang>
+		<lang name="hi-IN">अंतर्निहित अपडेटर का उपयोग करें</lang>
+		<lang name="hu-HU">Beépített frissítő használata</lang>
+		<lang name="id-ID">Gunakan pembaru bawaan</lang>
+		<lang name="it-it">Usa l'aggiornamento integrato</lang>
+		<lang name="ja-jp">組み込みのアップデーターを使用</lang>
+		<lang name="ko-KR">내장 업데이터 사용</lang>
+		<lang name="nl-NL">Ingebouwde updater gebruiken</lang>
+		<lang name="pl-PL">Użyj wbudowanego aktualizatora</lang>
+		<lang name="pt-br">Usar atualizador integrado</lang>
+		<lang name="pt-PT">Utilizar o atualizador integrado</lang>
+		<lang name="ro-RO">Folosiți actualizatorul încorporat</lang>
+		<lang name="ru-RU">Использовать встроенное средство обновления</lang>
+		<lang name="sv-SE">Använd inbyggd uppdaterare</lang>
+		<lang name="th-TH">ใช้ตัวอัปเดตที่มีมาให้</lang>
+		<lang name="tr-TR">Yerleşik güncelleyiciyi kullan</lang>
+		<lang name="uk-UA">Використовувати вбудований засіб оновлення</lang>
+		<lang name="vi-VN">Sử dụng trình cập nhật tích hợp</lang>
+		<lang name="zh-Hans">使用内置的更新器</lang>
+		<lang name="zh-HK">使用內建的更新器</lang>
+		<lang name="zh-TW">使用內建的更新器</lang>
+		<lang name="zh-Hant">使用內建的更新器</lang>
+	</resource>
 </resources>

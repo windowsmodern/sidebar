@@ -1,45 +1,64 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<resource id="Snowfall">
-		<lang name="en-US">Snowfall</lang>
-		<lang name="en-GB">Snowfall</lang>
-		<lang name="en-AU">Snowfall</lang>
-		<lang name="en-CA">Snowfall</lang>
-		<lang name="en-IN">Snowfall</lang>
-		<lang name="zh-CN">落雪</lang>
-		<lang name="zh-Hans">落雪</lang>
-		<lang name="zh-TW">落雪</lang>
-		<lang name="zh-HK">落雪</lang>
-		<lang name="zh-Hant">落雪</lang>
-		<lang name="ja-JP">降雪</lang>
-		<lang name="ko-KR">눈 내림</lang>
-		<lang name="fr-FR">Chute de neige</lang>
-		<lang name="fr-CA">Chute de neige</lang>
-		<lang name="fr-MC">Chute de neige</lang>
-		<lang name="de-DE">Schneefall</lang>
-		<lang name="es-ES">Nevada</lang>
-		<lang name="es-MX">Nevada</lang>
-		<lang name="ru-RU">Снегопад</lang>
-	</resource>
-	<resource id="Winter Snowfall Theme.&#10;An experimental, demonstrative theme.">
-		<lang name="en-US">Winter Snowfall Theme.&#10;An experimental, demonstrative theme.</lang>
-		<lang name="en-GB">Winter Snowfall Theme.&#10;An experimental, demonstrative theme.</lang>
-		<lang name="en-AU">Winter Snowfall Theme.&#10;An experimental, demonstrative theme.</lang>
-		<lang name="en-CA">Winter Snowfall Theme.&#10;An experimental, demonstrative theme.</lang>
-		<lang name="en-IN">Winter Snowfall Theme.&#10;An experimental, demonstrative theme.</lang>
-		<lang name="zh-CN">冬天落雪主题。&#10;一个实验性的演示性的主题。</lang>
-		<lang name="zh-Hans">冬天落雪主题。&#10;一个实验性的演示性的主题。</lang>
-		<lang name="zh-TW">冬天落雪主題。&#10;一個實驗性的演示性的主題。</lang>
-		<lang name="zh-HK">冬天落雪主題。&#10;一個實驗性的演示性的主題。</lang>
-		<lang name="zh-Hant">冬天落雪主題。&#10;一個實驗性的演示性的主題。</lang>
-		<lang name="ja-JP">冬の降雪テーマ。&#10;実験的なデモンストレーション用のテーマです。</lang>
-		<lang name="ko-KR">겨울 눈 테마.&#10;실험적이고 시연적인 테마입니다.</lang>
-		<lang name="fr-FR">Thème de chute de neige hivernale.&#10;Un thème expérimental et démonstratif.</lang>
-		<lang name="fr-CA">Thème de chute de neige hivernale.&#10;Un thème expérimental et démonstratif.</lang>
-		<lang name="fr-MC">Thème de chute de neige hivernale.&#10;Un thème expérimental et démonstratif.</lang>
-		<lang name="de-DE">Winter-Schneefall-Theme.&#10;Ein experimentelles, demonstratives Theme.</lang>
-		<lang name="es-ES">Tema de nevada invernal.&#10;Un tema experimental y demostrativo.</lang>
-		<lang name="es-MX">Tema de nevada invernal.&#10;Un tema experimental y demostrativo.</lang>
-		<lang name="ru-RU">Зимняя тема со снегопадом.&#10;Экспериментальная демонстрационная тема.</lang>
-	</resource>
+  <resource id="Snowfall">
+    <lang name="en-US">Snowfall</lang>
+    <lang name="en-GB">Snowfall</lang>
+    <lang name="en-AU">Snowfall</lang>
+    <lang name="en-CA">Snowfall</lang>
+    <lang name="en-IN">Snowfall</lang>
+    <lang name="zh-CN">落雪</lang>
+    <lang name="zh-Hans">落雪</lang>
+    <lang name="zh-TW">落雪</lang>
+    <lang name="zh-HK">落雪</lang>
+    <lang name="zh-Hant">落雪</lang>
+    <lang name="ja-JP">降雪</lang>
+    <lang name="ko-KR">눈 내림</lang>
+    <lang name="fr-FR">Chute de neige</lang>
+    <lang name="fr-CA">Chute de neige</lang>
+    <lang name="fr-MC">Chute de neige</lang>
+    <lang name="de-DE">Schneefall</lang>
+    <lang name="es-ES">Nevada</lang>
+    <lang name="es-MX">Nevada</lang>
+    <lang name="ru-RU">Снегопад</lang>
+  </resource>
+  <resource id="Winter Snowfall Theme. An experimental, demonstrative theme.">
+    <lang name="en-US">Winter Snowfall Theme.
+An experimental, demonstrative theme.</lang>
+    <lang name="en-GB">Winter Snowfall Theme.
+An experimental, demonstrative theme.</lang>
+    <lang name="en-AU">Winter Snowfall Theme.
+An experimental, demonstrative theme.</lang>
+    <lang name="en-CA">Winter Snowfall Theme.
+An experimental, demonstrative theme.</lang>
+    <lang name="en-IN">Winter Snowfall Theme.
+An experimental, demonstrative theme.</lang>
+    <lang name="zh-CN">冬天落雪主题。
+一个实验性的演示性的主题。</lang>
+    <lang name="zh-Hans">冬天落雪主题。
+一个实验性的演示性的主题。</lang>
+    <lang name="zh-TW">冬天落雪主題。
+一個實驗性的演示性的主題。</lang>
+    <lang name="zh-HK">冬天落雪主題。
+一個實驗性的演示性的主題。</lang>
+    <lang name="zh-Hant">冬天落雪主題。
+一個實驗性的演示性的主題。</lang>
+    <lang name="ja-JP">冬の降雪テーマ。
+実験的なデモンストレーション用のテーマです。</lang>
+    <lang name="ko-KR">겨울 눈 테마.
+실험적이고 시연적인 테마입니다.</lang>
+    <lang name="fr-FR">Thème de chute de neige hivernale.
+Un thème expérimental et démonstratif.</lang>
+    <lang name="fr-CA">Thème de chute de neige hivernale.
+Un thème expérimental et démonstratif.</lang>
+    <lang name="fr-MC">Thème de chute de neige hivernale.
+Un thème expérimental et démonstratif.</lang>
+    <lang name="de-DE">Winter-Schneefall-Theme.
+Ein experimentelles, demonstratives Theme.</lang>
+    <lang name="es-ES">Tema de nevada invernal.
+Un tema experimental y demostrativo.</lang>
+    <lang name="es-MX">Tema de nevada invernal.
+Un tema experimental y demostrativo.</lang>
+    <lang name="ru-RU">Зимняя тема со снегопадом.
+Экспериментальная демонстрационная тема.</lang>
+  </resource>
 </resources>

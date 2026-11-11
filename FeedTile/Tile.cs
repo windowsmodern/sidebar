@@ -348,11 +348,60 @@ namespace WindowsModern.FeedTile
 				propPanel = null;
 			}
 		}
+		//public static void MarkItemAsRead (string feedPath, string localId)
+		//{
+		//	if (FeedMgr == null) return;
+		//	if (string.IsNullOrEmpty (feedPath) || string.IsNullOrEmpty (localId)) return;
+
+		//	try
+		//	{
+		//		IFeed feed = null;
+		//		IFeedItem item = null;
+		//		try
+		//		{
+		//			feed = FeedMgr.GetFeed (feedPath);
+		//			if (feed == null) return;
+		//			int id;
+		//			if (!int.TryParse (localId, out id)) return;
+		//			item = feed.GetItem (id);
+		//			if (item != null && !item.IsRead)
+		//			{
+		//				item.IsRead = true;
+		//				System.Diagnostics.Debug.WriteLine ($"Marked as read: {feedPath} / {localId}");
+		//			}
+		//		}
+		//		finally
+		//		{
+		//			if (item != null) Marshal.ReleaseComObject (item);
+		//			if (feed != null) Marshal.ReleaseComObject (feed);
+		//		}
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		System.Diagnostics.Debug.WriteLine ($"Error marking item as read: {ex.Message}");
+		//	}
+		//}
 		public static void MarkItemAsRead (string feedPath, string localId)
 		{
-			if (FeedMgr == null) return;
 			if (string.IsNullOrEmpty (feedPath) || string.IsNullOrEmpty (localId)) return;
 
+			// 自实现条目：更新本地已读缓存
+			if (localId.StartsWith ("own:", StringComparison.OrdinalIgnoreCase))
+			{
+				var tile = TileInstance as Tile;
+				if (tile != null)
+				{
+					var state = tile.LoadReadState ();
+					if (state.Add (feedPath + "|" + localId))
+						tile.SaveReadState (state);
+				}
+				return;
+			}
+
+			// 数字 ID：走 FeedMgr
+			if (FeedMgr == null) return;
+			int id;
+			if (!int.TryParse (localId, out id)) return;
 			try
 			{
 				IFeed feed = null;
@@ -361,14 +410,9 @@ namespace WindowsModern.FeedTile
 				{
 					feed = FeedMgr.GetFeed (feedPath);
 					if (feed == null) return;
-					int id;
-					if (!int.TryParse (localId, out id)) return;
 					item = feed.GetItem (id);
 					if (item != null && !item.IsRead)
-					{
 						item.IsRead = true;
-						System.Diagnostics.Debug.WriteLine ($"Marked as read: {feedPath} / {localId}");
-					}
 				}
 				finally
 				{
@@ -376,10 +420,7 @@ namespace WindowsModern.FeedTile
 					if (feed != null) Marshal.ReleaseComObject (feed);
 				}
 			}
-			catch (Exception ex)
-			{
-				System.Diagnostics.Debug.WriteLine ($"Error marking item as read: {ex.Message}");
-			}
+			catch { }
 		}
 		private void LoadCacheAndDisplay ()
 		{
@@ -545,6 +586,11 @@ namespace WindowsModern.FeedTile
 
 		private void RefreshFeedsFull (CancellationToken cancellationToken)
 		{
+			if (Options != null && Options.UseOwnUpdater)
+			{
+				RefreshFeedsFullOwn (cancellationToken);
+				return;
+			}
 			IFeedsManager localFeedMgr = null;
 			Type feedMgrType = Type.GetTypeFromProgID ("Microsoft.FeedsManager");
 			if (feedMgrType != null)
@@ -780,14 +826,49 @@ namespace WindowsModern.FeedTile
 		/// <summary>
 		/// 异步触发系统订阅源更新（使用 AsyncSyncAll），带防抖和单任务保证
 		/// </summary>
+		//public static void UpdateFeedsAsync ()
+		//{
+		//	lock (_updateLock)
+		//	{
+		//		// 取消之前的防抖定时器
+		//		_updateDebounceTimer?.Dispose ();
+
+		//		// 启动新的防抖定时器（延迟 300ms）
+		//		_updateDebounceTimer = new Timer (_ =>
+		//		{
+		//			lock (_updateLock)
+		//			{
+		//				_updateDebounceTimer?.Dispose ();
+		//				_updateDebounceTimer = null;
+
+		//				// 实际执行更新
+		//				if (FeedMgr == null) return;
+
+		//				// 触发后台更新（AsyncSyncAll 立即返回，在后台执行）
+		//				FeedMgr.AsyncSyncAll ();
+
+		//				// 注意：AsyncSyncAll 是异步且不提供完成通知，
+		//				// 因此 IsRefreshing 无法准确跟踪完成状态。
+		//				// 这里我们临时设置为 true 并稍后重置（仅作为视觉反馈示例）
+		//				IsUpdating = true;
+		//				IsRefreshing = true;
+		//				// 启动一个 10 秒后重置的定时器（实际完成时间可能更短或更长）
+		//				Timer resetTimer = null;
+		//				resetTimer = new Timer (task =>
+		//				{
+		//					IsRefreshing = false;
+		//					IsUpdating = false;
+		//					resetTimer?.Dispose ();
+		//				}, null, 10000, Timeout.Infinite);
+		//			}
+		//		}, null, 300, Timeout.Infinite);
+		//	}
+		//}
 		public static void UpdateFeedsAsync ()
 		{
 			lock (_updateLock)
 			{
-				// 取消之前的防抖定时器
 				_updateDebounceTimer?.Dispose ();
-
-				// 启动新的防抖定时器（延迟 300ms）
 				_updateDebounceTimer = new Timer (_ =>
 				{
 					lock (_updateLock)
@@ -795,28 +876,234 @@ namespace WindowsModern.FeedTile
 						_updateDebounceTimer?.Dispose ();
 						_updateDebounceTimer = null;
 
-						// 实际执行更新
-						if (FeedMgr == null) return;
+						var tile = TileInstance as Tile;
+						if (tile == null) return;
 
-						// 触发后台更新（AsyncSyncAll 立即返回，在后台执行）
-						FeedMgr.AsyncSyncAll ();
-
-						// 注意：AsyncSyncAll 是异步且不提供完成通知，
-						// 因此 IsRefreshing 无法准确跟踪完成状态。
-						// 这里我们临时设置为 true 并稍后重置（仅作为视觉反馈示例）
-						IsUpdating = true;
-						IsRefreshing = true;
-						// 启动一个 10 秒后重置的定时器（实际完成时间可能更短或更长）
-						Timer resetTimer = null;
-						resetTimer = new Timer (task =>
+						bool useOwn = Options != null && Options.UseOwnUpdater;
+						if (useOwn)
 						{
-							IsRefreshing = false;
-							IsUpdating = false;
-							resetTimer?.Dispose ();
-						}, null, 10000, Timeout.Infinite);
+							if (!OwnUpdaterCooldownElapsed ())
+								return;
+							SetLastOwnUpdateUtc (DateTime.UtcNow);
+							IsUpdating = true;
+							IsRefreshing = true;
+							tile.RequestRefresh (debounceDelayMs: 0);
+						}
+						else
+						{
+							if (FeedMgr == null) return;
+							FeedMgr.AsyncSyncAll ();
+							IsUpdating = true;
+							IsRefreshing = true;
+							Timer resetTimer = null;
+							resetTimer = new Timer (t =>
+							{
+								IsRefreshing = false;
+								IsUpdating = false;
+								resetTimer?.Dispose ();
+							}, null, 10000, Timeout.Infinite);
+						}
 					}
 				}, null, 300, Timeout.Infinite);
 			}
+		}
+
+		private const string READ_STATE_FILENAME = "ReadState.json";
+		private readonly object _readStateLock = new object ();
+
+		public HashSet<string> LoadReadState ()
+		{
+			lock (_readStateLock)
+			{
+				if (UserRegion == null) return new HashSet<string> (StringComparer.OrdinalIgnoreCase);
+				try
+				{
+					string path = Path.Combine (UserRegion.FolderPath, READ_STATE_FILENAME);
+					if (!File.Exists (path)) return new HashSet<string> (StringComparer.OrdinalIgnoreCase);
+					var list = JsonConvert.DeserializeObject<List<string>> (File.ReadAllText (path));
+					return new HashSet<string> (list ?? new List<string> (), StringComparer.OrdinalIgnoreCase);
+				}
+				catch { return new HashSet<string> (StringComparer.OrdinalIgnoreCase); }
+			}
+		}
+
+		public void SaveReadState (HashSet<string> state)
+		{
+			lock (_readStateLock)
+			{
+				if (UserRegion == null) return;
+				try
+				{
+					string path = Path.Combine (UserRegion.FolderPath, READ_STATE_FILENAME);
+					File.WriteAllText (path, JsonConvert.SerializeObject (state.ToList ()));
+				}
+				catch { }
+			}
+		}
+		private void RefreshFeedsFullOwn (CancellationToken cancellationToken)
+		{
+			var localFeedMgr = FeedMgr;
+			if (localFeedMgr == null) return;
+			try
+			{
+				var feedMetaList = new List<FeedData> ();
+				CollectFeedMeta (localFeedMgr.RootFolder, feedMetaList, cancellationToken);
+				if (cancellationToken.IsCancellationRequested) return;
+
+				var readState = LoadReadState ();
+				string cacheDir = UserRegion != null ? Path.Combine (UserRegion.FolderPath, "FeedSourceCache") : null;
+				var allFeedsDict = new Dictionary<string, FeedData> ();
+				var allItemsList = new List<FeedItemData> ();
+
+				foreach (var feedData in feedMetaList)
+				{
+					if (cancellationToken.IsCancellationRequested) return;
+					if (string.IsNullOrWhiteSpace (feedData.Url))
+					{
+						allFeedsDict [feedData.Path] = feedData;
+						continue;
+					}
+					string xml = FeedUpdater.DownloadWithCache (feedData.Url, cacheDir);
+					if (!string.IsNullOrEmpty (xml))
+					{
+						var items = FeedUpdater.ParseFeed (xml, feedData);
+						int unread = 0;
+						foreach (var item in items)
+						{
+							if (readState.Contains (feedData.Path + "|" + item.LocalId))
+								item.IsRead = true;
+							if (!item.IsRead) unread++;
+							feedData.Items.Add (item);
+						}
+						feedData.UnreadCount = unread;
+					}
+					allFeedsDict [feedData.Path] = feedData;
+					allItemsList.AddRange (feedData.Items);
+				}
+
+				if (cancellationToken.IsCancellationRequested) return;
+
+				IEnumerable<FeedData> filteredFeeds;
+				if (Options.SourceType == FeedSource.Selected && Options.FeedList != null && Options.FeedList.Count > 0)
+				{
+					var selectedPaths = new HashSet<string> (Options.FeedList);
+					filteredFeeds = allFeedsDict.Values.Where (f => selectedPaths.Contains (f.Path));
+				}
+				else
+				{
+					filteredFeeds = allFeedsDict.Values;
+				}
+
+				var finalItems = filteredFeeds
+					.SelectMany (f => f.Items)
+					.OrderByDescending (item => item.PublishDate)
+					.Take (100)
+					.ToList ();
+
+				var feedsList = allFeedsDict.Values.ToList ();
+
+				if (System.Windows.Application.Current != null)
+				{
+					System.Windows.Application.Current.Dispatcher.Invoke (new Action (() =>
+					{
+						UpdateCollectionWithDiff (Feeds, feedsList, (old, ne) => old.Path == ne.Path);
+						UpdateCollectionWithDiff (AllItems, finalItems,
+							(old, ne) => old.LocalId == ne.LocalId && old.Parent != null && ne.Parent != null && old.Parent.Path == ne.Parent.Path,
+							true);
+					}));
+				}
+
+				SaveCache (finalItems);
+			}
+			finally
+			{
+				IsUpdating = false;
+			}
+		}
+
+		private void CollectFeedMeta (IFeedFolder folder, List<FeedData> result, CancellationToken cancellationToken)
+		{
+			if (folder == null) return;
+			IFeedsEnum feedsEnum = null;
+			try
+			{
+				feedsEnum = (IFeedsEnum)folder.Feeds;
+				for (int i = 0; i < feedsEnum.Count; i++)
+				{
+					cancellationToken.ThrowIfCancellationRequested ();
+					IFeed feed = null;
+					try
+					{
+						feed = (IFeed)feedsEnum.Item (i);
+						if (feed == null) continue;
+						result.Add (new FeedData {
+							Title = feed.Name ?? "",
+							Description = feed.Description ?? "",
+							Link = feed.Link ?? "",
+							Url = feed.Url ?? "",
+							UnreadCount = 0,
+							Path = feed.Path ?? ""
+						});
+					}
+					catch { }
+					finally { if (feed != null) ReleaseComObject (feed); }
+				}
+			}
+			finally { if (feedsEnum != null) ReleaseComObject (feedsEnum); }
+
+			IFeedsEnum subFolders = null;
+			try
+			{
+				subFolders = (IFeedsEnum)folder.Subfolders;
+				for (int i = 0; i < subFolders.Count; i++)
+				{
+					cancellationToken.ThrowIfCancellationRequested ();
+					IFeedFolder sub = null;
+					try
+					{
+						sub = (IFeedFolder)subFolders.Item (i);
+						CollectFeedMeta (sub, result, cancellationToken);
+					}
+					catch { }
+					finally { if (sub != null) ReleaseComObject (sub); }
+				}
+			}
+			finally { if (subFolders != null) ReleaseComObject (subFolders); }
+		}
+		private static readonly TimeSpan OwnUpdateMinInterval = TimeSpan.FromMinutes (10);
+
+		private static DateTime GetLastOwnUpdateUtc ()
+		{
+			var tile = TileInstance as Tile;
+			var section = tile?.Config?.Xml?.Global;
+			if (section == null) return DateTime.MinValue;
+			try
+			{
+				var utc = section.Get<DateTime> ("LastOwnUpdateUtc", DateTime.MinValue);
+				if (utc == DateTime.MinValue) return DateTime.MinValue;
+				return utc.Kind == DateTimeKind.Utc ? utc : utc.ToUniversalTime ();
+			}
+			catch { return DateTime.MinValue; }
+		}
+
+		private static void SetLastOwnUpdateUtc (DateTime utc)
+		{
+			var tile = TileInstance as Tile;
+			var section = tile?.Config?.Xml?.Global;
+			if (section == null) return;
+			try
+			{
+				section.Set ("LastOwnUpdateUtc", utc.ToUniversalTime ());
+			}
+			catch { }
+		}
+
+		/// <summary>OwnUpdater 是否已进入允许更新的时间窗口。</summary>
+		private static bool OwnUpdaterCooldownElapsed ()
+		{
+			var last = GetLastOwnUpdateUtc ();
+			if (last == DateTime.MinValue) return true;
+			return DateTime.UtcNow - last >= OwnUpdateMinInterval;
 		}
 	}
 }

@@ -92,85 +92,129 @@ namespace Sidebar
 		}
 		#endregion
 		#region Assembly Load
-		private class AssemblyCacheItem
+		private sealed class AssemblyFileInfo
 		{
-			public string DllPath { get; set; }
-			public DateTime CachedTime { get; set; }
+			public AssemblyName AssemblyName { get; set; }
 		}
-		private static readonly ConcurrentDictionary<string, AssemblyCacheItem> AssemblyPathCache = new ConcurrentDictionary<string, AssemblyCacheItem> (StringComparer.OrdinalIgnoreCase);
-		private static readonly TimeSpan CacheTTL = TimeSpan.FromMinutes (10);
-		private static int _isIndexing = 0;
-		private static Timer _cacheRefreshTimer;
-		private static void EnsureCacheTimerStarted ()
+		private sealed class AssemblyCacheItem
 		{
-			if (_cacheRefreshTimer != null) return;
-			var timer = new Timer (_ => RebuildAssemblyIndex (), null, (int)CacheTTL.TotalMilliseconds, (int)CacheTTL.TotalMilliseconds);
-			if (Interlocked.CompareExchange (ref _cacheRefreshTimer, timer, null) != null) timer.Dispose ();
+			public Assembly Assembly { get; set; }
 		}
-		private static void RebuildAssemblyIndex ()
+		private static readonly object AssemblyCacheLock = new object ();
+		private static readonly Dictionary<string, AssemblyFileInfo> AssemblyFileCache = new Dictionary<string, AssemblyFileInfo> (StringComparer.OrdinalIgnoreCase);
+		private static readonly Dictionary<string, AssemblyCacheItem> AssemblyNameCache = new Dictionary<string, AssemblyCacheItem> (StringComparer.OrdinalIgnoreCase);
+		private static readonly Random CacheRandom = new Random ();
+		private static DateTime AssemblyCacheExpireTime = DateTime.MinValue;
+		private static DateTime CreateExpireTime ()
 		{
-			if (Interlocked.Exchange (ref _isIndexing, 1) == 1) return;
+			return DateTime.UtcNow.AddMinutes (10 + CacheRandom.NextDouble () * 10);
+		}
+		/// <summary>缓存表整体过期时清空两张缓存表，并设置新的整体过期时间。</summary>
+		private static void EnsureAssemblyCacheFresh ()
+		{
+			if (DateTime.UtcNow < AssemblyCacheExpireTime) return;
+			AssemblyFileCache.Clear ();
+			AssemblyNameCache.Clear ();
+			AssemblyCacheExpireTime = CreateExpireTime ();
+		}
+		/// <summary>按 ThemeManager 支持的目录在前、TileManager 支持的目录在后的顺序收集 DLL 搜索根目录。</summary>
+		private static List<string> CollectAssemblyRoots ()
+		{
+			var roots = new List<string> ();
+			var themeMgr = ThemeMgr;
+			if (themeMgr != null)
+			{
+				try { roots.AddRange (themeMgr.BaseDirs); } catch { }
+			}
+			else
+			{
+				roots.Add (Path.Combine (ProgramFolder.GlobalFolder.FolderPath, "Themes"));
+				roots.Add (Path.Combine (ProgramFolder.CurrentUserFolder.FolderPath, "Themes"));
+			}
+			var tileMgr = TileMgr;
+			if (tileMgr != null)
+			{
+				try { roots.AddRange (tileMgr.Roots); } catch { }
+			}
+			else
+			{
+				roots.Add (Path.Combine (ProgramFolder.GlobalFolder.FolderPath, "Gadgets"));
+				roots.Add (Path.Combine (ProgramFolder.CurrentUserFolder.FolderPath, "Gadgets"));
+			}
+			return roots;
+		}
+		private static List<string> EnumerateAssemblyFiles ()
+		{
+			var result = new List<string> ();
+			foreach (var root in CollectAssemblyRoots ())
+			{
+				if (string.IsNullOrWhiteSpace (root)) continue;
+				if (!Directory.Exists (root)) continue;
+				try
+				{
+					foreach (var dllPath in Directory.EnumerateFiles (root, "*.dll", SearchOption.AllDirectories))
+					{
+						if (dllPath.IndexOf (@"\Deleted\", StringComparison.OrdinalIgnoreCase) >= 0) continue;
+						result.Add (dllPath);
+					}
+				}
+				catch { }
+			}
+			return result;
+		}
+		private static AssemblyFileInfo CreateAssemblyFileInfo (string dllPath)
+		{
 			try
 			{
-				string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-				string [] searchRoots = { Path.Combine (baseDir, "Themes"), Path.Combine (baseDir, "Gadgets") };
-				var newCache = new ConcurrentDictionary<string, AssemblyCacheItem> (StringComparer.OrdinalIgnoreCase);
-				DateTime now = DateTime.Now;
-				foreach (var root in searchRoots)
+				AssemblyName name = AssemblyName.GetAssemblyName (dllPath);
+				return new AssemblyFileInfo { AssemblyName = name };
+			}
+			catch
+			{
+				return new AssemblyFileInfo { AssemblyName = null };
+			}
+		}
+		/// <summary>同步遍历主题与磁贴目录下的 DLL，按简单程序集名匹配并加载程序集。</summary>
+		private static Assembly TryResolveAssembly (AssemblyName request)
+		{
+			lock (AssemblyCacheLock)
+			{
+				EnsureAssemblyCacheFresh ();
+				AssemblyCacheItem cachedAssembly;
+				if (AssemblyNameCache.TryGetValue (request.Name, out cachedAssembly)) return cachedAssembly.Assembly;
+				foreach (var dllPath in EnumerateAssemblyFiles ())
 				{
-					if (!Directory.Exists (root)) continue;
+					AssemblyFileInfo fileInfo;
+					if (!AssemblyFileCache.TryGetValue (dllPath, out fileInfo))
+					{
+						fileInfo = CreateAssemblyFileInfo (dllPath);
+						AssemblyFileCache [dllPath] = fileInfo;
+					}
+					if (fileInfo.AssemblyName == null) continue;
+					if (!string.Equals (fileInfo.AssemblyName.Name, request.Name, StringComparison.OrdinalIgnoreCase)) continue;
 					try
 					{
-						foreach (var dllPath in Directory.EnumerateFiles (root, "*.dll", SearchOption.AllDirectories))
-						{
-							if (dllPath.IndexOf (@"\Deleted\", StringComparison.OrdinalIgnoreCase) >= 0) continue;
-							string simpleName = Path.GetFileNameWithoutExtension (dllPath);
-							newCache.TryAdd (simpleName, new AssemblyCacheItem { DllPath = dllPath, CachedTime = now });
-						}
+						Assembly asm = Assembly.LoadFrom (dllPath);
+						AssemblyNameCache [fileInfo.AssemblyName.Name] = new AssemblyCacheItem { Assembly = asm };
+						return asm;
 					}
 					catch { }
 				}
-				AssemblyPathCache.Clear ();
-				foreach (var kv in newCache) AssemblyPathCache.TryAdd (kv.Key, kv.Value);
-			}
-			catch { }
-			finally
-			{
-				Interlocked.Exchange (ref _isIndexing, 0);
+				return null;
 			}
 		}
 		private Assembly CurrentDomain_AssemblyResolve (object sender, ResolveEventArgs args)
 		{
-			EnsureCacheTimerStarted ();
-			var assemblyName = new AssemblyName (args.Name).Name;
-			if (assemblyName.EndsWith (".resources", StringComparison.OrdinalIgnoreCase)) return null;
-			AssemblyCacheItem cacheItem;
-			AssemblyCacheItem removedItem;
-			if (AssemblyPathCache.TryGetValue (assemblyName, out cacheItem))
+			try
 			{
-				try
-				{
-					if (!File.Exists (cacheItem.DllPath))
-					{
-						AssemblyPathCache.TryRemove (assemblyName, out removedItem);
-						return null;
-					}
-					var asm = Assembly.LoadFrom (cacheItem.DllPath);
-					cacheItem.CachedTime = DateTime.Now;
-					return asm;
-				}
-				catch
-				{
-					AssemblyPathCache.TryRemove (assemblyName, out removedItem);
-				}
+				AssemblyName request = new AssemblyName (args.Name);
+				if (request.Name.EndsWith (".resources", StringComparison.OrdinalIgnoreCase)) return null;
+				return TryResolveAssembly (request);
 			}
-			string fallbackPath = Path.Combine (AppDomain.CurrentDomain.BaseDirectory, assemblyName + ".dll");
-			if (File.Exists (fallbackPath))
+			catch
 			{
-				try { return Assembly.LoadFrom (fallbackPath); } catch { }
+				return null;
 			}
-			if (Thread.VolatileRead (ref _isIndexing) == 0) ThreadPool.QueueUserWorkItem (state => RebuildAssemblyIndex ());
-			return null;
 		}
 		#endregion
 		private void Application_Startup (object sender, StartupEventArgs e)

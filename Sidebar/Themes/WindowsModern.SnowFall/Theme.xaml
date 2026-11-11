@@ -10,7 +10,7 @@
 	<!-- ===== Information ===== -->
 	<s:String x:Key="ThemeDisplayName">Snowfall</s:String>
 	<s:String x:Key="ThemePublisherDisplayName">Windows Modern</s:String>
-	<s:String x:Key="ThemeDescription">Winter Snowfall Theme.&#10;An experimental, demonstrative theme.</s:String>
+	<s:String x:Key="ThemeDescription">Winter Snowfall Theme. An experimental, demonstrative theme.</s:String>
 	<s:String x:Key="ThemeLogo">Mkho-Christmas-Snow-flake.ico</s:String>
 
 	<!-- ===== Options ===== -->

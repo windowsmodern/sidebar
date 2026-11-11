@@ -30,6 +30,7 @@
 				<TextBlock Margin="0,10,0,5" Name="LabelShowItemsWhenAutoSize">Show Items Count when Auto Size</TextBlock>
 				<ComboBox Margin="0,5,0,5" Name="SelectShowItemsWhenAutoSize">
 				</ComboBox>
+				<CheckBox Margin="0,10,0,0" Name="InputUseOwnUpdater">Use own updater</CheckBox>
 				<StackPanel Orientation="Horizontal">
 					<Button Name="RefreshButton" Margin="0,10,0,5" Padding="20,2" Width="Auto" HorizontalAlignment="Left" Click="RefreshButton_Click">Refresh</Button>
 					<Button Name="UpdateButton" Margin="5,10,0,5" Padding="20,2" Width="Auto" HorizontalAlignment="Left" Click="UpdateButton_Click">Update all feeds</Button>

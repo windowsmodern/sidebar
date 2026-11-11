@@ -1784,12 +1784,16 @@ namespace Sidebar
 			if (ReferenceEquals (panel, TilesControl)) list = cc.PinnedTiles;
 			else if (ReferenceEquals (panel, PinnedTilesControl)) list = cc.PinnedBottomTiles;
 			else return false;
-			int srcList = IndexOfFamilyName (list, userModelId);
+			var view = new View <string> (list, (item, index) => {
+				return App.TileMgr.GetApplicationByUserModelId (item) != null;
+			});
+			int srcList = IndexOfFamilyName (view, userModelId);
 			if (srcList < 0) return false;
 			if (panelIndex < 0) panelIndex = 0;
-			if (panelIndex > list.Count - 1) panelIndex = list.Count - 1;
+			if (panelIndex > view.Count - 1) panelIndex = view.Count - 1;
 			if (panelIndex == srcList) return false;
-			list.Move (srcList, panelIndex);
+			view.Move (srcList, panelIndex);
+			view.Dispose ();
 			return true;
 		}
 		bool ITileReorderHost.MoveTileToPanelIndex (string userModelId, Panel panel, int panelIndex)
