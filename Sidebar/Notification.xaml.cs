@@ -42,6 +42,7 @@ namespace Sidebar
 			timeoutInitMargin = TimeoutBar.Margin;
 			HWND hwnd = (HWND)Handle;
 			hwnd.Styles &= ~(Win32.WindowStyles.WS_CAPTION | Win32.WindowStyles.WS_BORDER | Win32.WindowStyles.WS_DLGFRAME | (Win32.WindowStyles)(0x00C00000L | 0x00C0000L));
+			hwnd.Styles |= Win32.WindowStyles.WS_POPUP;
 			hwnd.StylesEx |= Win32.ExtendedWindowStyles.WS_EX_LAYERED;
 		}
 		private void CloseButton_Click (object sender, RoutedEventArgs e)
@@ -174,6 +175,11 @@ namespace Sidebar
 			ringTimeSpan = TimeSpan.FromMilliseconds (ringtimeout);
 			UpdateTimeout (TimeSpan.FromMilliseconds (Math.Max (ringTimeSpan.Milliseconds, timeSpan.Milliseconds)));
 			ScreenChangeNotifier.WorkingAreaChanged += ScreenChangeNotifier_WorkingAreaChanged;
+			App.Current.MainWindow.SizeChanged += MainWindow_SizeChanged;
+		}
+		private void MainWindow_SizeChanged (object sender, System.Windows.SizeChangedEventArgs e)
+		{
+			UpdateLocation ();
 		}
 		private void ScreenChangeNotifier_WorkingAreaChanged (object sender, EventArgs e)
 		{
@@ -268,12 +274,13 @@ namespace Sidebar
 			var wa = scr.WorkingArea;
 			var sidebar = App.Current.MainWindow;
 			var left = wa.Left + wa.Width;
-			if (App.CurrentUserConfig.Direction == SidebarDirection.Right)
+			if (App.CurrentUserConfig.Direction == SidebarDirection.Right && !App.CurrentUserConfig.IsMinimum)
 				left = Math.Min (sidebar.GetPixelLeft (), left);
 			hwnd.Move (left - this.GetPixelWidth (), wa.Top + wa.Height - this.GetPixelHeight ());
 		}
 		private void Root_Closed (object sender, EventArgs e)
 		{
+			App.Current.MainWindow.SizeChanged -= MainWindow_SizeChanged;
 			ScreenChangeNotifier.WorkingAreaChanged -= ScreenChangeNotifier_WorkingAreaChanged;
 			Utilities.ReleaseLargeResourcesAsync ();
 			lock (popuplock)

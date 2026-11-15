@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Manifest Version="2">
+  <Identity Name="WindowsModern.ExtraTileCollection" Publisher="CN=Whistler (Windows Modern)" Version="1.0.0.0" ProcessorArchitecture="Neutral" />
+  <Properties>
+    <DisplayName>PKG_NAME</DisplayName>
+    <PublisherDisplayName>Windows Modern</PublisherDisplayName>
+    <Description>PKG_DESC</Description>
+    <Logo>Logo.png</Logo>
+  </Properties>
+  <Prerequisites>
+    <OSMinVersion>5.1.2600.0</OSMinVersion>
+  </Prerequisites>
+  <Applications>
+    <Application Id="StickyNote" Executable="WindowsModern.ExtraTilesCollection.dll" EntryPoint="WindowsModern.StickyNote.Tile" HasFlyout="true" HasProperties="true">
+      <VisualElements DisplayName="TILE_STICKYNOTE_DISPNAME" Logo="StickyNote\Images\SNTIconID.png">
+        <Tile MinHeight="27" MaxHeight="300" DefaultHeight="50" CanPinBottom="true" Overflow="Hidden" />
+        <Flyout FlyoutWidth="378" FlyoutHeight="721" FlyoutCanResize="false" />
+      </VisualElements>
+    </Application>
+  </Applications>
+</Manifest>

@@ -60,6 +60,7 @@
     <Compile Include="Accent.cs" />
     <Compile Include="Architecture.cs" />
     <Compile Include="ButtonStatus.cs" />
+    <Compile Include="FoldOptionsButton.cs" />
     <Compile Include="Tile\Communication.cs" />
     <Compile Include="DescRes.cs" />
     <Compile Include="DWinMgr.cs" />

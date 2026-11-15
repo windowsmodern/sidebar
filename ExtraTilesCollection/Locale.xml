@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <res id="PKG_NAME">
+    <locale name="zh-CN">格外小工具合集</locale>
+    <locale name="en-US">Extra Tiles Collection</locale>
+  </res>
+  <res id="PKG_DESC">
+    <locale name="zh-CN">本合集是根据分析 Windows Longhorn 现有磁贴后，制作的一个合集。合集的这些磁贴区别于其他附带磁贴，是相对来说比较扩展的功能。</locale>
+    <locale name="en-US">This collection was created based on an analysis of the existing tiles in Windows Longhorn. The tiles in this collection differ from other bundled tiles in that they provide relatively more extended functionality.</locale>
+  </res>
+  <res id="TILE_STICKYNOTE_DISPNAME">
+    <locale name="zh-CN">便笺</locale>
+    <locale name="en-US">Sticky Note</locale>
+  </res>
+</resources>

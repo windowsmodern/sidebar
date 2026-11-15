@@ -10,5 +10,6 @@
 		<ResourceDictionary Source="Slideshow.xaml"></ResourceDictionary>
 		<ResourceDictionary Source="User.xaml"></ResourceDictionary>
 		<ResourceDictionary Source="Notification.xaml"></ResourceDictionary>
+		<ResourceDictionary Source="StickyNote.xaml"></ResourceDictionary>
 	</ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>
