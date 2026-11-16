@@ -1,12 +1,19 @@
-﻿<UserControl x:Class="WindowsModern.StickyNote.NoteContentPanel"
+﻿<Window x:Class="WindowsModern.StickyNote.StickyNoteBubble"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WindowsModern.StickyNote"
+			 xmlns:ptswc="clr-namespace:System.Windows.Controls;assembly=PresentationFramework.Theme"
              mc:Ignorable="d" 
+		Style="{DynamicResource TileStickyNoteBubbleWindow}"
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-            
+		<HackImage Name="NoteBackground" Style="{DynamicResource TileStickyNoteBubbleBackground}"></HackImage>
+		<DockPanel>
+			<Grid DockPanel.Dock="Top"></Grid>
+			<Grid Name="NoteRecordPart"></Grid>
+			<Grid Name="NoteContent"></Grid>
+		</DockPanel>
     </Grid>
-</UserControl>
+</Window>

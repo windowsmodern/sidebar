@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 namespace WindowsModern.StickyNote
 {
 	/// <summary>
-	/// NoteContentPanel.xaml 的交互逻辑
+	/// StickyNoteBubble.xaml 的交互逻辑
 	/// </summary>
-	public partial class NoteContentPanel: UserControl
+	public partial class StickyNoteBubble: Window
 	{
-		public NoteContentPanel ()
+		public StickyNoteBubble ()
 		{
 			InitializeComponent ();
 		}

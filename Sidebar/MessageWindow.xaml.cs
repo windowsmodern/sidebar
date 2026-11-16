@@ -32,9 +32,9 @@ namespace Sidebar
 			if (string.IsNullOrWhiteSpace (msgwnd.MessageDescription.Text))
 				msgwnd.MessageDescription.Visibility = Visibility.Collapsed;
 			msgwnd.MessageDetail.Text = GetDetailException (e);
+			SystemSounds.Hand.Play ();
 			if (showdialog) msgwnd.ShowDialog ();
 			else msgwnd.Show ();
-			SystemSounds.Hand.Play ();
 			return msgwnd;
 		}
 		private static string GetDetailException (Exception e, int depth = 0)
