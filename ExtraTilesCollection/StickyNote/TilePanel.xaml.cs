@@ -51,7 +51,7 @@ namespace WindowsModern.StickyNote
 		}
 		private void NewButton_CommandButtonClick (object sender, RoutedEventArgs e)
 		{
-			var snform = new StickyNoteForm ();
+			var snform = new StickyNoteBubble ();
 			snform.Show ();
 		}
 		private void SnipButton_CommandButtonClick (object sender, RoutedEventArgs e)

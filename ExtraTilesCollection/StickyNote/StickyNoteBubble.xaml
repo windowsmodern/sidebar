@@ -7,13 +7,29 @@
 			 xmlns:ptswc="clr-namespace:System.Windows.Controls;assembly=PresentationFramework.Theme"
              mc:Ignorable="d" 
 		Style="{DynamicResource TileStickyNoteBubbleWindow}"
+		Background="Transparent" AllowsTransparency="True"
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
 		<HackImage Name="NoteBackground" Style="{DynamicResource TileStickyNoteBubbleBackground}"></HackImage>
 		<DockPanel>
-			<Grid DockPanel.Dock="Top"></Grid>
-			<Grid Name="NoteRecordPart"></Grid>
-			<Grid Name="NoteContent"></Grid>
+			<Grid Name="NoteHeader" DockPanel.Dock="Top">
+				
+			</Grid>
+			<Grid Name="NoteRecordPart" DockPanel.Dock="Top">
+				
+			</Grid>
+			<Grid Name="NoteSizer" DockPanel.Dock="Bottom">
+				<Thumb Name="ThumbSizeChanger"></Thumb>
+			</Grid>
+			<Grid Name="NoteContent">
+				<ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+					<Grid>
+						<Image Name="ScreenshotContent"></Image>
+						<RichTextBox Name="TextContent"></RichTextBox>
+						<InkCanvas Name="InkContent"></InkCanvas>
+					</Grid>
+				</ScrollViewer>
+			</Grid>
 		</DockPanel>
     </Grid>
 </Window>

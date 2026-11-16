@@ -93,7 +93,7 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-		<Setter Property="Width" Value="29"/>
+		<Setter Property="MinWidth" Value="29"/>
 		<Setter Property="Height" Value="23"/>
 		<Setter Property="Padding" Value="0"/>
 	</Style>
@@ -323,17 +323,10 @@
 		</Setter>
 	</Style>
 
-	<ImageSource x:Key="TileStickyNoteWindowBackground">..\..\Images\Sticky Note\Window\SNThumbID.png</ImageSource>
-	<ImageSource x:Key="TileStickyNoteWindowClenchedHandCursor">..\..\Images\Sticky Note\Window\ClenchedHandCursorID.png</ImageSource>
-	<ImageSource x:Key="TileStickyNoteWindowHandCursor">..\..\Images\Sticky Note\Window\HandCursorID.png</ImageSource>
-	<ImageSource x:Key="TileStickyNoteWindowMultipleStickiesIcon">..\..\Images\Sticky Note\Window\MultipleStickiesIconID.ico</ImageSource>
-	<ImageSource x:Key="TileStickyNoteWindowPinningAcceptImage">..\..\Images\Sticky Note\Window\PinningAcceptImageID.png</ImageSource>
-	<ImageSource x:Key="TileStickyNoteWindowPinningRejectImage">..\..\Images\Sticky Note\Window\PinningRejectImageID.png</ImageSource>
-	<ImageSource x:Key="TileStickyNoteWindowRectangleCur">..\..\Images\Sticky Note\Window\RectangleCurID.png</ImageSource>
-	<ImageSource x:Key="TileStickyNoteWindowScissorsCur">..\..\Images\Sticky Note\Window\ScissorsCurID.ico</ImageSource>
-	<ImageSource x:Key="TileStickyNoteWindowSingleStickyIcon">..\..\Images\Sticky Note\Window\SingleStickyIconID.ico</ImageSource>
-	<ImageSource x:Key="TileStickyNoteWindowStickyGreyImage">..\..\Images\Sticky Note\Window\StickyGreyImageID.ico</ImageSource>
-	<ImageSource x:Key="TileStickyNoteWindowWindowCur">..\..\Images\Sticky Note\Window\WindowCurID.png</ImageSource>
-	<Thickness x:Key="TileStickyNoteWindowBackgroundNineGrid">38,32,5,0</Thickness>
-	<Thickness x:Key="TileStickyNoteWindowClientArea">1,32,1,1</Thickness>
+	<Style x:Key="TileStickyNoteBubbleWindow" TargetType="Window">
+		<Setter Property="WindowStyle" Value="None"></Setter>
+		<Setter Property="Width" Value="306"></Setter>
+		<Setter Property="Height" Value="231"></Setter>
+	</Style>
+	
 </ResourceDictionary>

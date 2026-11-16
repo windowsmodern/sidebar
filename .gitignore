@@ -242,3 +242,9 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+
+# NotificationTile: Binary Files
+NotificationTile/NotificationServer/**/*
+!NotificationTile/NotificationServer/**/
+!NotificationTile/NotificationServer/**/*.exe
+!NotificationTile/NotificationServer/**/*.dll
