@@ -12,8 +12,34 @@
     <Grid>
 		<HackImage Name="NoteBackground" Style="{DynamicResource TileStickyNoteBubbleBackground}"></HackImage>
 		<DockPanel>
-			<Grid Name="NoteHeader" DockPanel.Dock="Top">
-				
+			<Grid Name="NoteHeader" DockPanel.Dock="Top" Style="{DynamicResource TileStickyNoteBubbleHeader}">
+				<TextBlock Name="NoteTitle" Style="{DynamicResource TileStickyNoteBubbleHeaderTitle}"></TextBlock>
+				<Thumb Name="NoteHeaderThumb" Style="{DynamicResource TileStickyNoteHeaderThumb}" DragDelta="NoteHeaderThumb_DragDelta"></Thumb>
+				<Button Name="AttachButton" Style="{DynamicResource TileStickyNoteBubbleHeaderAttachButton}"></Button>
+				<Menu Name="NoteHeadMenu" Style="{DynamicResource TileStickyNoteBubbleMenu}">
+					<MenuItem Header="Tools"></MenuItem>
+					<MenuItem Background="Transparent">
+						<MenuItem.Template>
+							<ControlTemplate TargetType="MenuItem">
+								<Border Background="Transparent"></Border>
+							</ControlTemplate>
+						</MenuItem.Template>
+						<Image Name="DividerImage" Style="{DynamicResource TileStickyNoteBubbleMenuItemDivider}"></Image>
+					</MenuItem>
+					<MenuItem>
+						<HackImage></HackImage>
+						<Image></Image>
+					</MenuItem>
+					<MenuItem>
+						<HackImage></HackImage>
+						<Image></Image>
+					</MenuItem>
+					<MenuItem>
+						<HackImage></HackImage>
+						<Image></Image>
+					</MenuItem>
+				</Menu>
+				<Button Name="CloseButton" Style="{DynamicResource TileStickyNoteBubbleCloseButton}" Click="CloseButton_Click"></Button>
 			</Grid>
 			<Grid Name="NoteRecordPart" DockPanel.Dock="Top">
 				
@@ -24,9 +50,7 @@
 			<Grid Name="NoteContent">
 				<ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
 					<Grid>
-						<Image Name="ScreenshotContent"></Image>
-						<RichTextBox Name="TextContent"></RichTextBox>
-						<InkCanvas Name="InkContent"></InkCanvas>
+
 					</Grid>
 				</ScrollViewer>
 			</Grid>

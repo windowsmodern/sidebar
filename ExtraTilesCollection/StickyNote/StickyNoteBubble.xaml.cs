@@ -23,5 +23,18 @@ namespace WindowsModern.StickyNote
 		{
 			InitializeComponent ();
 		}
+		public void OnThemeChanged ()
+		{
+
+		}
+		private void NoteHeaderThumb_DragDelta (object sender, System.Windows.Controls.Primitives.DragDeltaEventArgs e)
+		{
+			Left += e.HorizontalChange;
+			Top += e.VerticalChange;
+		}
+		private void CloseButton_Click (object sender, RoutedEventArgs e)
+		{
+			try { Close (); } catch { }
+		}
 	}
 }

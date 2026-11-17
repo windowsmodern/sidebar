@@ -8,21 +8,22 @@ namespace Sidebar
 {
 	public static class ScreenHelper
 	{
-		[StructLayout (LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+		// 结构体：把 CharSet 由 Ansi 改为 Unicode
+		[StructLayout (LayoutKind.Sequential, CharSet = CharSet.Unicode)]
 		private class DISPLAY_DEVICE
 		{
 			public int cb = 0;
 			[MarshalAs (UnmanagedType.ByValTStr, SizeConst = 32)]
-			public string DeviceName = new string (' ', 32);
+			public string DeviceName = string.Empty;
 			[MarshalAs (UnmanagedType.ByValTStr, SizeConst = 128)]
-			public string DeviceString = new string (' ', 128);
+			public string DeviceString = string.Empty;
 			public int StateFlags = 0;
 			[MarshalAs (UnmanagedType.ByValTStr, SizeConst = 128)]
-			public string DeviceID = new string (' ', 128);
+			public string DeviceID = string.Empty;
 			[MarshalAs (UnmanagedType.ByValTStr, SizeConst = 128)]
-			public string DeviceKey = new string (' ', 128);
+			public string DeviceKey = string.Empty;
 		}
-		[DllImport ("user32.dll")]
+		[DllImport ("user32.dll", CharSet = CharSet.Auto)]
 		private static extern bool EnumDisplayDevices (
 			string lpDevice,
 			int iDevNum,
@@ -90,9 +91,18 @@ namespace Sidebar
 			DISPLAY_DEVICE info = new DISPLAY_DEVICE ();
 			info.cb = Marshal.SizeOf (info);
 			string deviceName = screen.DeviceName;
+
 			if (EnumDisplayDevices (deviceName, 0, info, 0))
 			{
-				return info.DeviceString?.Trim () ?? deviceName;
+				string name = info.DeviceString;
+				if (!string.IsNullOrEmpty (name))
+				{
+					// 个别驱动可能不写 NUL 终止符，兜底裁剪
+					int nul = name.IndexOf ('\0');
+					if (nul >= 0) name = name.Substring (0, nul);
+					name = name.Trim ();
+					if (name.Length > 0) return name;
+				}
 			}
 			return deviceName;
 		}
