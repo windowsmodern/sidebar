@@ -9,14 +9,17 @@ namespace WindowsModern.StickyNote
 {
 	public class Tile: TileBaseEx
 	{
+		public static Tile Instance { get; set; }
 		private TilePanel tilePanel = null;
 		public override void Initialize ()
 		{
+			Instance = this;
 			ContentArea.Children.Add (tilePanel = new TilePanel ());
 		}
 		public override void Destroy ()
 		{
 			(tilePanel?.Parent as Panel)?.Children?.Clear ();
+			Instance = null;
 		}
 	}
 }

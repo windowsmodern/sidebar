@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
@@ -349,7 +350,7 @@ namespace Sidebar
 	/// <para xml:lang="zh-Hant">提供對邊欄設定的唯讀存取，例如寬度、主題、方向和目前畫面。</para>
 	/// </summary>
 	[ComVisible (true)]
-	public interface ISidebarConfig
+	public interface ISidebarConfig: INotifyPropertyChanged
 	{
 		/// <summary>
 		/// Gets the current width of the Sidebar in device-independent pixels.
@@ -375,6 +376,18 @@ namespace Sidebar
 		/// <para xml:lang="zh-Hant">取得邊欄目前顯示所在的畫面。</para>
 		/// </summary>
 		System.Windows.Forms.Screen CurrentScreen { get; }
+		/// <summary>
+		/// Gets a value indicating whether the Sidebar is in minimized mode.
+		/// <para xml:lang="zh-Hans">获取一个值，指示边栏是否处于最小化模式。</para>
+		/// <para xml:lang="zh-Hant">取得一個值，指示邊欄是否處於最小化模式。</para>
+		/// </summary>
+		bool IsMinimum { get; }
+		/// <summary>
+		/// Gets a value indicating whether transparency is forcibly enabled for windows that support it, even when the operating system does not natively support it.
+		/// <para xml:lang="zh-Hans">获取一个值，指示是否为支持透明度的窗口强制启用透明效果，即使操作系统本身不支持。</para>
+		/// <para xml:lang="zh-Hant">取得一個值，指示是否為支援透明度的視窗強制啟用透明效果，即使作業系統本身不支援。</para>
+		/// </summary>
+		bool ForceTransparency { get; }
 	}
 	/// <summary>
 	/// Provides features for communicating with Sidebar and other tiles, including sending requests, communicating with specific targets, and sending responses.

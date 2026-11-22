@@ -8,6 +8,8 @@
              mc:Ignorable="d" 
 		Style="{DynamicResource TileStickyNoteBubbleWindow}"
 		Background="Transparent" AllowsTransparency="True"
+		Loaded="Window_Loaded" Closed="Window_Closed" SourceInitialized="Window_SourceInitialized"
+		SizeChanged="Window_SizeChanged"
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
 		<HackImage Name="NoteBackground" Style="{DynamicResource TileStickyNoteBubbleBackground}"></HackImage>
@@ -18,41 +20,27 @@
 				<Button Name="AttachButton" Style="{DynamicResource TileStickyNoteBubbleHeaderAttachButton}"></Button>
 				<Menu Name="NoteHeadMenu" Style="{DynamicResource TileStickyNoteBubbleMenu}">
 					<MenuItem Header="Tools"></MenuItem>
-					<MenuItem Background="Transparent">
+					<MenuItem Name="DividerItem">
 						<MenuItem.Template>
-							<ControlTemplate TargetType="MenuItem">
-								<Border Background="Transparent"></Border>
+							<ControlTemplate TargetType="MenuItem" >
+								<Image x:Name="DividerImage" Style="{DynamicResource TileStickyNoteBubbleMenuItemDivider}" Source="{TemplateBinding Header}"></Image>
 							</ControlTemplate>
 						</MenuItem.Template>
-						<Image Name="DividerImage" Style="{DynamicResource TileStickyNoteBubbleMenuItemDivider}"></Image>
 					</MenuItem>
-					<MenuItem>
-						<HackImage></HackImage>
-						<Image></Image>
-					</MenuItem>
-					<MenuItem>
-						<HackImage></HackImage>
-						<Image></Image>
-					</MenuItem>
-					<MenuItem>
-						<HackImage></HackImage>
-						<Image></Image>
-					</MenuItem>
+					<MenuItem Style="{DynamicResource TileStickyNoteBubbleMenuItemImageItem}"></MenuItem>
+					<MenuItem Style="{DynamicResource TileStickyNoteBubbleMenuItemImageItem}"></MenuItem>
+					<MenuItem Style="{DynamicResource TileStickyNoteBubbleMenuItemImageItem}"></MenuItem>
 				</Menu>
 				<Button Name="CloseButton" Style="{DynamicResource TileStickyNoteBubbleCloseButton}" Click="CloseButton_Click"></Button>
 			</Grid>
-			<Grid Name="NoteRecordPart" DockPanel.Dock="Top">
+			<Grid Name="NoteControlPart" DockPanel.Dock="Top">
 				
 			</Grid>
 			<Grid Name="NoteSizer" DockPanel.Dock="Bottom">
-				<Thumb Name="ThumbSizeChanger"></Thumb>
+				<Thumb Name="ThumbSizeChanger" Style="{DynamicResource TileStickyNoteBubbleResizeCornerThumb}" DragDelta="ThumbSizeChanger_DragDelta"></Thumb>
 			</Grid>
 			<Grid Name="NoteContent">
-				<ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-					<Grid>
-
-					</Grid>
-				</ScrollViewer>
+				<local:NoteContentPanel HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"></local:NoteContentPanel>
 			</Grid>
 		</DockPanel>
     </Grid>

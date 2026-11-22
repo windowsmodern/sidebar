@@ -2,159 +2,99 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:Sidebar"
 					xmlns:snt="clr-namespace:Sidebar;assembly=Native"
-					xmlns:pfswc="clr-namespace:System.Windows.Controls;assembly=PresentationFramework.Theme"
 					>
-	<Style x:Key="TileStickyNoteTileFoldButtonOptionsPart" TargetType="Button">
-		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="Button">
-					<Grid Background="Transparent">
-						<pfswc:HackImage x:Name="SplitArt" Source="..\..\Images\Sticky Note\SplitHoverImageID.png" HackThickness="3" DockPanel.Dock="Right" Opacity="0" pfswc:HackImageTransitions.Duration="0:0:0.15"/>
-					</Grid>
-					<ControlTemplate.Triggers>
-						<DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type snt:FoldOptionsButton}}}" Value="True">
-							<Setter TargetName="SplitArt" Property="pfswc:HackImageTransitions.To" Value="..\..\Images\Sticky Note\SplitHoverImageID.png"/>
-							<DataTrigger.EnterActions>
-								<BeginStoryboard>
-									<Storyboard>
-										<DoubleAnimation Storyboard.TargetName="SplitArt" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.15"/>
-									</Storyboard>
-								</BeginStoryboard>
-							</DataTrigger.EnterActions>
-							<DataTrigger.ExitActions>
-								<BeginStoryboard>
-									<Storyboard>
-										<DoubleAnimation Storyboard.TargetName="SplitArt" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.15"/>
-									</Storyboard>
-								</BeginStoryboard>
-							</DataTrigger.ExitActions>
-						</DataTrigger>
-						<Trigger Property="IsPressed" Value="True">
-							<Setter TargetName="SplitArt" Property="pfswc:HackImageTransitions.To" Value="..\..\Images\Sticky Note\SplitDownImageID.png"/>
-							<Trigger.EnterActions>
-								<BeginStoryboard x:Name="PressedIn">
-									<Storyboard>
-										<DoubleAnimation Storyboard.TargetName="SplitArt" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.05"/>
-									</Storyboard>
-								</BeginStoryboard>
-							</Trigger.EnterActions>
-							<Trigger.ExitActions>
-								<StopStoryboard BeginStoryboardName="PressedIn"/>
-							</Trigger.ExitActions>
-						</Trigger>
-					</ControlTemplate.Triggers>
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
-		<Setter Property="Width" Value="16"/>
-		<Setter Property="Height" Value="23"/>
-		<Setter Property="Padding" Value="0"/>
-	</Style>
-	<Style x:Key="TileStickyNoteTileFoldButtonCommandPart" TargetType="Button">
-		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="Button">
-					<Grid Background="Transparent">
-						<pfswc:HackImage x:Name="MainArt" Source="..\..\Images\Sticky Note\ButtonHoverImageID.png" HackThickness="3" Opacity="0" pfswc:HackImageTransitions.Duration="0:0:0.15"/>
-						<ContentPresenter Margin="{TemplateBinding Padding}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-					</Grid>
-					<ControlTemplate.Triggers>
-						<DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type snt:FoldOptionsButton}}}" Value="True">
-							<Setter TargetName="MainArt" Property="pfswc:HackImageTransitions.To" Value="..\..\Images\Sticky Note\ButtonHoverImageID.png"/>
-							<DataTrigger.EnterActions>
-								<BeginStoryboard>
-									<Storyboard>
-										<DoubleAnimation Storyboard.TargetName="MainArt" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.15"/>
-									</Storyboard>
-								</BeginStoryboard>
-							</DataTrigger.EnterActions>
-							<DataTrigger.ExitActions>
-								<BeginStoryboard>
-									<Storyboard>
-										<DoubleAnimation Storyboard.TargetName="MainArt" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.15"/>
-									</Storyboard>
-								</BeginStoryboard>
-							</DataTrigger.ExitActions>
-						</DataTrigger>
-						<Trigger Property="IsPressed" Value="True">
-							<Setter TargetName="MainArt" Property="pfswc:HackImageTransitions.To" Value="..\..\Images\Sticky Note\ButtonDownImageID.png"/>
-							<Trigger.EnterActions>
-								<BeginStoryboard x:Name="PressedIn">
-									<Storyboard>
-										<DoubleAnimation Storyboard.TargetName="MainArt" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.05"/>
-									</Storyboard>
-								</BeginStoryboard>
-							</Trigger.EnterActions>
-							<Trigger.ExitActions>
-								<StopStoryboard BeginStoryboardName="PressedIn"/>
-							</Trigger.ExitActions>
-						</Trigger>
-					</ControlTemplate.Triggers>
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
-		<Setter Property="MinWidth" Value="29"/>
-		<Setter Property="Height" Value="23"/>
-		<Setter Property="Padding" Value="0"/>
-	</Style>
-	<Style x:Key="TileStickyNoteTileFoldButton" TargetType="snt:FoldOptionsButton">
+	<Style x:Key="TileStickyNoteTileFoldButton" TargetType="{x:Type snt:FoldOptionsButton}">
 		<Setter Property="Width" Value="45"/>
 		<Setter Property="Height" Value="23"/>
-		<Setter Property="SnapsToDevicePixels" Value="True"></Setter>
+		<Setter Property="SnapsToDevicePixels" Value="True"/>
 		<Setter Property="Template">
 			<Setter.Value>
-				<ControlTemplate TargetType="snt:FoldOptionsButton">
+				<ControlTemplate TargetType="{x:Type snt:FoldOptionsButton}">
 					<DockPanel x:Name="Root">
-						<Button x:Name="PART_OptionsButton" DockPanel.Dock="Right" Style="{TemplateBinding OptionsButtonStyle}" Content="{TemplateBinding OptionsButtonContent}"/>
-						<Button x:Name="PART_CommandButton" DockPanel.Dock="Left" Style="{TemplateBinding CommandButtonStyle}" Content="{TemplateBinding CommandButtonContent}"/>
+						<Button x:Name="PART_OptionsButton" DockPanel.Dock="Right" Width="16" Height="23" Padding="0" Content="{TemplateBinding OptionsButtonContent}">
+							<Button.Template>
+								<ControlTemplate TargetType="{x:Type Button}">
+									<Grid Background="Transparent">
+										<HackImage x:Name="SplitArt" Source="..\..\Images\Sticky Note\SplitHoverImageID.png" HackThickness="3" DockPanel.Dock="Right" Opacity="0" HackImageTransitions.Duration="0:0:0.15"/>
+									</Grid>
+									<ControlTemplate.Triggers>
+										<DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type snt:FoldOptionsButton}}}" Value="True">
+											<Setter TargetName="SplitArt" Property="HackImageTransitions.To" Value="..\..\Images\Sticky Note\SplitHoverImageID.png"/>
+											<DataTrigger.EnterActions>
+												<BeginStoryboard>
+													<Storyboard>
+														<DoubleAnimation Storyboard.TargetName="SplitArt" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.15"/>
+													</Storyboard>
+												</BeginStoryboard>
+											</DataTrigger.EnterActions>
+											<DataTrigger.ExitActions>
+												<BeginStoryboard>
+													<Storyboard>
+														<DoubleAnimation Storyboard.TargetName="SplitArt" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.15"/>
+													</Storyboard>
+												</BeginStoryboard>
+											</DataTrigger.ExitActions>
+										</DataTrigger>
+										<Trigger Property="IsPressed" Value="True">
+											<Setter TargetName="SplitArt" Property="HackImageTransitions.To" Value="..\..\Images\Sticky Note\SplitDownImageID.png"/>
+											<Trigger.EnterActions>
+												<BeginStoryboard x:Name="PressedIn">
+													<Storyboard>
+														<DoubleAnimation Storyboard.TargetName="SplitArt" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.05"/>
+													</Storyboard>
+												</BeginStoryboard>
+											</Trigger.EnterActions>
+											<Trigger.ExitActions>
+												<StopStoryboard BeginStoryboardName="PressedIn"/>
+											</Trigger.ExitActions>
+										</Trigger>
+									</ControlTemplate.Triggers>
+								</ControlTemplate>
+							</Button.Template>
+						</Button>
+						<Button x:Name="PART_CommandButton" DockPanel.Dock="Left" MinWidth="29" Height="23" Padding="0" Content="{TemplateBinding CommandButtonContent}">
+							<Button.Template>
+								<ControlTemplate TargetType="{x:Type Button}">
+									<Grid Background="Transparent">
+										<HackImage x:Name="MainArt" Source="..\..\Images\Sticky Note\ButtonHoverImageID.png" HackThickness="3" Opacity="0" HackImageTransitions.Duration="0:0:0.15"/>
+										<ContentPresenter Margin="{TemplateBinding Padding}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+									</Grid>
+									<ControlTemplate.Triggers>
+										<DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type snt:FoldOptionsButton}}}" Value="True">
+											<Setter TargetName="MainArt" Property="HackImageTransitions.To" Value="..\..\Images\Sticky Note\ButtonHoverImageID.png"/>
+											<DataTrigger.EnterActions>
+												<BeginStoryboard>
+													<Storyboard>
+														<DoubleAnimation Storyboard.TargetName="MainArt" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.15"/>
+													</Storyboard>
+												</BeginStoryboard>
+											</DataTrigger.EnterActions>
+											<DataTrigger.ExitActions>
+												<BeginStoryboard>
+													<Storyboard>
+														<DoubleAnimation Storyboard.TargetName="MainArt" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.15"/>
+													</Storyboard>
+												</BeginStoryboard>
+											</DataTrigger.ExitActions>
+										</DataTrigger>
+										<Trigger Property="IsPressed" Value="True">
+											<Setter TargetName="MainArt" Property="HackImageTransitions.To" Value="..\..\Images\Sticky Note\ButtonDownImageID.png"/>
+											<Trigger.EnterActions>
+												<BeginStoryboard x:Name="PressedIn">
+													<Storyboard>
+														<DoubleAnimation Storyboard.TargetName="MainArt" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.05"/>
+													</Storyboard>
+												</BeginStoryboard>
+											</Trigger.EnterActions>
+											<Trigger.ExitActions>
+												<StopStoryboard BeginStoryboardName="PressedIn"/>
+											</Trigger.ExitActions>
+										</Trigger>
+									</ControlTemplate.Triggers>
+								</ControlTemplate>
+							</Button.Template>
+						</Button>
 					</DockPanel>
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
-	</Style>
-	<Style x:Key="TileStickyNoteTileButton" TargetType="Button">
-		<Setter Property="Width" Value="30"/>
-		<Setter Property="Height" Value="23"/>
-		<Setter Property="Padding" Value="0"/>
-		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="Button">
-					<Grid>
-						<pfswc:HackImage x:Name="Art" Source="..\..\Images\Sticky Note\ButtonNoPullrightHoverImageID.png" HackThickness="3" Opacity="0" pfswc:HackImageTransitions.Duration="0:0:0.15"/>
-						<ContentPresenter Margin="{TemplateBinding Padding}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-					</Grid>
-					<ControlTemplate.Triggers>
-						<Trigger Property="IsMouseOver" Value="True">
-							<Setter TargetName="Art" Property="pfswc:HackImageTransitions.To" Value="..\..\Images\Sticky Note\ButtonNoPullrightHoverImageID.png"/>
-							<Trigger.EnterActions>
-								<BeginStoryboard>
-									<Storyboard>
-										<DoubleAnimation Storyboard.TargetName="Art" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.15"/>
-									</Storyboard>
-								</BeginStoryboard>
-							</Trigger.EnterActions>
-							<Trigger.ExitActions>
-								<BeginStoryboard>
-									<Storyboard>
-										<DoubleAnimation Storyboard.TargetName="Art" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.15"/>
-									</Storyboard>
-								</BeginStoryboard>
-							</Trigger.ExitActions>
-						</Trigger>
-						<Trigger Property="IsPressed" Value="True">
-							<Setter TargetName="Art" Property="pfswc:HackImageTransitions.To" Value="..\..\Images\Sticky Note\ButtonNoPullrightDownImageID.png"/>
-							<Trigger.EnterActions>
-								<BeginStoryboard x:Name="PressedIn">
-									<Storyboard>
-										<DoubleAnimation Storyboard.TargetName="Art" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.05"/>
-									</Storyboard>
-								</BeginStoryboard>
-							</Trigger.EnterActions>
-							<Trigger.ExitActions>
-								<StopStoryboard BeginStoryboardName="PressedIn"/>
-							</Trigger.ExitActions>
-						</Trigger>
-					</ControlTemplate.Triggers>
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
@@ -187,21 +127,53 @@
 			</Image.Style>
 		</Image>
 	</Grid>
-	<Style x:Key="TileStickyNoteFolderButton" TargetType="Button" BasedOn="{StaticResource TileStickyNoteTileButton}">
-		<Setter Property="Content">
+	<Style x:Key="TileStickyNoteFolderButton" TargetType="Button">
+		<Setter Property="Width" Value="30"/>
+		<Setter Property="Height" Value="23"/>
+		<Setter Property="Padding" Value="0,0,1,0"/>
+		<Setter Property="Template">
 			<Setter.Value>
-				<Image Source="..\..\Images\Sticky Note\FolderButtonRestHoverImageID.png"/>
+				<ControlTemplate TargetType="Button">
+					<Grid>
+						<HackImage x:Name="Art" Source="..\..\Images\Sticky Note\ButtonNoPullrightHoverImageID.png" HackThickness="3" Opacity="0" HackImageTransitions.Duration="0:0:0.15"/>
+						<Image x:Name="ButtonImage" Width="29" Height="23" Margin="{TemplateBinding Padding}" Source="..\..\Images\Sticky Note\FolderButtonRestHoverImageID.png" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+					</Grid>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter TargetName="Art" Property="HackImageTransitions.To" Value="..\..\Images\Sticky Note\ButtonNoPullrightHoverImageID.png"/>
+							<Trigger.EnterActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation Storyboard.TargetName="Art" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.15"/>
+									</Storyboard>
+								</BeginStoryboard>
+							</Trigger.EnterActions>
+							<Trigger.ExitActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation Storyboard.TargetName="Art" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.15"/>
+									</Storyboard>
+								</BeginStoryboard>
+							</Trigger.ExitActions>
+						</Trigger>
+						<Trigger Property="IsPressed" Value="True">
+							<Setter TargetName="ButtonImage" Property="Source" Value="..\..\Images\Sticky Note\FolderButtonDownImageID.png"/>
+							<Setter TargetName="Art" Property="HackImageTransitions.To" Value="..\..\Images\Sticky Note\ButtonNoPullrightDownImageID.png"/>
+							<Trigger.EnterActions>
+								<BeginStoryboard x:Name="PressedIn">
+									<Storyboard>
+										<DoubleAnimation Storyboard.TargetName="Art" Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.05"/>
+									</Storyboard>
+								</BeginStoryboard>
+							</Trigger.EnterActions>
+							<Trigger.ExitActions>
+								<StopStoryboard BeginStoryboardName="PressedIn"/>
+							</Trigger.ExitActions>
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-		<Style.Triggers>
-			<Trigger Property="IsPressed" Value="True">
-				<Setter Property="Content">
-					<Setter.Value>
-						<Image Source="..\..\Images\Sticky Note\FolderButtonDownImageID.png"/>
-					</Setter.Value>
-				</Setter>
-			</Trigger>
-		</Style.Triggers>
 	</Style>
 	<Style x:Key="TileStickyNoteTileNote" TargetType="Grid">
 		<Setter Property="Background">
@@ -328,14 +300,21 @@
 		<Setter Property="Width" Value="306"></Setter>
 		<Setter Property="Height" Value="231"></Setter>
 		<Setter Property="MinWidth" Value="190"></Setter>
-		<Setter Property="MinHeight" Value="43"></Setter>
+		<Setter Property="MinHeight" Value="104"></Setter>
 	</Style>
 	<Style x:Key="TileStickyNoteBubbleBackground" TargetType="HackImage">
 		<Setter Property="HackThickness" Value="45,43,17,17"></Setter>
-		<Setter Property="Source" Value="{DynamicResource TileStickyNoteBubbleBackgroundSticky}"></Setter>
 	</Style>
 	<ImageSource x:Key="TileStickyNoteBubbleBackgroundSticky">..\..\Images\Sticky Note\Bubble\Sticky.png</ImageSource>
 	<ImageSource x:Key="TileStickyNoteBubbleBackgroundFlatSticky">..\..\Images\Sticky Note\Bubble\FlatSticky.png</ImageSource>
+	<ImageSource x:Key="TileStickyNoteBubbleWindowMaskLT">..\..\Images\Sticky Note\Bubble\LeftCornerMaskID.bmp</ImageSource>
+	<ImageSource x:Key="TileStickyNoteBubbleWindowMaskRT">..\..\Images\Sticky Note\Bubble\RightCornerMaskID.bmp</ImageSource>
+	<x:Null x:Key="TileStickyNoteBubbleWindowMaskLB" />
+	<x:Null x:Key="TileStickyNoteBubbleWindowMaskRB" />
+	<x:Null x:Key="TileStickyNoteBubbleWindowFlatMaskLT" />
+	<x:Null x:Key="TileStickyNoteBubbleWindowFlatMaskRT" />
+	<x:Null x:Key="TileStickyNoteBubbleWindowFlatMaskLB" />
+	<x:Null x:Key="TileStickyNoteBubbleWindowFlatMaskRB" />
 	<Style x:Key="TileStickyNoteBubbleHeader" TargetType="Grid">
 		<Setter Property="Height" Value="43"></Setter>
 	</Style>
@@ -406,4 +385,39 @@
 		<Setter Property="Margin" Value="3,2"></Setter>
 	</Style>
 	<ImageSource x:Key="TileStickyNoteBubbleMenuItemDividerImage">..\..\Images\Sticky Note\Bubble\Divider.png</ImageSource>
+	<Style x:Key="TileStickyNoteBubbleResizeCornerThumb" TargetType="Thumb">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Thumb">
+					<Image Stretch="None" Source="..\..\Images\Sticky Note\Bubble\ResizeCorner.png"></Image>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="Width" Value="17"></Setter>
+		<Setter Property="Height" Value="17"></Setter>
+		<Setter Property="HorizontalAlignment" Value="Right"></Setter>
+		<Setter Property="VerticalAlignment" Value="Bottom"></Setter>
+		<Setter Property="Cursor" Value="SizeNWSE"></Setter>
+	</Style>
+	<ImageSource x:Key="TileStickyNoteBubbleMenuItemImageItemHoverImage">..\..\Images\Sticky Note\Bubble\IconHoverButton.png</ImageSource>
+	<ImageSource x:Key="TileStickyNoteBubbleMenuItemImageItemActiveImage">..\..\Images\Sticky Note\Bubble\IconDownButton.png</ImageSource>
+	<Thickness x:Key="TileStickyNoteBubbleMenuItemImageItemBackgroundThickness">4</Thickness>
+	<Style x:Key="TileStickyNoteBubbleMenuItemImageItemButton" TargetType="HackButton">
+		<Setter Property="HoverSource" Value="{DynamicResource TileStickyNoteBubbleMenuItemImageItemHoverImage}"></Setter>
+		<Setter Property="ActiveSource" Value="{DynamicResource TileStickyNoteBubbleMenuItemImageItemActiveImage}"></Setter>
+		<Setter Property="HackThickness" Value="{DynamicResource TileStickyNoteBubbleMenuItemImageItemBackgroundThickness}"></Setter>
+	</Style>
+	<Style x:Key="TileStickyNoteBubbleMenuItemImageItem" TargetType="MenuItem">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="MenuItem">
+					<HackButton Style="{DynamicResource TileStickyNoteBubbleMenuItemImageItemButton}">
+						<Image Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" Source="{TemplateBinding Header}"></Image>
+					</HackButton>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="Width" Value="22"></Setter>
+		<Setter Property="Height" Value="22"></Setter>
+	</Style>
 </ResourceDictionary>

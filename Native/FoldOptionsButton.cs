@@ -33,11 +33,8 @@ namespace Sidebar
 		/// </summary>
 		public FoldOptionsButton ()
 		{
-			// 外层仅作为悬停/布局容器，不参与 Tab 和键盘焦点，让子按钮各自获得焦点
 			IsTabStop = false;
 			Focusable = false;
-			// 默认样式；调用方显式设置 Style 时会覆盖
-			SetResourceReference (StyleProperty, "TileStickyNoteTileFoldButton");
 		}
 
 		/// <summary>

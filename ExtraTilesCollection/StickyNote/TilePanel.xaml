@@ -33,8 +33,8 @@
 		</Popup>
 		<DockPanel>
 			<WrapPanel Name="ControlContentContainer" Orientation="Vertical" DockPanel.Dock="Left" Margin="0,0,4,0" SizeChanged="ControlContentContainer_SizeChanged">
-				<sbn:FoldOptionsButton Name="NewButton" Style="{DynamicResource TileStickyNoteTileFoldButton}" OptionsButtonStyle="{DynamicResource TileStickyNoteTileFoldButtonOptionsPart}" CommandButtonStyle="{DynamicResource TileStickyNoteTileFoldButtonCommandPart}" CommandButtonContent="{DynamicResource TileStickyNoteNewButtonContent}" HorizontalAlignment="Left" Margin="0,0,0,1" OptionsButtonClick="NewButton_OptionsButtonClick" CommandButtonClick="NewButton_CommandButtonClick"></sbn:FoldOptionsButton>
-				<sbn:FoldOptionsButton Name="SnipButton" Style="{DynamicResource TileStickyNoteTileFoldButton}" OptionsButtonStyle="{DynamicResource TileStickyNoteTileFoldButtonOptionsPart}" CommandButtonStyle="{DynamicResource TileStickyNoteTileFoldButtonCommandPart}" CommandButtonContent="{DynamicResource TileStickyNoteSnipButtonContent}" HorizontalAlignment="Left"  Margin="0,0,0,1" OptionsButtonClick="SnipButton_OptionsButtonClick" CommandButtonClick="SnipButton_CommandButtonClick"></sbn:FoldOptionsButton>
+				<sbn:FoldOptionsButton Name="NewButton" Style="{DynamicResource TileStickyNoteTileFoldButton}" CommandButtonContent="{DynamicResource TileStickyNoteNewButtonContent}" HorizontalAlignment="Left" Margin="0,0,0,1" OptionsButtonClick="NewButton_OptionsButtonClick" CommandButtonClick="NewButton_CommandButtonClick"></sbn:FoldOptionsButton>
+				<sbn:FoldOptionsButton Name="SnipButton" Style="{DynamicResource TileStickyNoteTileFoldButton}" CommandButtonContent="{DynamicResource TileStickyNoteSnipButtonContent}" HorizontalAlignment="Left"  Margin="0,0,0,1" OptionsButtonClick="SnipButton_OptionsButtonClick" CommandButtonClick="SnipButton_CommandButtonClick"></sbn:FoldOptionsButton>
 				<Button Name="FolderButton" Style="{DynamicResource TileStickyNoteFolderButton}" HorizontalAlignment="Left" Visibility="Collapsed"></Button>
 			</WrapPanel>
 			<Grid DockPanel.Dock="Right" Style="{DynamicResource TileStickyNoteTileNote}"></Grid>
