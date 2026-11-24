@@ -8,6 +8,18 @@
 * This project utilizes AI assistance in some aspects of development.
 * Sep. 23, 2026: Due to new ideas about the project’s direction and the difficulty of maintaining and updating the old system, the project will undergo a major overhaul soon. This overhaul will also be incompatible with the previous tiles. Therefore, tile developers for this project, please take note.
 
+## Known Issues of Notification History Tile
+
+Since the Notification History Tile captures notifications using a rather hacky approach (see [https://github.com/windowsmodern/windows-notification-server](https://github.com/windowsmodern/windows-notification-server)), leftover `NotifyServer.exe` processes may remain running if the tile is not properly disposed, or if the sidebar with pinned notification history entries is not closed correctly. Such residual processes will keep intercepting notifications, which prevents notifications that should be shown by `explorer.exe` from appearing normally.
+
+The simplest way to handle a lingering `NotifyServer.exe` process is to terminate it directly once it appears (note that this may cause `explorer.exe` to crash and restart). Alternatively, locate `NotifyServer.exe` in its directory and run this command line:
+
+```
+NotifyServer.exe -unregister-exit
+```
+
+This shuts down NotifyServer cleanly, and it is exactly what happens when the Notification History Tile is disposed properly.
+
 ## Required Runtime Environment
 
 - Microsoft .NET Framework 4.0
@@ -22,7 +34,7 @@ Download the latest release from the Releases section.
 
 ## SDK
 
-Download: https://github.com/WindowsModern/sidebar/releases/tag/sdk2026.10.22
+Download: [Download SDK for Development](https://github.com/windowsmodern/sidebar/releases/tag/sdk2026.11.24)
 
 ## Acknowledgements
 
