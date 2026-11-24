@@ -8,7 +8,6 @@ namespace Sidebar
 {
 	public static class ScreenHelper
 	{
-		// 结构体：把 CharSet 由 Ansi 改为 Unicode
 		[StructLayout (LayoutKind.Sequential, CharSet = CharSet.Unicode)]
 		private class DISPLAY_DEVICE
 		{
