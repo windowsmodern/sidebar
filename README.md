@@ -34,7 +34,7 @@ Download the latest release from the Releases section.
 
 ## SDK
 
-Download: [https://github.com/WindowsModern/sidebar/releases/tag/sdk2026.10.22](https://github.com/windowsmodern/sidebar/releases/tag/sdk2026.11.24)
+Download: [Download SDK for Development](https://github.com/windowsmodern/sidebar/releases/tag/sdk2026.11.24)
 
 ## Acknowledgements
 
