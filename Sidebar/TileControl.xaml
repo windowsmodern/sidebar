@@ -55,8 +55,9 @@
 			<MenuItem Name="MenuItemRemove" Click="MenuItemRemove_Click" Header="{pst:StringResource TILE_CONTEXTMENU_REMOVE}"></MenuItem>
 		</ContextMenu>
 	</UserControl.ContextMenu>
-	<Grid>
+	<Grid Style="{DynamicResource TileControlContentContainer}">
 		<DockPanel>
+			<Thumb Style="{DynamicResource TileSplitterDecoration}"></Thumb>
 			<Thumb Name="TileSplitterThumb" Style="{DynamicResource TileSplliter}" DragStarted="TileSplitterThumb_DragStarted" DragDelta="TileSplitterThumb_DragDelta" DragCompleted="TileSplitterThumb_DragCompleted" PreviewMouseLeftButtonDown="TileSplitterThumb_PreviewMouseLeftButtonDown"></Thumb>
 			<Grid Name="TileMainPanel" Opacity="0" ClipToBounds="True">
 				<Control Style="{DynamicResource TileBackground}"></Control>

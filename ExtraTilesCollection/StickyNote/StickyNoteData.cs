@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Ink;
 using System.Windows.Media;
@@ -52,9 +53,11 @@ namespace WindowsModern.StickyNote
 	{
 		private string _filePath = null;
 		private StickyNoteContent _noteContent = null;
-		private DateTime _dateTime = DateTime.UtcNow;
+		private DateTime? _dateTime = null;
 		private DrawingColor _background = DrawingColor.FromArgb (0xFB, 0xF7, 0xCB);
 		private bool _isFlat = false;
+		private Point _pos;
+		private Size _size;
 		public string FilePath
 		{
 			get { return _filePath; }
@@ -79,7 +82,7 @@ namespace WindowsModern.StickyNote
 		{
 			OnPropertyChanged (nameof (Content));
 		}
-		public DateTime NoteDateTime
+		public DateTime? NoteDateTime
 		{
 			get { return _dateTime; }
 			set
@@ -104,6 +107,24 @@ namespace WindowsModern.StickyNote
 			{
 				_isFlat = value;
 				OnPropertyChanged (nameof (IsFlat));
+			}
+		}
+		public Point Position
+		{
+			get { return _pos; }
+			set
+			{
+				_pos = value;
+				OnPropertyChanged (nameof (Position));
+			}
+		}
+		public Size Size
+		{
+			get { return _size; }
+			set
+			{
+				_size = value;
+				OnPropertyChanged (nameof (Size));
 			}
 		}
 		private HashSet<PropertyChangedEventHandler> changedHandlers = new HashSet<PropertyChangedEventHandler> ();

@@ -9,7 +9,7 @@
 		Style="{DynamicResource TileStickyNoteBubbleWindow}"
 		Background="Transparent" AllowsTransparency="True"
 		Loaded="Window_Loaded" Closed="Window_Closed" SourceInitialized="Window_SourceInitialized"
-		SizeChanged="Window_SizeChanged"
+		SizeChanged="Window_SizeChanged" Activated="Window_Activated" Deactivated="Window_Deactivated"
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
 		<HackImage Name="NoteBackground" Style="{DynamicResource TileStickyNoteBubbleBackground}"></HackImage>
@@ -19,7 +19,7 @@
 				<Thumb Name="NoteHeaderThumb" Style="{DynamicResource TileStickyNoteHeaderThumb}" DragDelta="NoteHeaderThumb_DragDelta"></Thumb>
 				<Button Name="AttachButton" Style="{DynamicResource TileStickyNoteBubbleHeaderAttachButton}"></Button>
 				<Menu Name="NoteHeadMenu" Style="{DynamicResource TileStickyNoteBubbleMenu}">
-					<MenuItem Header="Tools"></MenuItem>
+					<MenuItem Name="ToolItem" Header="Tools"></MenuItem>
 					<MenuItem Name="DividerItem">
 						<MenuItem.Template>
 							<ControlTemplate TargetType="MenuItem" >
@@ -27,9 +27,9 @@
 							</ControlTemplate>
 						</MenuItem.Template>
 					</MenuItem>
-					<MenuItem Style="{DynamicResource TileStickyNoteBubbleMenuItemImageItem}"></MenuItem>
-					<MenuItem Style="{DynamicResource TileStickyNoteBubbleMenuItemImageItem}"></MenuItem>
-					<MenuItem Style="{DynamicResource TileStickyNoteBubbleMenuItemImageItem}"></MenuItem>
+					<MenuItem Name="DeleteItem" Click="DeleteItem_Click" Style="{DynamicResource TileStickyNoteBubbleMenuItemImageItemDelete}"></MenuItem>
+					<MenuItem Name="RecordItem" Click="RecordItem_Click" Style="{DynamicResource TileStickyNoteBubbleMenuItemImageItemRecord}"></MenuItem>
+					<MenuItem Name="KbdPenItem" Click="KbdPenItem_Click" Style="{DynamicResource TileStickyNoteBubbleMenuItemImageItemKeyboard}"></MenuItem>
 				</Menu>
 				<Button Name="CloseButton" Style="{DynamicResource TileStickyNoteBubbleCloseButton}" Click="CloseButton_Click"></Button>
 			</Grid>
@@ -40,7 +40,7 @@
 				<Thumb Name="ThumbSizeChanger" Style="{DynamicResource TileStickyNoteBubbleResizeCornerThumb}" DragDelta="ThumbSizeChanger_DragDelta"></Thumb>
 			</Grid>
 			<Grid Name="NoteContent">
-				<local:NoteContentPanel HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"></local:NoteContentPanel>
+				<local:NoteContentPanel x:Name="ContentPanel" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"></local:NoteContentPanel>
 			</Grid>
 		</DockPanel>
     </Grid>

@@ -79,7 +79,7 @@
     <Reference Include="PresentationFramework.Luna" />
     <Reference Include="PresentationFramework.Royale" />
     <Reference Include="PresentationFramework.Theme, Version=1.0.13.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Win32ThemeStyle.WPF.1.0.17\lib\net40\PresentationFramework.Theme.dll</HintPath>
+      <HintPath>..\packages\Win32ThemeStyle.WPF.1.0.19\lib\net40\PresentationFramework.Theme.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -99,7 +99,7 @@
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="ThemeExplorer.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Win32ThemeStyle.WPF.1.0.17\lib\net40\ThemeExplorer.Core.dll</HintPath>
+      <HintPath>..\packages\Win32ThemeStyle.WPF.1.0.19\lib\net40\ThemeExplorer.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="UIAutomationProvider" />
@@ -159,7 +159,25 @@
       <DependentUpon>TilePropertiesForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="WinForm.cs" />
+    <Content Include="Images\Sticky Note\Bubble\AudioDown.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Sticky Note\Bubble\AudioHover.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Sticky Note\Bubble\AudioNormal.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Images\Sticky Note\Bubble\Close_X.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Sticky Note\Bubble\DeleteDown.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Sticky Note\Bubble\DeleteHover.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Sticky Note\Bubble\DeleteNormal.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\Sticky Note\Bubble\Divider.png">
@@ -171,7 +189,25 @@
     <Content Include="Images\Sticky Note\Bubble\IconHoverButton.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Images\Sticky Note\Bubble\KBDown.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Sticky Note\Bubble\KBHover.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Sticky Note\Bubble\KBNormal.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Images\Sticky Note\Bubble\LeftCornerMaskID.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Sticky Note\Bubble\PenKBToggleDown.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Sticky Note\Bubble\PenKBToggleHover.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Sticky Note\Bubble\PenKBToggleNormal.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Images\Sticky Note\Bubble\ResizeCorner.png">

@@ -89,6 +89,8 @@
 	<x:Static x:Key="UtilStringResourceConverter" Member="pst:StringResourceConverter.Instance" />
 	<!-- 日历模式转布尔转换器：Month=true，其他=false；无颜色值 -->
 	<x:Static x:Key="UtilCalendarModeToBooleanConverter" Member="pst:CalendarModeToBooleanConverter.Instance" />
+	<!-- 非0转换器：(Top!=0)=true，其他=false；无颜色值 -->
+	<x:Static x:Key="UtilNonZeroConverter" Member="pst:NonZeroConverter.Instance" />
 
 	<!-- 本地化字符串：侧边栏选项，带回退；值为当前语言文本，找不到时用 fallback -->
 	<pst:StringResourceExtension x:Key="UtilStringSidebarOptions" Key="SIDEBAR_OPTIONS" Fallback="Options" />

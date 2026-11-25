@@ -9,6 +9,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -69,9 +70,38 @@ namespace WindowsModern.StickyNote
 			var grayDiveder = TryFindResource ("TileStickyNoteBubbleMenuItemDividerImage") as ImageSource;
 			var colorDivider = ImageColorMapper.MapImageColors (grayDiveder, drawingColor);
 			DividerItem.Header = colorDivider;
-			var imageItemStyle = TryFindResource ("TileStickyNoteBubbleMenuItemImageItemButton") as Style;
-			var isImageItemColored = false;
-
+			UpdateMenuImageItems (DeleteItem, RecordItem, KbdPenItem);
+		}
+		private void UpdateMenuImageItems (params MenuItem [] mis)
+		{
+			var drawingColor = noteStoreData?.BackgroundColor ?? System.Drawing.Color.FromArgb (0xFB, 0xF7, 0xCB);
+			foreach (var mi in mis)
+			{
+				var background = mi?.Template?.FindName ("PART_Background", mi) as HackButton;
+				var foreground = mi?.Template?.FindName ("PART_Foreground", mi) as HackButton;
+				if (background != null)
+				{
+					var isColored = background.Tag is bool && (bool)background.Tag;
+					if (!isColored)
+					{
+						background.Tag = true;
+						background.NormalSource = ImageColorMapper.MapImageColors (background.NormalSource, drawingColor);
+						background.HoverSource = ImageColorMapper.MapImageColors (background.HoverSource, drawingColor);
+						background.ActiveSource = ImageColorMapper.MapImageColors (background.ActiveSource, drawingColor);
+						background.FocusSource = ImageColorMapper.MapImageColors (background.FocusSource, drawingColor);
+						background.DisabledSource = ImageColorMapper.MapImageColors (background.DisabledSource, drawingColor);
+					}
+				}
+				if (foreground != null)
+				{
+					var isColored = foreground.Tag is bool && (bool)foreground.Tag;
+					if (!isColored)
+					{
+						foreground.Tag = true;
+						foreground.NormalSource = ImageColorMapper.MapImageColors (foreground.NormalSource, drawingColor);
+					}
+				}
+			}
 		}
 		private void NoteHeaderThumb_DragDelta (object sender, System.Windows.Controls.Primitives.DragDeltaEventArgs e)
 		{
@@ -231,6 +261,51 @@ namespace WindowsModern.StickyNote
 			formatted.EndInit ();
 			formatted.Freeze ();
 			return formatted;
+		}
+		private DispatcherTimer _dimTimer;
+		private void Window_Deactivated (object sender, EventArgs e)
+		{
+			var fade = new DoubleAnimation { To = 0.65, Duration = TimeSpan.FromSeconds (0.3), FillBehavior = FillBehavior.HoldEnd };
+			BeginAnimation (Window.OpacityProperty, fade);
+			//if (_dimTimer != null) { _dimTimer.Stop (); _dimTimer = null; }
+			//_dimTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds (30) };
+			//_dimTimer.Tick += (s, args) =>
+			//{
+			//	((DispatcherTimer)s).Stop ();
+			//	_dimTimer = null;
+			//	var fade = new DoubleAnimation { To = 0.65, Duration = TimeSpan.FromSeconds (0.3), FillBehavior = FillBehavior.HoldEnd };
+			//	BeginAnimation (Window.OpacityProperty, fade);
+			//};
+			//_dimTimer.Start ();
+		}
+		private void Window_Activated (object sender, EventArgs e)
+		{
+			if (_dimTimer != null) { _dimTimer.Stop (); _dimTimer = null; }
+			BeginAnimation (Window.OpacityProperty, null);
+			Opacity = 1.0;
+		}
+		private void DeleteItem_Click (object sender, RoutedEventArgs e)
+		{
+
+		}
+		private void RecordItem_Click (object sender, RoutedEventArgs e)
+		{
+
+		}
+		private void KbdPenItem_Click (object sender, RoutedEventArgs e)
+		{
+			if (ContentPanel.ContentMode == NoteContentMode.Text)
+			{
+				ContentPanel.ContentMode = NoteContentMode.Ink;
+				KbdPenItem.SetResourceReference (StyleProperty, "TileStickyNoteBubbleMenuItemImageItemPen");
+				UpdateMenuImageItems (KbdPenItem);
+			}
+			else
+			{
+				ContentPanel.ContentMode = NoteContentMode.Text;
+				KbdPenItem.SetResourceReference (StyleProperty, "TileStickyNoteBubbleMenuItemImageItemKeyboard");
+				UpdateMenuImageItems (KbdPenItem);
+			}
 		}
 	}
 }

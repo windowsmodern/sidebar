@@ -575,4 +575,25 @@ namespace Sidebar.Presentation
 			ctrl.Visibility = hasItem ? Visibility.Visible : Visibility.Collapsed;
 		}
 	}
+	public sealed class NonZeroConverter: IValueConverter
+	{
+		public static NonZeroConverter Instance { get; private set; } = new NonZeroConverter ();
+		public object Convert (object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			if (value == null) return false;
+			if (value is double) return Math.Abs ((double)value) > 0.01;
+			if (value is float) return Math.Abs ((float)value) > 0.01f;
+			if (value is decimal) return Math.Abs ((decimal)value) > 0.01m;
+			if (value is int) return (int)value != 0;
+			if (value is long) return (long)value != 0;
+			if (value is short) return (short)value != 0;
+			if (value is sbyte) return (sbyte)value != 0;
+			if (value is uint) return (uint)value != 0;
+			if (value is ulong) return (ulong)value != 0;
+			if (value is ushort) return (ushort)value != 0;
+			if (value is byte) return (byte)value != 0;
+			return false;
+		}
+		public object ConvertBack (object value, Type targetType, object parameter, CultureInfo culture) => Binding.DoNothing;
+	}
 }

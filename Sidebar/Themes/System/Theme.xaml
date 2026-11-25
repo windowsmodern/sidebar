@@ -10,6 +10,64 @@
 	<s:String x:Key="ThemePublisherDisplayName">Windows Modern</s:String>
 	<s:String x:Key="ThemeDescription">Default theme.</s:String>
 	<s:String x:Key="ThemeLogo">Logo.ico</s:String>
+	<!-- Tile -->
+	<Style x:Key="TileControlElement" TargetType="UserControl">
+		<Setter Property="ClipToBounds" Value="True"></Setter>
+	</Style>
+	<Style x:Key="TileControlContentContainer" TargetType="Grid">
+		<Setter Property="ClipToBounds" Value="True"></Setter>
+		<Setter Property="Margin" Value="0"></Setter>
+		<Style.Triggers>
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding IsInDragMode, ElementName=RootTileElement}" Value="True"></Condition>
+					<Condition Binding="{Binding IsPinned, ElementName=RootTileElement}" Value="False"></Condition>
+				</MultiDataTrigger.Conditions>
+				<Setter Property="Margin" Value="0,-4,0,0"></Setter>
+			</MultiDataTrigger>
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding IsInDragMode, ElementName=RootTileElement}" Value="True"></Condition>
+					<Condition Binding="{Binding IsPinned, ElementName=RootTileElement}" Value="True"></Condition>
+				</MultiDataTrigger.Conditions>
+				<Setter Property="Margin" Value="0,0,0,-4"></Setter>
+			</MultiDataTrigger>
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding IsInDragMode, ElementName=RootTileElement}" Value="True"></Condition>
+					<Condition Binding="{Binding Margin.Top, ElementName=RootTileElement, Converter={StaticResource UtilNonZeroConverter}}" Value="True"></Condition>
+					<Condition Binding="{Binding IsPinned, ElementName=RootTileElement}" Value="False"></Condition>
+				</MultiDataTrigger.Conditions>
+				<Setter Property="Margin" Value="0"></Setter>
+			</MultiDataTrigger>
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding IsInDragMode, ElementName=RootTileElement}" Value="True"></Condition>
+					<Condition Binding="{Binding Margin.Bottom, ElementName=RootTileElement, Converter={StaticResource UtilNonZeroConverter}}" Value="True"></Condition>
+					<Condition Binding="{Binding IsPinned, ElementName=RootTileElement}" Value="True"></Condition>
+				</MultiDataTrigger.Conditions>
+				<Setter Property="Margin" Value="0"></Setter>
+			</MultiDataTrigger>
+		</Style.Triggers>
+	</Style>
+	<Style x:Key="TileSplitterDecoration" TargetType="Thumb">
+		<Setter Property="DockPanel.Dock" Value="Top"></Setter>
+		<Setter Property="Height" Value="4"></Setter>
+		<Setter Property="Background" Value="Transparent"></Setter>
+		<Setter Property="Visibility" Value="Collapsed"></Setter>
+		<Setter Property="Template" Value="{DynamicResource TileSplliterTemplate}"></Setter>
+		<Style.Triggers>
+			<DataTrigger Binding="{Binding IsPinned, ElementName=RootTileElement}" Value="True">
+				<Setter Property="DockPanel.Dock" Value="Bottom"/>
+			</DataTrigger>
+			<DataTrigger Binding="{Binding IsDragging, ElementName=RootTileElement}" Value="True">
+				<Setter Property="Visibility" Value="Collapsed"></Setter>
+			</DataTrigger>
+			<DataTrigger Binding="{Binding IsInDragMode, ElementName=RootTileElement}" Value="True">
+				<Setter Property="Visibility" Value="Visible"></Setter>
+			</DataTrigger>
+		</Style.Triggers>
+	</Style>
 	<!--  Tiles  -->
 	<!--  Clock  -->
 	<!--  Clock:ClockFace  -->

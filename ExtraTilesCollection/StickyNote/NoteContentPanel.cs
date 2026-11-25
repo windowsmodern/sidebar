@@ -21,14 +21,26 @@ namespace WindowsModern.StickyNote
 		private bool isInitializing = true;
 		public NoteContentPanel ()
 		{
-			ScreenshotContent = new Image { Stretch = Stretch.Uniform, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top, IsHitTestVisible = false };
-			InkContent = new InkCanvas { Background = Brushes.Transparent, EditingMode = InkCanvasEditingMode.Ink };
+			ScreenshotContent = new Image {
+				Stretch = Stretch.Uniform,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				IsHitTestVisible = false,
+				Margin = new Thickness (2)
+			};
+			InkContent = new InkCanvas {
+				Background = Brushes.Transparent,
+				EditingMode = InkCanvasEditingMode.Ink,
+				Margin = new Thickness (2)
+			};
 			TextContent = new RichTextBox {
 				Background = Brushes.Transparent,
 				BorderThickness = new Thickness (0),
 				AcceptsReturn = true,
 				AcceptsTab = true,
-				Document = CreateDefaultDocument ()
+				Document = CreateDefaultDocument (),
+				Padding = new Thickness (3),
+				Margin = new Thickness (2)
 			};
 			TextContent.HorizontalScrollBarVisibility = HorizontalScrollBarVisibility;
 			TextContent.VerticalScrollBarVisibility = VerticalScrollBarVisibility;

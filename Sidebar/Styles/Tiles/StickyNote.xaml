@@ -371,7 +371,7 @@
 	</Style>
 	<Style x:Key="TileStickyNoteBubbleMenu" TargetType="Menu">
 		<Setter Property="Height" Value="22"></Setter>
-		<Setter Property="Margin" Value="45,0,0,1"></Setter>
+		<Setter Property="Margin" Value="45,0,0,2"></Setter>
 		<Setter Property="VerticalAlignment" Value="Bottom"></Setter>
 		<Setter Property="Background" Value="Transparent"></Setter>
 		<Setter Property="FontFamily" Value="{DynamicResource GlobalFontFamily}" />
@@ -402,18 +402,86 @@
 	<ImageSource x:Key="TileStickyNoteBubbleMenuItemImageItemHoverImage">..\..\Images\Sticky Note\Bubble\IconHoverButton.png</ImageSource>
 	<ImageSource x:Key="TileStickyNoteBubbleMenuItemImageItemActiveImage">..\..\Images\Sticky Note\Bubble\IconDownButton.png</ImageSource>
 	<Thickness x:Key="TileStickyNoteBubbleMenuItemImageItemBackgroundThickness">4</Thickness>
-	<Style x:Key="TileStickyNoteBubbleMenuItemImageItemButton" TargetType="HackButton">
+	<Style x:Key="TileStickyNoteBubbleMenuItemImageItemBackground" TargetType="HackButton">
 		<Setter Property="HoverSource" Value="{DynamicResource TileStickyNoteBubbleMenuItemImageItemHoverImage}"></Setter>
 		<Setter Property="ActiveSource" Value="{DynamicResource TileStickyNoteBubbleMenuItemImageItemActiveImage}"></Setter>
 		<Setter Property="HackThickness" Value="{DynamicResource TileStickyNoteBubbleMenuItemImageItemBackgroundThickness}"></Setter>
 	</Style>
-	<Style x:Key="TileStickyNoteBubbleMenuItemImageItem" TargetType="MenuItem">
+	<Style x:Key="TileStickyNoteBubbleMenuItemImageItemDeleteForeground" TargetType="HackButton">
+		<Setter Property="NormalSource" Value="..\..\Images\Sticky Note\Bubble\DeleteNormal.png"></Setter>
+		<Setter Property="HoverSource" Value="..\..\Images\Sticky Note\Bubble\DeleteHover.png"></Setter>
+		<Setter Property="ActiveSource" Value="..\..\Images\Sticky Note\Bubble\DeleteDown.png"></Setter>
+	</Style>
+	<Style x:Key="TileStickyNoteBubbleMenuItemImageItemRecordForeground" TargetType="HackButton">
+		<Setter Property="NormalSource" Value="..\..\Images\Sticky Note\Bubble\AudioNormal.png"></Setter>
+		<Setter Property="HoverSource" Value="..\..\Images\Sticky Note\Bubble\AudioHover.png"></Setter>
+		<Setter Property="ActiveSource" Value="..\..\Images\Sticky Note\Bubble\AudioDown.png"></Setter>
+	</Style>
+	<Style x:Key="TileStickyNoteBubbleMenuItemImageItemKeyboardForeground" TargetType="HackButton">
+		<Setter Property="NormalSource" Value="..\..\Images\Sticky Note\Bubble\KBNormal.png"></Setter>
+		<Setter Property="HoverSource" Value="..\..\Images\Sticky Note\Bubble\KBHover.png"></Setter>
+		<Setter Property="ActiveSource" Value="..\..\Images\Sticky Note\Bubble\KBDown.png"></Setter>
+	</Style>
+	<Style x:Key="TileStickyNoteBubbleMenuItemImageItemPenForeground" TargetType="HackButton">
+		<Setter Property="NormalSource" Value="..\..\Images\Sticky Note\Bubble\PenKBToggleNormal.png"></Setter>
+		<Setter Property="HoverSource" Value="..\..\Images\Sticky Note\Bubble\PenKBToggleHover.png"></Setter>
+		<Setter Property="ActiveSource" Value="..\..\Images\Sticky Note\Bubble\PenKBToggleDown.png"></Setter>
+	</Style>
+	<Style x:Key="TileStickyNoteBubbleMenuItemImageItemDelete" TargetType="MenuItem">
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="MenuItem">
-					<HackButton Style="{DynamicResource TileStickyNoteBubbleMenuItemImageItemButton}">
-						<Image Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" Source="{TemplateBinding Header}"></Image>
-					</HackButton>
+					<Grid Background="Transparent">
+						<HackButton x:Name="PART_Background" TrackContentState="True" IsEnabled="{TemplateBinding IsEnabled}" Style="{DynamicResource TileStickyNoteBubbleMenuItemImageItemBackground}">
+							<HackButton x:Name="PART_Foreground" IsEnabled="{TemplateBinding IsEnabled}" Style="{DynamicResource TileStickyNoteBubbleMenuItemImageItemDeleteForeground}"></HackButton>
+						</HackButton>
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="Width" Value="22"></Setter>
+		<Setter Property="Height" Value="22"></Setter>
+	</Style>
+	<Style x:Key="TileStickyNoteBubbleMenuItemImageItemRecord" TargetType="MenuItem">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="MenuItem">
+					<Grid Background="Transparent">
+						<HackButton x:Name="PART_Background" TrackContentState="True" IsEnabled="{TemplateBinding IsEnabled}" Style="{DynamicResource TileStickyNoteBubbleMenuItemImageItemBackground}">
+							<HackButton x:Name="PART_Foreground" IsEnabled="{TemplateBinding IsEnabled}" Style="{DynamicResource TileStickyNoteBubbleMenuItemImageItemRecordForeground}"></HackButton>
+						</HackButton>
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="Width" Value="22"></Setter>
+		<Setter Property="Height" Value="22"></Setter>
+		<Setter Property="Margin" Value="5,0"></Setter>
+	</Style>
+	<Style x:Key="TileStickyNoteBubbleMenuItemImageItemKeyboard" TargetType="MenuItem">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="MenuItem">
+					<Grid Background="Transparent">
+						<HackButton x:Name="PART_Background" TrackContentState="True" IsEnabled="{TemplateBinding IsEnabled}" Style="{DynamicResource TileStickyNoteBubbleMenuItemImageItemBackground}">
+							<HackButton x:Name="PART_Foreground" IsEnabled="{TemplateBinding IsEnabled}" Style="{DynamicResource TileStickyNoteBubbleMenuItemImageItemKeyboardForeground}"></HackButton>
+						</HackButton>
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="Width" Value="22"></Setter>
+		<Setter Property="Height" Value="22"></Setter>
+	</Style>
+	<Style x:Key="TileStickyNoteBubbleMenuItemImageItemPen" TargetType="MenuItem">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="MenuItem">
+					<Grid Background="Transparent">
+						<HackButton x:Name="PART_Background" TrackContentState="True" Command="{TemplateBinding Command}" CommandParameter="{TemplateBinding Command}" CommandTarget="{TemplateBinding CommandTarget}" IsEnabled="{TemplateBinding IsEnabled}" Style="{DynamicResource TileStickyNoteBubbleMenuItemImageItemBackground}">
+							<HackButton x:Name="PART_Foreground" Command="{TemplateBinding Command}" CommandParameter="{TemplateBinding Command}" CommandTarget="{TemplateBinding CommandTarget}" IsEnabled="{TemplateBinding IsEnabled}" Style="{DynamicResource TileStickyNoteBubbleMenuItemImageItemPenForeground}"></HackButton>
+						</HackButton>
+					</Grid>
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>

@@ -477,6 +477,64 @@
 	<Style x:Key="TileFlyoutIcon" TargetType="Control">
 		<Setter Property="Visibility" Value="Collapsed"></Setter>
 	</Style>
+
+	<Style x:Key="TileControlElement" TargetType="UserControl">
+		<Setter Property="ClipToBounds" Value="True"></Setter>
+	</Style>
+	<Style x:Key="TileControlContentContainer" TargetType="Grid">
+		<Setter Property="ClipToBounds" Value="True"></Setter>
+		<Setter Property="Margin" Value="0"></Setter>
+		<Style.Triggers>
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding IsInDragMode, ElementName=RootTileElement}" Value="True"></Condition>
+					<Condition Binding="{Binding IsPinned, ElementName=RootTileElement}" Value="False"></Condition>
+				</MultiDataTrigger.Conditions>
+				<Setter Property="Margin" Value="0,-5,0,0"></Setter>
+			</MultiDataTrigger>
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding IsInDragMode, ElementName=RootTileElement}" Value="True"></Condition>
+					<Condition Binding="{Binding IsPinned, ElementName=RootTileElement}" Value="True"></Condition>
+				</MultiDataTrigger.Conditions>
+				<Setter Property="Margin" Value="0,0,0,-5"></Setter>
+			</MultiDataTrigger>
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding IsInDragMode, ElementName=RootTileElement}" Value="True"></Condition>
+					<Condition Binding="{Binding Margin.Top, ElementName=RootTileElement, Converter={StaticResource UtilNonZeroConverter}}" Value="True"></Condition>
+					<Condition Binding="{Binding IsPinned, ElementName=RootTileElement}" Value="False"></Condition>
+				</MultiDataTrigger.Conditions>
+				<Setter Property="Margin" Value="0"></Setter>
+			</MultiDataTrigger>
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding IsInDragMode, ElementName=RootTileElement}" Value="True"></Condition>
+					<Condition Binding="{Binding Margin.Bottom, ElementName=RootTileElement, Converter={StaticResource UtilNonZeroConverter}}" Value="True"></Condition>
+					<Condition Binding="{Binding IsPinned, ElementName=RootTileElement}" Value="True"></Condition>
+				</MultiDataTrigger.Conditions>
+				<Setter Property="Margin" Value="0"></Setter>
+			</MultiDataTrigger>
+		</Style.Triggers>
+	</Style>
+	<Style x:Key="TileSplitterDecoration" TargetType="Thumb">
+		<Setter Property="DockPanel.Dock" Value="Top"></Setter>
+		<Setter Property="Height" Value="5"></Setter>
+		<Setter Property="Background" Value="Transparent"></Setter>
+		<Setter Property="Visibility" Value="Collapsed"></Setter>
+		<Setter Property="Template" Value="{DynamicResource TileSplliterTemplate}"></Setter>
+		<Style.Triggers>
+			<DataTrigger Binding="{Binding IsPinned, ElementName=RootTileElement}" Value="True">
+				<Setter Property="DockPanel.Dock" Value="Bottom"/>
+			</DataTrigger>
+			<DataTrigger Binding="{Binding IsDragging, ElementName=RootTileElement}" Value="True">
+				<Setter Property="Visibility" Value="Collapsed"></Setter>
+			</DataTrigger>
+			<DataTrigger Binding="{Binding IsInDragMode, ElementName=RootTileElement}" Value="True">
+				<Setter Property="Visibility" Value="Visible"></Setter>
+			</DataTrigger>
+		</Style.Triggers>
+	</Style>
 	<!-- Flyout -->
 	<Style x:Key="FlyoutBackground" TargetType="Control">
 		<Setter Property="Template">
@@ -583,7 +641,7 @@
 			</Border>
 			<Border BorderBrush="#3564A7" BorderThickness="1,0,0,0" />
 			<DockPanel>
-				<Thumb x:Name="RootSplliter" DockPanel.Dock="Bottom" Style="{DynamicResource TileSplliter}"></Thumb>
+				<!--<Thumb x:Name="RootSplliter" DockPanel.Dock="Bottom" Style="{DynamicResource TileSplliter}"></Thumb>-->
 				<Grid></Grid>
 			</DockPanel>
 		</Grid>
@@ -595,9 +653,9 @@
 					</Setter.Value>
 				</Setter>
 			</DataTrigger>
-			<DataTrigger Binding="{Binding IsPinned, ElementName=RootTileElement}" Value="True">
+			<!--<DataTrigger Binding="{Binding IsPinned, ElementName=RootTileElement}" Value="True">
 				<Setter TargetName="RootSplliter" Property="DockPanel.Dock" Value="Top" />
-			</DataTrigger>
+			</DataTrigger>-->
 		</ControlTemplate.Triggers>
 	</ControlTemplate>
 	<Style x:Key="DragWindowBackground" TargetType="Control">

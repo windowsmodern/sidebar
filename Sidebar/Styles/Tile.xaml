@@ -36,6 +36,9 @@
 			</DataTrigger>
 		</Style.Triggers>
 	</Style>
+	<Style x:Key="TileSplitterDecoration" TargetType="Thumb">
+		<Setter Property="Visibility" Value="Collapsed"></Setter>
+	</Style>
 	<Style x:Key="TileBackground" TargetType="Control">
 		<Setter Property="Visibility" Value="Collapsed"></Setter>
 	</Style>

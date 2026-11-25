@@ -1800,6 +1800,8 @@ namespace Sidebar
 		{
 			return MoveTileToPanelIndex (userModelId, panel, panelIndex);
 		}
+		public bool IsBottomAlignedPanel (Panel panel) { return ReferenceEquals (panel, PinnedTilesControl); }
+		bool ITileReorderHost.IsBottomAlignedPanel (Panel panel) { return IsBottomAlignedPanel (panel); }
 		#endregion
 		#region Flyout Position
 		private static double Range (double value, double min, double max) => Math.Min (Math.Max (value, min), max);

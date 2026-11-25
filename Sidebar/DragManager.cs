@@ -15,6 +15,8 @@ namespace Sidebar
 	{
 		/// <summary>把磁贴移动到指定面板的指定索引处；返回是否真的发生了位置变化。</summary>
 		bool MoveTileToPanelIndex (string userModelId, Panel panel, int panelIndex);
+		/// <summary>该面板是否底部对齐（让位偏移写入 Margin.Bottom）。</summary>
+		bool IsBottomAlignedPanel (Panel panel);
 	}
 	internal enum TileDragDevice { Mouse, Stylus, Touch }
 	/// <summary>侧边栏磁贴拖拽重排管理器，采用 Longhorn 风格的实时让位算法，支持鼠标、触屏笔与触摸。</summary>
@@ -47,6 +49,7 @@ namespace Sidebar
 		private TileDragDevice _device;
 		private StylusDevice _stylus;
 		private TouchDevice _touch;
+		private readonly List<TileControl> _dragModeMembers = new List<TileControl> ();
 		/// <summary>是否已经进入拖拽进行中状态。</summary>
 		public bool IsDragging { get { return _isDragging; } }
 		/// <summary>是否处于已按下但未超过阈值的待拖状态。</summary>
@@ -101,6 +104,7 @@ namespace Sidebar
 			_isPending = true;
 			_indexDrag = -1;
 			_indexDrop = -1;
+			_source.EnterDragPending ();
 			return true;
 		}
 		/// <summary>由 SidebarWindow 在 PreviewMouseMove 中调用。</summary>
@@ -200,7 +204,10 @@ namespace Sidebar
 			if (_isDragging) RestoreSourcePosition ();
 			RestoreAllSplitters ();
 			CloseWindow ();
+			_source?.ExitDragState ();
 			ReleaseCapture ();
+			for (int i = 0; i < _dragModeMembers.Count; i++) { TileControl tc = _dragModeMembers [i]; if (tc != null) tc.ExitDragMode (); }
+			_dragModeMembers.Clear ();
 			_source = null;
 			_panel = null;
 			_indexDrag = -1;
@@ -229,10 +236,12 @@ namespace Sidebar
 		{
 			_isDragging = true;
 			_isPending = false;
+			_source.EnterDragging ();
 			_panel = _source.Parent as Panel;
 			if (_panel == null) { Cancel (); return; }
 			_sourceIndex = _panel.Children.IndexOf (_source);
 			if (_sourceIndex < 0) { Cancel (); return; }
+			_useBottomMargin = _reorder.IsBottomAlignedPanel (_panel);
 			_sourceHeight = _source.ActualHeight;
 			if (double.IsNaN (_sourceHeight) || _sourceHeight <= 0) _sourceHeight = _source.DesiredSize.Height;
 			if (double.IsNaN (_sourceHeight) || _sourceHeight <= 0) _sourceHeight = 60;
@@ -285,11 +294,15 @@ namespace Sidebar
 			{
 				Mouse.Capture (_host, CaptureMode.Element);
 			}
+			_dragModeMembers.Clear ();
+			foreach (UIElement child in _panel.Children) { TileControl tc = child as TileControl; if (tc == null) continue; tc.EnterDragMode (); _dragModeMembers.Add (tc); }
+			if (_source != null && !_dragModeMembers.Contains (_source)) { _source.EnterDragMode (); _dragModeMembers.Add (_source); }
 			_panel.Children.Remove (_source);
-			if (_sourceIndex < _panel.Children.Count)
+			int refIdx = _useBottomMargin ? _sourceIndex - 1 : _sourceIndex;
+			if (refIdx >= 0 && refIdx < _panel.Children.Count)
 			{
-				TileControl next = _panel.Children [_sourceIndex] as TileControl;
-				if (next != null) AnimateMargin (next, _sourceHeight);
+				TileControl refTile = _panel.Children [refIdx] as TileControl;
+				if (refTile != null) AnimateMargin (refTile, _sourceHeight);
 			}
 			UpdateDrag (currentInWindow);
 		}
@@ -359,24 +372,26 @@ namespace Sidebar
 			double h = _sourceHeight;
 			double marginDrag = h * (1 - t);
 			double marginNext = h * t;
+			int dragA = _useBottomMargin ? _indexDrag - 1 : _indexDrag;
+			int dragB = _useBottomMargin ? _indexDrag : _indexDrag + 1;
 			int visibleIndex = 0;
 			foreach (UIElement child in _panel.Children)
 			{
 				TileControl tc = child as TileControl;
 				if (tc == null || tc == _source) continue;
 				double margin = 0;
-				if (visibleIndex == _indexDrag) margin = marginDrag;
-				else if (visibleIndex == _indexDrag + 1) margin = marginNext;
+				if (visibleIndex == dragA) margin = marginDrag;
+				else if (visibleIndex == dragB) margin = marginNext;
 				AnimateMargin (tc, margin);
 				visibleIndex++;
 			}
 		}
 		/// <summary>让位动画：短时长 + 缓出，磁贴跟上光标但不硬切。</summary>
-		private void AnimateMargin (TileControl tile, double top)
+		private void AnimateMargin (TileControl tile, double offset)
 		{
 			Thickness current = tile.Margin;
-			if (Math.Abs (current.Top - top) < 0.01) return;
-			Thickness target = new Thickness (current.Left, top, current.Right, current.Bottom);
+			if (Math.Abs (GetDragOffset (current) - offset) < 0.01) return;
+			Thickness target = SetDragOffset (current, offset);
 			ThicknessAnimation anim = new ThicknessAnimation {
 				From = current,
 				To = target,
@@ -388,7 +403,8 @@ namespace Sidebar
 			completed = (s, e) => {
 				anim.Completed -= completed;
 				tile.BeginAnimation (FrameworkElement.MarginProperty, null);
-				tile.Margin = target;
+				if (Math.Abs (offset) < 0.01) tile.ClearValue (FrameworkElement.MarginProperty);
+				else tile.Margin = target;
 			};
 			anim.Completed += completed;
 			tile.BeginAnimation (FrameworkElement.MarginProperty, anim, HandoffBehavior.SnapshotAndReplace);
@@ -472,27 +488,41 @@ namespace Sidebar
 			targetLeft = 0;
 			targetTop = 0;
 			if (_panel == null || _window == null) return false;
-
-			double dropYInPanel = 0;
-			int visibleIndex = 0;
-			foreach (UIElement child in _panel.Children)
+			double anchorYInPanel;
+			if (_useBottomMargin)
 			{
-				TileControl tc = child as TileControl;
-				if (tc == null || tc == _source) continue;
-				if (visibleIndex >= insertIndex) break;
-				dropYInPanel += tc.ActualHeight;
-				visibleIndex++;
+				double afterHeight = 0;
+				int visibleIndex = 0;
+				foreach (UIElement child in _panel.Children)
+				{
+					TileControl tc = child as TileControl;
+					if (tc == null || tc == _source) continue;
+					if (visibleIndex >= insertIndex) afterHeight += tc.ActualHeight;
+					visibleIndex++;
+				}
+				anchorYInPanel = _panel.ActualHeight - afterHeight - _sourceHeight;
 			}
-
+			else
+			{
+				double beforeHeight = 0;
+				int visibleIndex = 0;
+				foreach (UIElement child in _panel.Children)
+				{
+					TileControl tc = child as TileControl;
+					if (tc == null || tc == _source) continue;
+					if (visibleIndex >= insertIndex) break;
+					beforeHeight += tc.ActualHeight;
+					visibleIndex++;
+				}
+				anchorYInPanel = beforeHeight;
+			}
 			Point panelOriginInWindow;
 			try { panelOriginInWindow = _panel.TranslatePoint (new Point (0, 0), _host); }
 			catch { return false; }
-			Point anchorInWindow = new Point (panelOriginInWindow.X, panelOriginInWindow.Y + dropYInPanel);
-
+			Point anchorInWindow = new Point (panelOriginInWindow.X, panelOriginInWindow.Y + anchorYInPanel);
 			Point anchorPhysical = _host.PointToScreen (anchorInWindow);
 			double anchorLogicalX = anchorPhysical.X / _dpiX;
 			double anchorLogicalY = anchorPhysical.Y / _dpiY;
-
 			Thickness cm = _window.ContentMargin;
 			targetLeft = anchorLogicalX - cm.Left;
 			targetTop = anchorLogicalY - cm.Top;
@@ -503,6 +533,9 @@ namespace Sidebar
 			RestoreAllSplitters ();
 			CloseWindow ();
 			ReleaseCapture ();
+			for (int i = 0; i < _dragModeMembers.Count; i++) { TileControl tc = _dragModeMembers [i]; if (tc != null) tc.ExitDragMode (); }
+			_dragModeMembers.Clear ();
+			_source?.ExitDragState ();
 			_source = null;
 			_panel = null;
 			_indexDrag = -1;
@@ -524,38 +557,36 @@ namespace Sidebar
 				if (back > panel.Children.Count) back = panel.Children.Count;
 				panel.Children.Insert (back, source);
 			}
-			// 源下方的磁贴瞬间归零，避免与源之间出现 240ms 才收拢的空隙
-			TileControl below = null;
-			int belowIndex = insertIndex + 1;
-			if (belowIndex >= 0 && belowIndex < panel.Children.Count)
+			TileControl adjacent = null;
+			int adjacentIndex = _useBottomMargin ? insertIndex - 1 : insertIndex + 1;
+			if (adjacentIndex >= 0 && adjacentIndex < panel.Children.Count)
 			{
-				below = panel.Children [belowIndex] as TileControl;
-				if (below != null && below != source)
-				{
-					below.BeginAnimation (FrameworkElement.MarginProperty, null);
-					Thickness m = below.Margin;
-					below.Margin = new Thickness (m.Left, 0, m.Right, m.Bottom);
-				}
+				adjacent = panel.Children [adjacentIndex] as TileControl;
+				if (adjacent == source) adjacent = null;
 			}
-			List<TileControl> affected = new List<TileControl> ();
+			if (adjacent != null) { adjacent.BeginAnimation (FrameworkElement.MarginProperty, null); adjacent.ClearValue (FrameworkElement.MarginProperty); }
+			List<TileControl> all = new List<TileControl> ();
+			List<TileControl> needAnim = new List<TileControl> ();
 			foreach (UIElement child in panel.Children)
 			{
 				TileControl tc = child as TileControl;
-				if (tc == null || tc == source || tc == below) continue;
-				if (tc.Margin.Top != 0) affected.Add (tc);
+				if (tc == null || tc == source || tc == adjacent) continue;
+				all.Add (tc);
+				if (Math.Abs (GetDragOffset (tc.Margin)) > 0.01) needAnim.Add (tc);
 			}
-			if (affected.Count == 0)
+			Action finish = () =>
 			{
-				if (!string.IsNullOrWhiteSpace (userModelId))
-					_reorder.MoveTileToPanelIndex (userModelId, panel, insertIndex);
-				return;
-			}
+				if (adjacent != null) { adjacent.BeginAnimation (FrameworkElement.MarginProperty, null); adjacent.ClearValue (FrameworkElement.MarginProperty); }
+				for (int i = 0; i < all.Count; i++) { TileControl tc = all [i]; tc.BeginAnimation (FrameworkElement.MarginProperty, null); tc.ClearValue (FrameworkElement.MarginProperty); }
+				if (!string.IsNullOrWhiteSpace (userModelId)) _reorder.MoveTileToPanelIndex (userModelId, panel, insertIndex);
+			};
+			if (needAnim.Count == 0) { finish (); return; }
 			Storyboard sb = new Storyboard ();
-			for (int i = 0; i < affected.Count; i++)
+			for (int i = 0; i < needAnim.Count; i++)
 			{
-				TileControl tc = affected [i];
+				TileControl tc = needAnim [i];
 				Thickness from = tc.Margin;
-				Thickness to = new Thickness (from.Left, 0, from.Right, from.Bottom);
+				Thickness to = SetDragOffset (from, 0);
 				ThicknessAnimation anim = new ThicknessAnimation {
 					From = from,
 					To = to,
@@ -567,18 +598,7 @@ namespace Sidebar
 				Storyboard.SetTargetProperty (anim, new PropertyPath (FrameworkElement.MarginProperty));
 				sb.Children.Add (anim);
 			}
-			sb.Completed += (s, e) => {
-				for (int i = 0; i < affected.Count; i++)
-				{
-					TileControl tc = affected [i];
-					tc.BeginAnimation (FrameworkElement.MarginProperty, null);
-					tc.ClearValue (FrameworkElement.MarginProperty);
-				}
-				if (!string.IsNullOrWhiteSpace (userModelId))
-				{
-					_reorder.MoveTileToPanelIndex (userModelId, panel, insertIndex);
-				}
-			};
+			sb.Completed += (s, e) => finish ();
 			sb.Begin ();
 		}
 		private void RestoreSourcePosition ()
@@ -643,5 +663,9 @@ namespace Sidebar
 			if (cur is System.Windows.Media.Media3D.Visual3D) return VisualTreeHelper.GetParent (cur);
 			return LogicalTreeHelper.GetParent (cur);
 		}
+		private bool _useBottomMargin;
+		private bool UseBottomMargin => _useBottomMargin;
+		private double GetDragOffset (Thickness t) { return _useBottomMargin ? t.Bottom : t.Top; }
+		private Thickness SetDragOffset (Thickness t, double offset) { return _useBottomMargin ? new Thickness (t.Left, t.Top, t.Right, offset) : new Thickness (t.Left, offset, t.Right, t.Bottom); }
 	}
 }

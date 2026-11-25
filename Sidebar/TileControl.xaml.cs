@@ -72,7 +72,7 @@ namespace Sidebar
 			{
 				TileContentContainerControl.MaxHeight = tas.Infomation.VisualElements.Tile.MaxHeight;
 			}
-			TileSplitterThumb.IsEnabled = tas.Infomation.VisualElements.Tile.Overflow != TileOverflow.Auto;
+			//TileSplitterThumb.IsHitTestVisible = tas.Infomation.VisualElements.Tile.Overflow != TileOverflow.Auto;
 		}
 		public static TileControl CreateTileControl (TileApplicationStorage tas, ISidebarFeatures isf = null, bool sidebarFirstLoad = false)
 		{
@@ -304,6 +304,7 @@ namespace Sidebar
 		private bool _dragChangedAutoSize;
 		private void TileSplitterThumb_DragStarted (object sender, DragStartedEventArgs e)
 		{
+			if (IsOverflowAutoMode) return;
 			if (Instance?.Config != null) Instance.Config.AutoSize = false;
 			_isThumbDragging = true;
 			_dragChangedAutoSize = false;
@@ -315,6 +316,7 @@ namespace Sidebar
 		}
 		private void TileSplitterThumb_DragDelta (object sender, DragDeltaEventArgs e)
 		{
+			if (IsOverflowAutoMode) return;
 			if (!_isThumbDragging) return;
 			if (Instance?.Config?.AutoSize ?? false)
 			{
@@ -343,6 +345,7 @@ namespace Sidebar
 		}
 		private void TileSplitterThumb_DragCompleted (object sender, DragCompletedEventArgs e)
 		{
+			if (IsOverflowAutoMode) return;
 			_isThumbDragging = false;
 		}
 		private void TileSplitterThumb_PreviewMouseLeftButtonDown (object sender, MouseButtonEventArgs e)
@@ -579,6 +582,30 @@ namespace Sidebar
 		{
 			TileSplitterThumb.ClearValue (UIElement.VisibilityProperty);
 		}
+		#endregion
+		#region Drag State (ReadOnly DPs)
+		private static readonly DependencyPropertyKey IsDraggingPropertyKey = DependencyProperty.RegisterReadOnly (nameof (IsDragging), typeof (bool), typeof (TileControl), new FrameworkPropertyMetadata (false));
+		public static readonly DependencyProperty IsDraggingProperty = IsDraggingPropertyKey.DependencyProperty;
+		/// <summary>本磁贴当前是否处于拖拽进行中（只读 DP，可在 XAML 里用 Trigger/Binding 响应）。</summary>
+		public bool IsDragging { get { return (bool)GetValue (IsDraggingProperty); } private set { SetValue (IsDraggingPropertyKey, value); } }
+		private static readonly DependencyPropertyKey IsDragPendingPropertyKey = DependencyProperty.RegisterReadOnly (nameof (IsDragPending), typeof (bool), typeof (TileControl), new FrameworkPropertyMetadata (false));
+		public static readonly DependencyProperty IsDragPendingProperty = IsDragPendingPropertyKey.DependencyProperty;
+		/// <summary>已按下、但尚未超过拖拽阈值的待拖状态（只读 DP）。</summary>
+		public bool IsDragPending { get { return (bool)GetValue (IsDragPendingProperty); } private set { SetValue (IsDragPendingPropertyKey, value); } }
+		/// <summary>由 TileDragManager 调用：进入待拖状态。</summary>
+		internal void EnterDragPending () { IsDragPending = true; }
+		/// <summary>由 TileDragManager 调用：进入拖拽中状态。</summary>
+		internal void EnterDragging () { IsDragPending = false; IsDragging = true; }
+		/// <summary>由 TileDragManager 调用：退出所有拖拽相关状态。</summary>
+		internal void ExitDragState () { IsDragPending = false; IsDragging = false; }
+		private static readonly DependencyPropertyKey IsInDragModePropertyKey = DependencyProperty.RegisterReadOnly (nameof (IsInDragMode), typeof (bool), typeof (TileControl), new FrameworkPropertyMetadata (false));
+		public static readonly DependencyProperty IsInDragModeProperty = IsInDragModePropertyKey.DependencyProperty;
+		/// <summary>本磁贴是否处于拖拽模式：即同一面板中正有某个磁贴被拖拽、本磁贴参与让位/让位收尾的整个过程。</summary>
+		public bool IsInDragMode { get { return (bool)GetValue (IsInDragModeProperty); } private set { SetValue (IsInDragModePropertyKey, value); } }
+		/// <summary>由 TileDragManager 调用：进入拖拽模式。</summary>
+		internal void EnterDragMode () { IsInDragMode = true; }
+		/// <summary>由 TileDragManager 调用：退出拖拽模式。</summary>
+		internal void ExitDragMode () { IsInDragMode = false; }
 		#endregion
 		#region Flyout
 		private FlyoutDoubleClickHelper _flyoutDoubleClickHelper;
@@ -1022,7 +1049,14 @@ namespace Sidebar
 		public string UserModelId => ite?.UserModelId;
 		public override bool Equals (object obj)
 		{
-			if (obj is ITileElement) return ((ITileElement)obj).UserModelId.Equals (UserModelId);
+			try
+			{
+				if (obj is ITileElement) return ((ITileElement)obj).UserModelId.Equals (UserModelId);
+			}
+			catch
+			{
+				return base.Equals (obj);
+			}
 			return base.Equals (obj);
 		}
 		public override int GetHashCode ()
