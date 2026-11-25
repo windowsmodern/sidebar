@@ -254,12 +254,20 @@
 			<DataTrigger Binding="{Binding IsPinned, ElementName=RootTileElement}" Value="True">
 				<Setter Property="DockPanel.Dock" Value="Bottom"/>
 			</DataTrigger>
-			<DataTrigger Binding="{Binding IsDragging, ElementName=RootTileElement}" Value="True">
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding IsInDragMode, ElementName=RootTileElement}" Value="True"></Condition>
+					<Condition Binding="{Binding IsDragging, ElementName=RootTileElement}" Value="True"></Condition>
+				</MultiDataTrigger.Conditions>
 				<Setter Property="Visibility" Value="Collapsed"></Setter>
-			</DataTrigger>
-			<DataTrigger Binding="{Binding IsInDragMode, ElementName=RootTileElement}" Value="True">
+			</MultiDataTrigger>
+			<MultiDataTrigger>
+				<MultiDataTrigger.Conditions>
+					<Condition Binding="{Binding IsInDragMode, ElementName=RootTileElement}" Value="True"></Condition>
+					<Condition Binding="{Binding IsDragging, ElementName=RootTileElement}" Value="False"></Condition>
+				</MultiDataTrigger.Conditions>
 				<Setter Property="Visibility" Value="Visible"></Setter>
-			</DataTrigger>
+			</MultiDataTrigger>
 		</Style.Triggers>
 	</Style>
 	<!-- Flyout -->
